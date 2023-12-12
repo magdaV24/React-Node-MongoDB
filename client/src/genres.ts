@@ -1,0 +1,23 @@
+export const GENRES_LIST = [
+    "Classic",
+    "Adventure",
+    "Thriller",
+    "Romance",
+    "Young Adult",
+    "Fantasy",
+    "Historical Fiction",
+    "Biography",
+    "Horror",
+    "Memoir",
+    "Essay",
+    "Poetry",
+    "Satire",
+    "Mythology",
+    "Graphic Novel",
+    "Detective",
+    "Anthology",
+    "Science Fiction",
+    "Dystopian",
+    "Contemporary Fiction",
+    "Retelling"
+  ];
