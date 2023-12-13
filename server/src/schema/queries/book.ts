@@ -414,14 +414,14 @@ export const delete_book = async (req: any, res: any) => {
     await comments.deleteMany({ book_id: id });
 
     if (!photos || !Array.isArray(photos)) {
-      return res.status(400).json({ error: "Invalid request" });
+      return res.json("Invalid request");
     }
 
     await Promise.all(
       photos.map((photo) => cloudinary.v2.uploader.destroy(photo))
     );
 
-    return res.json("Success");
+    return res.json("Success!");
   } catch (error) {
     return res
       .status(500)
@@ -494,7 +494,7 @@ export const edit_field = async (req: any, res: any) => {
     );
 
     if (!updateField) {
-      res.json("Something went wrong!");
+      res.json("Something went wrong while trying to edit this field!");
     }
     return res.json("Success!");
   } catch (error) {

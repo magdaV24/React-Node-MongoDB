@@ -1,12 +1,27 @@
-import { Button, Card, Container, Typography } from "@mui/material";
-import { Book } from "../../../types/Book";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
 import BookImagesDisplay from "./BookImagesDisplay";
 import BookTable from "./BookTable";
-import { useMutation } from "react-query";
-import postData from "../../../functions/postData";
-import { DELETE_BOOK } from "../../../api/urls";
-import EditBookForm from "../forms/EditBookForm";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContextProvider";
+import useDeleteBook from "../../hooks/useDeleteBook";
+import ErrorAlert from "../global/ErrorAlert";
+import SuccessAlert from "../global/SuccessAlert";
+import EditBookForm from "../../forms/edit_book/EditBookForm";
+import { Book } from "../../types/Book";
+import {
+  buttons_wrapper,
+  card_header,
+  card_wrapper,
+  container_wrapper,
+  table_wrapper,
+} from "../../styles/adminBookCard";
 
 export default function AdminBookCard({
   _id,
@@ -19,18 +34,22 @@ export default function AdminBookCard({
   pages,
   published,
 }: Book) {
+  const { error, message, loading } = useContext(AuthContext);
+
   // Deleting a book
 
-  const delete_mutation = useMutation((input: unknown) => deleteBook(input));
-
-  const deleteBook = async (input: unknown) => {
+  const delete_book = useDeleteBook();
+  const submitDelete = async () => {
+    const data = {
+      id: _id,
+      photos: photos,
+    };
     try {
-      return await postData(DELETE_BOOK, input);
+      await delete_book(data);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
   };
-
   // Edit a book
 
   const [showForm, setShowForm] = useState(false);
@@ -38,33 +57,9 @@ export default function AdminBookCard({
     setShowForm(false);
   }
 
-  const submitDelete = () => {
-    const data = {
-      id: _id,
-      photos: photos,
-    };
-    delete_mutation.mutate(data);
-  };
   return (
-    <Card
-      sx={{
-        width: "100%",
-        mt: 10,
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-        p: 2,
-        minHeight: "60vh",
-        height: "fit-content",
-      }}
-    >
-      <Container
-        sx={{
-          display: "flex",
-          gap: 2,
-          height: "3vh",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
+    <Card sx={card_wrapper}>
+      <Container sx={buttons_wrapper}>
         <Button
           color="info"
           sx={{ width: "10vw" }}
@@ -73,34 +68,23 @@ export default function AdminBookCard({
         >
           EDIT
         </Button>
-        <Button
-          color="warning"
-          sx={{ width: "10vw" }}
-          variant="outlined"
-          onClick={submitDelete}
-        >
-          DELETE
-        </Button>
+        {loading ? (
+          <Box>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Button
+            color="warning"
+            sx={{ width: "10vw" }}
+            variant="outlined"
+            onClick={submitDelete}
+          >
+            DELETE
+          </Button>
+        )}
       </Container>
-      <Container
-        sx={{
-          width: "100%",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-        }}
-      >
-        <Container
-          sx={{
-            width: "30%",
-            height: "20vh",
-            mt: 5,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      <Container sx={container_wrapper}>
+        <Container sx={card_header}>
           <Typography
             variant="h5"
             sx={{ width: "100%", fontSize: "1.5rem", marginBottom: 1 }}
@@ -128,15 +112,7 @@ export default function AdminBookCard({
           published={""}
         />
       </Container>
-      <Container
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginTop: 3,
-          width: "100",
-        }}
-      >
+      <Container sx={table_wrapper}>
         <BookTable
           _id={_id}
           author={""}
@@ -167,6 +143,8 @@ export default function AdminBookCard({
         language={language}
         pages={pages}
       />
+      {message && <SuccessAlert message={message} />}
+      {error && <ErrorAlert message={error} />}
     </Card>
   );
 }

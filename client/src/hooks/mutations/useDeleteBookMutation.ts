@@ -1,0 +1,22 @@
+import { useMutation } from "react-query";
+import { DELETE_BOOK } from "../../api/urls";
+import postData from "../../functions/postData";
+import { useAuthContext } from "../useAuthContext";
+
+export const useDeleteBookMutation = () => {
+    const authContext = useAuthContext();
+  
+    const mutation = useMutation(
+      async (input: unknown) => await postData(DELETE_BOOK, input),
+      {
+        onSuccess: (res) => {
+          if (res === "Success!")
+            authContext.setMessage("Book deleted successfully!");
+        },
+        onError: (error) => authContext.setError(error as string),
+        onSettled: () => authContext.setLoading(false),
+      }
+    );
+    mutation.isLoading ? authContext.setLoading(true) : null;
+    return mutation;
+  };

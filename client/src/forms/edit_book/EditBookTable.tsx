@@ -15,13 +15,14 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
-import { useMutation } from "react-query";
-import postData from "../../../functions/postData";
-import { EDIT_FIELD } from "../../../api/urls";
 import { Controller, useForm } from "react-hook-form";
-import { GENRES_LIST } from "../forms/genres";
+import { AuthContext } from "../../context/AuthContextProvider";
+import useEditField from "../../hooks/useEditField";
+import ErrorAlert from "../../components/global/ErrorAlert";
+import SuccessAlert from "../../components/global/SuccessAlert";
+import { GENRES_LIST } from "../../genres";
 
 interface Props {
   id: string;
@@ -49,9 +50,9 @@ export default function EditBookTable({
   const [genresArr, setGenresArr] = useState("");
 
   const set_genres = (genres: string[]) => {
-    const array = genres.join(', ');
+    const array = genres.join(", ");
     return setGenresArr(array);
-};
+  };
   const [editing, setEditing] = useState([
     false,
     false,
@@ -71,30 +72,26 @@ export default function EditBookTable({
   // Editing a field
 
   const { control, handleSubmit, getValues } = useForm();
-  useEffect(()=>{
-    set_genres(genres)
-  },[genres])
+  useEffect(() => {
+    set_genres(genres);
+  }, [genres]);
 
-  const editing_mutation = useMutation((input: unknown) => edit_field(input));
+  const { error, message, loading } = useContext(AuthContext);
+  const edit_field = useEditField();
 
-  const edit_field = async (input: unknown) => {
-    try {
-      return await postData(EDIT_FIELD, input);
-    } catch (error) {
-      throw new Error(`Error: ${error}`);
-    }
-  };
-
-  const submit_edit = (field: string, update: unknown) => {
+  const submit_edit = async (field: string, update: unknown) => {
     const data = {
       id: id,
       field: field,
       update: update,
     };
 
-    editing_mutation.mutate(data);
+    try {
+      await edit_field(data);
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
   };
-
 
   return (
     <TableContainer
@@ -136,7 +133,7 @@ export default function EditBookTable({
                     )}
                   />
 
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -181,7 +178,7 @@ export default function EditBookTable({
                       />
                     )}
                   />
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -226,7 +223,7 @@ export default function EditBookTable({
                       />
                     )}
                   />
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -276,7 +273,7 @@ export default function EditBookTable({
                       />
                     )}
                   />
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -326,16 +323,14 @@ export default function EditBookTable({
                       >
                         {genres_list.map((genre) => (
                           <MenuItem key={genre} value={genre}>
-                            <Checkbox
-                              checked={field.value}
-                            />
+                            <Checkbox checked={field.value} />
                             <ListItemText primary={genre} />
                           </MenuItem>
                         ))}
                       </Select>
                     )}
                   />
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -352,7 +347,7 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-               genresArr
+                genresArr
               )}
             </TableCell>
           </TableRow>
@@ -372,22 +367,28 @@ export default function EditBookTable({
                     control={control}
                     name="language"
                     render={({ field }) => (
-                      <Select {...field} labelId="language-select" label="Language" sx={{width: '10vw'}} defaultValue={language}>
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value="English">English</MenuItem>
-                <MenuItem value="French">French</MenuItem>
-                <MenuItem value="Latin">Latin</MenuItem>
-                <MenuItem value="German">German</MenuItem>
-                <MenuItem value="Romanian">Romanian</MenuItem>
-                <MenuItem value="Spanish">Spanish</MenuItem>
-                <MenuItem value="Japanese">Japanese</MenuItem>
-              </Select>
+                      <Select
+                        {...field}
+                        labelId="language-select"
+                        label="Language"
+                        sx={{ width: "10vw" }}
+                        defaultValue={language}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        <MenuItem value="English">English</MenuItem>
+                        <MenuItem value="French">French</MenuItem>
+                        <MenuItem value="Latin">Latin</MenuItem>
+                        <MenuItem value="German">German</MenuItem>
+                        <MenuItem value="Romanian">Romanian</MenuItem>
+                        <MenuItem value="Spanish">Spanish</MenuItem>
+                        <MenuItem value="Japanese">Japanese</MenuItem>
+                      </Select>
                     )}
                   />
 
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -436,7 +437,7 @@ export default function EditBookTable({
                       />
                     )}
                   />
-                  {editing_mutation.isLoading ? (
+                  {loading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -459,6 +460,8 @@ export default function EditBookTable({
           </TableRow>
         </TableHead>
       </Table>
+      {message && <SuccessAlert message={message} />}
+      {error && <ErrorAlert message={error} />}
     </TableContainer>
   );
 }
