@@ -9,7 +9,10 @@ export const useAddBookMutation = () => {
     async (input: unknown) => await postData(ADD_BOOK, input),
     {
       onSuccess: (res) => {
-        if (res === "This book had already been added to the database!" || res === "Fail!") {
+        if (
+          res === "This book had already been added to the database!" ||
+          res === "Fail!"
+        ) {
           authContext.setError(res);
         } else {
           authContext.setMessage("The book has been added to the database!");

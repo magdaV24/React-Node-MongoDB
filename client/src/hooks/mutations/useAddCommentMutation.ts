@@ -3,7 +3,7 @@ import { ADD_COMMENT } from "../../api/urls";
 import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
 
-export const useAddReviewMutation = () => {
+export const useAddCommentMutation = () => {
     const authContext = useAuthContext();
     const mutation = useMutation(
       async (input: unknown) => await postData(ADD_COMMENT, input),

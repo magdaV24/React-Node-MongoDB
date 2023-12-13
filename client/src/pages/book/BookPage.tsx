@@ -20,8 +20,11 @@ import Bar from "../../components/global/Bar";
 import { useBook } from "../../hooks/queries/useBook";
 import {
   book_page_wrapper,
+  content_card,
   card_wrapper,
   container,
+  content_card_wrapper,
+  table_container,
 } from "../../styles/bookPage";
 import ArrowBackIosNewSharpIcon from "@mui/icons-material/ArrowBackIosNewSharp";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
@@ -141,19 +144,10 @@ export default function BookPage() {
             </Container>
 
             <Container
-              sx={{
-                display: "flex",
-                height: "60vh",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: "47%",
-                p: 2,
-                ml: -8,
-              }}
+              sx={content_card_wrapper}
             >
               <Card
-                sx={{ width: "100%", minHeight: "56vh", height: "fit-content" }}
+                sx={content_card}
               >
                 <CardHeader subheader="Synopsis:" />
                 <CardContent>{book.description}</CardContent>
@@ -161,16 +155,7 @@ export default function BookPage() {
             </Container>
 
             <TableContainer
-              sx={{
-                display: "flex",
-                height: "60vh",
-                width: "25%",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexDirection: "column",
-                padding: 2,
-                overflow: "hidden",
-              }}
+              sx={table_container}
             >
               <Table>
                 <TableHead>

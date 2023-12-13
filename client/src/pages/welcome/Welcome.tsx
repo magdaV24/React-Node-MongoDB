@@ -8,7 +8,7 @@ import Register from "../../forms/Register";
 export default function Welcome() {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate("/dash");
+    navigate("/home");
   };
 
   const [showLogin, setShowLogin] = useState(false);

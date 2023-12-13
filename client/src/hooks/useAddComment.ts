@@ -1,7 +1,7 @@
-import { useAddReviewMutation } from "./mutations/useAddReviewMutation";
+import { useAddCommentMutation } from "./mutations/useAddCommentMutation";
 
 export default function useAddComment() {
-  const mutation = useAddReviewMutation();
+  const mutation = useAddCommentMutation();
 
   const add_book = async (input: unknown) => {
     try {

@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useQuery } from "react-query";
 import { FETCH_COMMENTS } from "../../api/urls";
 import { AuthContext } from "../../context/AuthContextProvider";
@@ -70,7 +70,7 @@ export default function ReviewCard({
   const [showSpoilers, setShowSpoilers] = useState(false);
 
   const { currentUser, book } = useContext(AuthContext);
-  let has_finished;
+  const [hasFinished, setHasFinished] = useState('')
 
   // Open the modal that contains the login form
   const [openLogin, setOpenLogin] = useState(false);
@@ -83,10 +83,6 @@ export default function ReviewCard({
   const closeEdit = () => {
     setOpenEdit(false);
   };
-
-  finished === "Finished"
-    ? has_finished === "Finished"
-    : has_finished === "(Did not finish)";
 
   const cld = cloudinaryFnc();
   const [isCommenting, setIsCommenting] = useState(false);
@@ -145,6 +141,15 @@ export default function ReviewCard({
       setShowBtn("Show Replies");
     }
   };
+  useEffect(()=> {
+    if (finished === "Finished") {
+      setHasFinished("Finished");
+    } 
+    if (finished === "DNF") {
+      setHasFinished("(Did not finish)");
+    }
+  
+  },[finished])
   return (
     <Box sx={review_card_wrapper}>
       <Card sx={{ width: "100%", padding: 2 }}>
@@ -176,7 +181,7 @@ export default function ReviewCard({
           <Container sx={body_wrapper}>
             <Rating name="disabled" value={stars} disabled precision={0.25} />
             <Typography component="legend">{stars}</Typography>
-            <Typography>{has_finished}</Typography>
+            <Typography>{hasFinished}</Typography>
           </Container>
 
           {spoilers ? (
