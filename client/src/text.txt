@@ -1,0 +1,18 @@
+ const photo = getValues("photo");
+    if (photo === undefined) {
+      return console.log("Undefined photo");
+    }
+    const formData = new FormData();
+
+    formData.append("file", photo[0]);
+    formData.append("upload_preset", PRESET);
+
+    try {
+      const id = await submit_to_cloudinary(formData);
+
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
+
+    photo: photo,
+          id: _id

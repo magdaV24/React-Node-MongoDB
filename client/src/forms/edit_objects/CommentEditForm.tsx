@@ -1,95 +1,86 @@
-import { Container, TextField, Button, Box, CircularProgress } from "@mui/material";
-import SendSharpIcon from '@mui/icons-material/SendSharp';
+import {
+  Container,
+  TextField,
+  Button,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+import SendSharpIcon from "@mui/icons-material/SendSharp";
 import { Controller, useForm } from "react-hook-form";
-import postData from "../../../functions/postData";
-import { EDIT_COMMENT } from "../../../api/urls";
-import { useMutation } from "react-query";
-import ErrorAlert from "../../../components/ErrorAlert";
+import {
+  edit_comment_button,
+  edit_comment_wrapper,
+} from "../../styles/editComment";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContextProvider";
+import SuccessAlert from "../../components/global/SuccessAlert";
+import useEditComment from "../../hooks/useEditComment";
+import ErrorAlert from "../../components/global/ErrorAlert";
 
-interface Props{
-    content: string,
-    id: string
+interface Props {
+  content: string;
+  id: string;
 }
 
-const style = {
-    width: "100%",
-    height: '20vh',
-    display: "flex",
-    gap: "2vw",
-    bgcolor: "secondary.light",
-    boxShadow: 24,
-    p: 1,
-    borderRadius: "2px",
-    mb: 2,
-    mt: 2
-  };
-  
-  const btnStyles = {
-    width: "10%",
-    height: "100%",
-    fontSize: "1.1rem",
-    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px;",
-    bgcolor: "primary.dark",
-    color: "secondary.dark",
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+export default function CommentEditForm({ content, id }: Props) {
+  const { loading, message, error } = useContext(AuthContext);
+
+  const {
+    handleSubmit,
+    control,
+    getValues,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const edit_comment = useEditComment();
+
+  const submitEdit = async () => {
+    const data = {
+      id: id,
+      content: getValues("content"),
+    };
+    edit_comment(data);
+    reset();
   };
 
-export default function CommentEditForm({content, id}: Props){
-  
-      const { handleSubmit, control, getValues, reset, formState: { errors }} = useForm()
-      
-      const mutation = useMutation(async (input: unknown) => await submit_edit(input))
-      const submit_edit = async (input: unknown) => {
-        try {
-          return postData(EDIT_COMMENT, input)
-        } catch (error) {
-          throw new Error(`Error: ${error}`)
-        }
-      }
-
-      const submitEdit = async () => {
-        const data = {
-          id: id,
-          content: getValues("content")
-        }
-        mutation.mutate(data)
-        reset()
-      }
-
-    return(
-        <>
-    <Container sx={style} component="form">
-    <Controller
-            name="content"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                autoFocus
-                multiline
-                minRows={4}
-                {...field}
-                variant="standard"
-                sx={{ width: "100%" }}
-                defaultValue={content}
-                onChange={(e) => field.onChange(e.target.value)}
-              />
-            )}
+  return (
+    <Container sx={edit_comment_wrapper} component="form">
+      <Controller
+        name="content"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            autoFocus
+            multiline
+            minRows={4}
+            {...field}
+            variant="standard"
+            sx={{ width: "100%" }}
+            defaultValue={content}
+            onChange={(e) => field.onChange(e.target.value)}
           />
-          {errors.content && (
-            <ErrorAlert message={errors.content.message as string} />
-          )}
-         {mutation.isLoading ? (
-          <Box sx={btnStyles}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Button sx={btnStyles} type="submit" onClick={handleSubmit(submitEdit)}>
-            <SendSharpIcon />
-          </Button>
         )}
-      </Container>
-        </>
-    )
+      />
+      {errors.content && (
+        <ErrorAlert message={errors.content.message as string} />
+      )}
+      {loading ? (
+        <Box sx={edit_comment_button}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Button
+          sx={edit_comment_button}
+          type="submit"
+          onClick={handleSubmit(submitEdit)}
+        >
+          <SendSharpIcon />
+        </Button>
+      )}
+
+      {message && <SuccessAlert message={message} />}
+      {error && <ErrorAlert message={error} />}
+    </Container>
+  );
 }

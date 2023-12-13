@@ -1,15 +1,17 @@
 import { AdvancedImage } from "@cloudinary/react";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import { Container, Button } from "@mui/material";
-import { cloudinaryFnc } from "../../../functions/cloudinaryFnc";
+import { Container, Button, Box, CircularProgress } from "@mui/material";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
-import { useMutation } from "react-query";
-import postData from "../../../functions/postData";
-import { DELETE_PHOTO } from "../../../api/urls";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContextProvider";
+import useDeletePhoto from "../../hooks/useDeletePhoto";
+import ErrorAlert from "../../components/global/ErrorAlert";
+import SuccessAlert from "../../components/global/SuccessAlert";
+import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 
 interface Props {
   photo: string;
-  _id: string
+  _id: string;
 }
 
 export default function EditPhotoCard({ photo, _id }: Props) {
@@ -17,23 +19,19 @@ export default function EditPhotoCard({ photo, _id }: Props) {
 
   // Delete a photo
 
-  const delete_mutation = useMutation((input: unknown) => delete_photo(input))
-
-  const delete_photo = async (input: unknown) => {
-    try {
-        return await postData(DELETE_PHOTO, input)
-    } catch (error) {
-        throw new Error(`Error: ${error}`)
-    }
-  }
-
-  const deletePhoto = () => {
+  const { loading, error, message } = useContext(AuthContext);
+  const delete_photo = useDeletePhoto();
+  const onSubmit = () => {
     const data = {
-        id: _id,
-        photo: photo
+      id: _id,
+      photo: photo,
+    };
+    try {
+      delete_photo(data);
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
     }
-    delete_mutation.mutate(data)
-  }
+  };
   return (
     <Container
       sx={{
@@ -47,12 +45,26 @@ export default function EditPhotoCard({ photo, _id }: Props) {
       <AdvancedImage
         cldImg={cld.image(photo).resize(fill().width(200).height(300))}
       />
-      <Button
-        sx={{ width: 3, mt: 37, color: "red", ml: -5, backgroundColor: '#EF424C' }}
-        color="warning"
-      >
-        <DeleteSharpIcon onClick={deletePhoto} />
-      </Button>
+      {loading ? (
+        <Box>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Button
+          sx={{
+            width: 3,
+            mt: 37,
+            color: "red",
+            ml: -5,
+            backgroundColor: "#EF424C",
+          }}
+          color="warning"
+        >
+          <DeleteSharpIcon onClick={onSubmit} />
+        </Button>
+      )}
+      {message && <SuccessAlert message={message} />}
+      {error && <ErrorAlert message={error} />}
     </Container>
   );
 }

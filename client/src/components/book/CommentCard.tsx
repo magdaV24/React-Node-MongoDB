@@ -9,24 +9,38 @@ import {
   CardActions,
   Button,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import {
-  CHECK_LIKED_COMMENT,
-  COUNT_COMMENT_LIKES,
-  DELETE_COMMENT,
+  // CHECK_LIKED_COMMENT,
+  // COUNT_COMMENT_LIKES,
+  // DELETE_COMMENT,
   FETCH_COMMENTS,
-  LIKE_COMMENT,
+  // LIKE_COMMENT,
 } from "../../api/urls";
-import Like from "./Like";
-import { useMutation, useQuery } from "react-query";
-import postData from "../../functions/postData";
+// import Like from "./Like";
+import { useQuery } from "react-query";
 import fetchData from "../../functions/fetchData";
 import { Comment } from "../../types/Comment";
 import CommentForm from "../../forms/CommentForm";
+import CommentEditForm from "../../forms/edit_objects/CommentEditForm";
+import useDeleteComment from "../../hooks/useDeleteComment";
+import ErrorAlert from "../global/ErrorAlert";
+import SuccessAlert from "../global/SuccessAlert";
+import {
+  card_actions,
+  card_actions_wrapper,
+  children_wrapper,
+  comment_card_header,
+  comment_card_header_wrapper,
+  comment_card_wrapper,
+  content_wrapper,
+  like_button_wrapper,
+} from "../../styles/commentCard";
 
 interface Props {
   book_id: string;
@@ -48,7 +62,7 @@ export default function CommentCard({
   avatar,
 }: Props) {
   const format_date = date.substring(0, 10);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, loading, error, message } = useContext(AuthContext);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -72,17 +86,15 @@ export default function CommentCard({
   };
   // Deleting a comment
 
-  const delete_mutation = useMutation(async (id: string) => {
-    try {
-      return await postData(DELETE_COMMENT, id);
-    } catch (error) {
-      throw new Error(`Error: ${error}`);
-    }
-  });
+  const delete_comment = useDeleteComment();
 
   const handleDelete = (e: unknown) => {
     (e as Event).preventDefault();
-    delete_mutation.mutate(id);
+    try {
+      delete_comment(id);
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
   };
 
   // Fetching the children
@@ -90,7 +102,12 @@ export default function CommentCard({
   const [queryFn, setQueryFn] = useState<Promise<unknown> | undefined>();
   const fetchChildren = () => fetchData(`${FETCH_COMMENTS}/${id}`);
 
-  const { data, isLoading, error, refetch } = useQuery(queryKey, () => queryFn);
+  const {
+    data,
+    isLoading,
+    error: childrenError,
+    refetch,
+  } = useQuery(queryKey, () => queryFn);
 
   const handleShowChildren = () => {
     if (showChildren === false) {
@@ -104,43 +121,13 @@ export default function CommentCard({
       setShowBtn("Show Replies");
     }
   };
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-end",
-        gap: 5,
-        justifyContent: "flex-end",
-        width: "inherit",
-        m: 0,
-      }}
-    >
+    <Box sx={comment_card_wrapper}>
       <Card sx={{ width: "100%", padding: 0.5 }}>
         <CardContent sx={{ width: "100%" }}>
-          <Container
-            sx={{
-              display: "flex",
-              width: "100%",
-              alignContent: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Container
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                gap: 1,
-                height: "10vh",
-                width: "90%",
-                padding: 0,
-                ml: -5,
-              }}
-            >
+          <Container sx={comment_card_header_wrapper}>
+            <Container sx={comment_card_header}>
               <Avatar alt="Avatar">
                 <AdvancedImage
                   cldImg={cld.image(avatar).resize(fill().width(50).height(50))}
@@ -164,59 +151,44 @@ export default function CommentCard({
           </Container>
           <Divider />
 
-          <Typography
-            variant="body2"
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              width: "75vw",
-              minHeight: "5vh",
-              height: "fit-content",
-              padding: 3,
-            }}
-          >
+          <Typography variant="body2" sx={content_wrapper}>
             {content}
           </Typography>
           <Divider />
         </CardContent>
-        <CardActions
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Container
-            sx={{
-              width: "90%",
-              display: "flex",
-              justifyContent: "flex-start",
-              gap: 1,
-            }}
-          >
+        <CardActions sx={card_actions_wrapper}>
+          <Container sx={card_actions}>
             <Button size="large" onClick={handleBtn} variant="outlined">
               {btn}
             </Button>
-            {(data as Comment[]) && (<Button
-              size="large"
-              onClick={handleShowChildren}
-              variant="outlined"
-            >
-              {showBtn}
-            </Button>)}
+            {(data as Comment[]) && (
+              <Button
+                size="large"
+                onClick={handleShowChildren}
+                variant="outlined"
+              >
+                {showBtn}
+              </Button>
+            )}
             {currentUser && (
               <>
                 {currentUser.id === user_id && (
-                  <Button
-                    variant="outlined"
-                    onClick={handleDelete}
-                    sx={{ ml: 1 }}
-                    color="warning"
-                  >
-                    DELETE
-                  </Button>
+                  <>
+                    {loading ? (
+                      <Box>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        onClick={handleDelete}
+                        sx={{ ml: 1 }}
+                        color="warning"
+                      >
+                        DELETE
+                      </Button>
+                    )}
+                  </>
                 )}
                 {currentUser.id === user_id && (
                   <Button
@@ -231,16 +203,8 @@ export default function CommentCard({
               </>
             )}
           </Container>
-          <Container
-            sx={{
-              width: "10%",
-              display: "flex",
-              gap: 1.5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {currentUser && (
+          <Container sx={like_button_wrapper}>
+            {/* {currentUser && (
               <Like
                 user_id={currentUser.id}
                 object_id={id}
@@ -249,37 +213,39 @@ export default function CommentCard({
                 check_query={`${CHECK_LIKED_COMMENT}/${id}/${user_id}`}
                 count_query={`${COUNT_COMMENT_LIKES}/${id}`}
               />
-            )}
+            )} */}
           </Container>
         </CardActions>
         {isCommenting && <CommentForm parent_id={id} book_id={book_id} />}
       </Card>
-      {/* {isEditing && <CommentEditForm content={content} id={id} />} */}
-      <Box
-        sx={{
-          width: "98%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-        }}
-      >
+      {isEditing && <CommentEditForm content={content} id={id} />}
+      <Box sx={children_wrapper}>
         {showChildren && (
           <>
-            {data &&
-              (data as Comment[]).map((comment: Comment) => (
-                <CommentCard
-                  user_id={comment.user_id}
-                  content={comment.content}
-                  date={comment.date}
-                  id={comment.id}
-                  username={comment.username}
-                  avatar={comment.avatar}
-                  book_id={comment.book_id}
-                />
-              ))}
+            {isLoading && (
+              <>
+                {data &&
+                  (data as Comment[]).map((comment: Comment) => (
+                    <CommentCard
+                      user_id={comment.user_id}
+                      content={comment.content}
+                      date={comment.date}
+                      id={comment.id}
+                      username={comment.username}
+                      avatar={comment.avatar}
+                      book_id={comment.book_id}
+                    />
+                  ))}
+              </>
+            )}
           </>
         )}
       </Box>
+      {message && <SuccessAlert message={message} />}
+      {error && <ErrorAlert message={error} />}
+      {(childrenError as string) && (
+        <ErrorAlert message={childrenError as string} />
+      )}
     </Box>
   );
 }

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import SuccessAlert from "../../../components/SuccessAlert";
+import { useContext } from "react";
 import {
   Modal,
   Container,
@@ -12,11 +11,12 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
-import ErrorAlert from "../../../components/ErrorAlert";
-import { EDIT_REVIEW } from "../../../api/urls";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "react-query";
-import postData from "../../../functions/postData";
+import { AuthContext } from "../../context/AuthContextProvider";
+import ErrorAlert from "../../components/global/ErrorAlert";
+import SuccessAlert from "../../components/global/SuccessAlert";
+import useEditReview from "../../hooks/useEditReview";
+import { edit_review_button, edit_review_wrapper } from "../../styles/editReview";
 
 interface Props {
   id: string;
@@ -27,31 +27,6 @@ interface Props {
   open: boolean;
   close: () => void;
 }
-
-const style = {
-  width: 600,
-  display: "flex",
-  flexDirection: "column",
-  gap: "2rem",
-  bgcolor: "secondary.light",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "2px",
-  mt: 10,
-};
-
-const btnStyles = {
-  width: "100%",
-  height: "3rem",
-  fontSize: "1.1rem",
-  boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px;",
-  bgcolor: "primary.dark",
-  color: "secondary.dark",
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-};
-
 export default function ReviewEditForm({
   id,
   content,
@@ -61,8 +36,6 @@ export default function ReviewEditForm({
   open,
   close,
 }: Props) {
-  const [message, setMessage] = useState("");
-  // const [error, setError] = useState("");
 
   const {
     control,
@@ -72,35 +45,20 @@ export default function ReviewEditForm({
     reset,
   } = useForm();
 
-  const edit_review_mutation = useMutation(
-    (input: unknown) => submit_edit(input),
-    {
-      onSuccess: (res) => {
-        if(res === 'Success!'){
-          setMessage("Success")
-        }
-      },
-    }
-  );
-
-  const submit_edit = async (input: unknown) => {
-    try {
-      return await postData(EDIT_REVIEW, input);
-    } catch (error) {
-      throw new Error(`Error: ${error}`);
-    }
-  };
-
+const { message, error, loading} = useContext(AuthContext);
+const edit_review = useEditReview();
   const onSubmit = async () => {
     const data = {
       id: id,
       book_id: book_id,
       old_stars: stars,
-      content: getValues("newContent"),
-      stars: getValues("newStars"),
-      finished: getValues("newFinished"),
+      ...getValues()
     };
-    edit_review_mutation.mutate(data)
+    try {
+      await edit_review(data);
+    } catch (error) {
+      throw new Error(`Error: ${error}`)
+    }
     reset()
   };
 
@@ -112,7 +70,7 @@ export default function ReviewEditForm({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Container sx={style}>
+        <Container sx={edit_review_wrapper}>
           <Controller
             name="newStars"
             control={control}
@@ -170,13 +128,13 @@ export default function ReviewEditForm({
           {errors.newContent && (
             <ErrorAlert message={errors.newContent.message as string} />
           )}
-          {edit_review_mutation.isLoading ? (
-            <Box sx={btnStyles}>
+          {loading ? (
+            <Box sx={edit_review_button}>
               <CircularProgress />
             </Box>
           ) : (
             <Button
-              sx={btnStyles}
+              sx={edit_review_button}
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
@@ -185,7 +143,7 @@ export default function ReviewEditForm({
           )}
 
           {message && <SuccessAlert message={message} />}
-          {/* {error && <ErrorAlert message={error} />} */}
+          {error && <ErrorAlert message={error} />}
         </Container>
       </Modal>
     </>

@@ -14,20 +14,13 @@ import {
 } from "@mui/material";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { useState, useContext } from "react";
-import { useMutation, useQuery } from "react-query";
-import {
-  DELETE_REVIEW,
-  FETCH_COMMENTS,
-  COUNT_REVIEW_LIKES,
-  LIKE_REVIEW,
-  CHECK_LIKED_REVIEW,
-} from "../../api/urls";
+import { useQuery } from "react-query";
+import { FETCH_COMMENTS } from "../../api/urls";
 import { AuthContext } from "../../context/AuthContextProvider";
 import CommentForm from "../../forms/CommentForm";
 import Login from "../../forms/Login";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import fetchData from "../../functions/fetchData";
-import postData from "../../functions/postData";
 import CommentCard from "./CommentCard";
 import Like from "./Like";
 import { Comment } from "../../types/Comment";
@@ -42,6 +35,10 @@ import {
   like_box,
   review_card_wrapper,
 } from "../../styles/reviewCard";
+import ReviewEditForm from "../../forms/edit_objects/ReviewEditForm";
+import useDeleteReview from "../../hooks/useDeleteReview";
+import ErrorAlert from "../global/ErrorAlert";
+import SuccessAlert from "../global/SuccessAlert";
 
 interface Props {
   user_id: string;
@@ -67,7 +64,7 @@ export default function ReviewCard({
   book_id,
   spoilers,
 }: Props) {
-  console.log(review_id);
+  const { error, message, loading } = useContext(AuthContext);
   const format_date = date.substring(0, 10);
 
   const [showSpoilers, setShowSpoilers] = useState(false);
@@ -87,11 +84,10 @@ export default function ReviewCard({
     setOpenEdit(false);
   };
 
-  if (finished === "Finished") {
-    has_finished = "(Finished)";
-  } else {
-    has_finished = "(Did not finish)";
-  }
+  finished === "Finished"
+    ? has_finished === "Finished"
+    : has_finished === "(Did not finish)";
+
   const cld = cloudinaryFnc();
   const [isCommenting, setIsCommenting] = useState(false);
 
@@ -109,22 +105,19 @@ export default function ReviewCard({
     setCancel((prev) => !prev);
   };
 
-  const delete_mutation = useMutation(async (input: unknown) => {
-    try {
-      return await postData(DELETE_REVIEW, input);
-    } catch (error) {
-      throw new Error(`Error: ${error}`);
-    }
-  });
-
-  const handleDelete = (e: unknown) => {
+  const delete_review = useDeleteReview();
+  const handleDelete = async (e: unknown) => {
     (e as Event).preventDefault();
     const input = {
-      id: book.id,
+      id: book._id,
       review_id: review_id,
       stars: stars,
     };
-    delete_mutation.mutate(input);
+    try {
+      await delete_review(input);
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
   };
 
   const [showComments, setShowComments] = useState(false);
@@ -133,7 +126,12 @@ export default function ReviewCard({
   const [queryFn, setQueryFn] = useState<Promise<unknown> | undefined>();
   const fetchComments = () => fetchData(`${FETCH_COMMENTS}/${review_id}`);
 
-  const { data, isLoading, error, refetch } = useQuery(queryKey, () => queryFn);
+  const {
+    data,
+    isLoading,
+    error: sortError,
+    refetch,
+  } = useQuery(queryKey, () => queryFn);
 
   const handleShowComments = () => {
     if (showComments === false) {
@@ -147,7 +145,6 @@ export default function ReviewCard({
       setShowBtn("Show Replies");
     }
   };
-  if (error) return <Typography>An error has occurred.</Typography>;
   return (
     <Box sx={review_card_wrapper}>
       <Card sx={{ width: "100%", padding: 2 }}>
@@ -218,14 +215,20 @@ export default function ReviewCard({
               <>
                 {currentUser.id === user_id && (
                   <>
-                    <Button
-                      variant="outlined"
-                      onClick={handleDelete}
-                      sx={{ ml: 1 }}
-                      color="warning"
-                    >
-                      DELETE
-                    </Button>
+                    {loading ? (
+                      <Box>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        onClick={handleDelete}
+                        sx={{ ml: 1 }}
+                        color="warning"
+                      >
+                        DELETE
+                      </Button>
+                    )}
                     <Button
                       variant="outlined"
                       onClick={() => setOpenEdit(true)}
@@ -255,7 +258,7 @@ export default function ReviewCard({
         {isCommenting && (
           <CommentForm parent_id={review_id} book_id={book_id} />
         )}
-        {/* <ReviewEditForm
+        <ReviewEditForm
           content={content}
           id={review_id}
           stars={stars}
@@ -263,7 +266,7 @@ export default function ReviewCard({
           book_id={book_id}
           open={openEdit}
           close={closeEdit}
-        /> */}
+        />
       </Card>
       <Box sx={comments_wrapper}>
         {showComments && (
@@ -285,6 +288,10 @@ export default function ReviewCard({
         {isLoading && <CircularProgress />}
       </Box>
       <Login open={openLogin} handleClose={closeLogin} />
+
+      {message && <SuccessAlert message={message} />}
+      {error && <ErrorAlert message={error} />}
+      {(sortError as string) && <ErrorAlert message={sortError as string} />}
     </Box>
   );
 }

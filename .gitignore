@@ -1,3 +1,4 @@
 server/node_modules
 client/src/cloudinary/cloudinary.tsx
 server/.env
+client/src/forms/edit_book/text.txt

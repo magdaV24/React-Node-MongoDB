@@ -97,7 +97,7 @@ export const delete_user_comment = async (req: any, res: any) => {
   try {
     await comments.deleteMany({ parent_id: id });
     await comments.deleteOne({ _id: id });
-    return res.json("Success");
+    return res.json("Success!");
   } catch (error) {
     return res.json(`Error: ${error}`);
   }

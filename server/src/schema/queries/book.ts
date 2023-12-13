@@ -444,7 +444,7 @@ export const add_photo = async (req: any, res: any) => {
     );
 
     if (!update) {
-      res.json("Something went wrong!");
+      res.json("Something went wrong while trying to upload this photo!");
     }
     return res.json("Success!");
   } catch (error) {
@@ -468,13 +468,13 @@ export const delete_photo = async (req: any, res: any) => {
     );
 
     if (!update) {
-      res.json("Something went wrong!");
+    return res.json("Could not delete this photo!");
     }
 
     await cloudinary.v2.uploader.destroy(photo);
     return res.json("Success!");
   } catch (error) {
-    return res.json(`error: ${error}`);
+    return res.json(`Error: ${error}`);
   }
 };
 
