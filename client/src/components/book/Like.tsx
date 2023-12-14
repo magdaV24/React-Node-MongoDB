@@ -1,50 +1,22 @@
-import {
-  Container,
-  Button,
-  Typography,
-  CircularProgress,
-  Box,
-} from "@mui/material";
 import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
-import FavoriteSharpIcon from "@mui/icons-material/FavoriteSharp";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContextProvider";
-import useLike from "../../hooks/useLike";
-import ErrorAlert from "../global/ErrorAlert";
-import { useIsLiked } from "../../hooks/queries/useIsLiked";
 import { useFetchLikesCount } from "../../hooks/queries/useFetchLikesCount";
+import Login from "../../forms/Login";
+import { useState } from "react";
+import { Container, Button, Typography } from "@mui/material";
+
 interface Props {
   object_id: string;
-  book_id: string;
 }
 
-export default function Like({ object_id, book_id }: Props) {
-  const { loading, currentUser, error } = useContext(AuthContext);
-
-  // Give/Take the user's like;
-  const give_like = useLike();
-  const onSubmit = async () => {
-    const input = {
-      user_id: currentUser.id,
-      object_id: object_id,
-      book_id: book_id,
-    };
-    try {
-      await give_like(input);
-    } catch (error) {
-      throw new Error(`Error: ${error}`);
-    }
+export default function Like({ object_id }: Props) {
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
   };
-
-  // Count the likes of a comment/review
-  const id = currentUser.id
-
-  const liked = useIsLiked(id, object_id);
-
-  // Check wether of not a user liked an object
-
-  const count = useFetchLikesCount(object_id);
-
+  const handleClick = () => {
+    setOpen(true);
+  };
+  const { count } = useFetchLikesCount(object_id);
   return (
     <>
       <Container
@@ -56,30 +28,21 @@ export default function Like({ object_id, book_id }: Props) {
           alignItems: "center",
         }}
       >
-        {loading ? (
-          <Box>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {(currentUser && liked) ? (
-              <Button size="large" className="likeButton" onClick={onSubmit}>
-                <FavoriteSharpIcon color="success" />
-              </Button>
-            ) : (
-              <Button size="large" className="likeButton" onClick={onSubmit} sx={{gap: 1}}>
-                <FavoriteBorderSharpIcon className="likeButton" />{" "}
-                {count ? (
-                  <Typography sx={{color: 'primary'}}>{count}</Typography>
-                ) : (
-                  <Typography sx={{color: 'primary'}}>0</Typography>
-                )}
-              </Button>
-            )}
-          </>
-        )}
+        <Button
+          size="large"
+          className="likeButton"
+          onClick={handleClick}
+          sx={{ gap: 1 }}
+        >
+          <FavoriteBorderSharpIcon className="likeButton" />{" "}
+          {count ? (
+            <Typography sx={{ color: "primary" }}>{count}</Typography>
+          ) : (
+            <Typography sx={{ color: "primary" }}>0</Typography>
+          )}
+        </Button>
       </Container>
-      {error && <ErrorAlert />}
+      <Login open={open} handleClose={handleClose} />
     </>
   );
 }

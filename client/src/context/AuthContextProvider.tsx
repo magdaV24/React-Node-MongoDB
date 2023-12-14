@@ -3,7 +3,7 @@ import { AuthContextType } from "../types/AuthContextType";
 import { AuthContextProviderType } from "../types/AuthContextProviderType";
 import { createTheme } from "@mui/material";
 import { CustomDarkTheme } from "../themes/Dark";
-import { LightTheme } from "../themes/Light";
+import { CustomLightTheme } from "../themes/Light";
 import useLogin from "../hooks/useLogin";
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -41,7 +41,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
     setOpen(false);
   }
 
-  const light = createTheme(LightTheme);
+  const light = createTheme(CustomLightTheme);
   const dark = createTheme(CustomDarkTheme);
 
   const toggle_theme = () => {

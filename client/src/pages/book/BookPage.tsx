@@ -88,7 +88,6 @@ export default function BookPage() {
     const array = genres.join(", ");
     return setGenres(array);
   };
-
   useEffect(() => {
     if (book) {
       set_genres(book.genres);

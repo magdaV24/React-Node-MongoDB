@@ -37,6 +37,7 @@ import ErrorAlert from "../global/ErrorAlert";
 import SuccessAlert from "../global/SuccessAlert";
 import { useFetchComments } from "../../hooks/queries/useFetchComments";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import UserLike from "./UserLike";
 import Like from "./Like";
 
 interface Props {
@@ -240,7 +241,8 @@ export default function ReviewCard({
             )}
           </Container>
           <Container sx={like_box}>
-            <Like object_id={review_id} book_id={book_id} />
+            {currentUser && <UserLike object_id={review_id} book_id={book_id} />}
+            {!currentUser && <Like object_id={review_id}/>}
           </Container>
         </CardActions>
         {isCommenting && (
@@ -266,7 +268,7 @@ export default function ReviewCard({
                   user_id={comment.user_id}
                   content={comment.content}
                   date={comment.date}
-                  id={comment.id}
+                  id={comment._id}
                   username={comment.username}
                   avatar={comment.avatar}
                 />

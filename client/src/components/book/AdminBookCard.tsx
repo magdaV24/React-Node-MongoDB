@@ -143,8 +143,8 @@ export default function AdminBookCard({
         language={language}
         pages={pages}
       />
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </Card>
   );
 }

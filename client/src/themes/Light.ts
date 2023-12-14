@@ -1,4 +1,4 @@
-import { ThemeOptions } from '@mui/material/styles';
+import { ThemeOptions, createTheme } from '@mui/material/styles';
 
 export const LightTheme: ThemeOptions = {
   palette: {
@@ -28,3 +28,21 @@ export const LightTheme: ThemeOptions = {
     },
   },
 };
+
+export const CustomLightTheme = createTheme({
+  ...LightTheme,
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          '&.likeButton': {
+            color: "#AD1829",
+            '&:hover': {
+              color: '#CD0808',
+            },
+          }
+        }
+      }
+    }
+  }
+})

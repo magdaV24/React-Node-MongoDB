@@ -38,6 +38,7 @@ import {
 } from "../../styles/commentCard";
 import { useFetchComments } from "../../hooks/queries/useFetchComments";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import UserLike from "./UserLike";
 
 interface Props {
   book_id: string;
@@ -193,16 +194,7 @@ export default function CommentCard({
             )}
           </Container>
           <Container sx={like_button_wrapper}>
-            {/* {currentUser && (
-              <Like
-                user_id={currentUser.id}
-                object_id={id}
-                book_id=""
-                like_query={LIKE_COMMENT}
-                check_query={`${CHECK_LIKED_COMMENT}/${id}/${user_id}`}
-                count_query={`${COUNT_COMMENT_LIKES}/${id}`}
-              />
-            )} */}
+            {currentUser && <UserLike object_id={id} book_id={book_id}/>}
           </Container>
         </CardActions>
         {isCommenting && <CommentForm parent_id={id} book_id={book_id} />}
@@ -219,7 +211,7 @@ export default function CommentCard({
                       user_id={comment.user_id}
                       content={comment.content}
                       date={comment.date}
-                      id={comment.id}
+                      id={comment._id}
                       username={comment.username}
                       avatar={comment.avatar}
                       book_id={comment.book_id}

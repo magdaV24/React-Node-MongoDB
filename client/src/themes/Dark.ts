@@ -35,7 +35,7 @@ export const CustomDarkTheme = createTheme({
       styleOverrides: {
         root: {
           '&.likeButton': {
-            color: "#A00505",
+            color: "#AD1829",
             '&:hover': {
               color: '#CD0808',
             },

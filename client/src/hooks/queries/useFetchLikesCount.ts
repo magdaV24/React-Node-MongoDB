@@ -29,11 +29,11 @@ export const useFetchLikesCount = (object_id: string) => {
     if (isLoading) {
       authContext.setLoading(true);
     }
-    if(error){
-        authContext.setError(error as string)
-        authContext.setOpen(true)
+    if (error) {
+      authContext.setError(error as string);
+      authContext.setOpen(true);
     }
   }, [isLoading, authContext, error]);
 
-  return count;
+  return { count };
 };
