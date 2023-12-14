@@ -1,74 +1,49 @@
-import { Container, Button, Typography } from "@mui/material";
+import {
+  Container,
+  Button,
+  Typography,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
 import FavoriteSharpIcon from "@mui/icons-material/FavoriteSharp";
-import { useMutation, useQuery } from "react-query";
-import fetchData from "../../functions/fetchData";
-import postData from "../../functions/postData";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContextProvider";
+import useLike from "../../hooks/useLike";
+import ErrorAlert from "../global/ErrorAlert";
+import { useIsLiked } from "../../hooks/queries/useIsLiked";
+import { useFetchLikesCount } from "../../hooks/queries/useFetchLikesCount";
 interface Props {
-  user_id: string;
   object_id: string;
   book_id: string;
-  like_query: string;
-  check_query: string;
-  count_query: string;
 }
 
-export default function Like({
-  user_id,
-  object_id,
-  book_id,
-  like_query,
-  check_query,
-  count_query,
-}: Props) {
+export default function Like({ object_id, book_id }: Props) {
+  const { loading, currentUser, error } = useContext(AuthContext);
+
   // Give/Take the user's like;
-  const like_mutation = useMutation(async (input: unknown) => {
+  const give_like = useLike();
+  const onSubmit = async () => {
+    const input = {
+      user_id: currentUser.id,
+      object_id: object_id,
+      book_id: book_id,
+    };
     try {
-      return await postData(like_query, input);
+      await give_like(input);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
-  });
-
-  // Count the likes of a comment/review
-
-  const {
-    data: likes,
-    isLoading,
-    error,
-  } = useQuery(`likeQuery/${object_id}`, () => fetchData(count_query));
-
-  const handleLike = (e: unknown) => {
-    (e as Event).preventDefault();
-    let input = {};
-    if (book_id === "") {
-      input = {
-        user_id: user_id,
-        object_id: object_id,
-      };
-    } else {
-      input = {
-        user_id: user_id,
-        object_id: object_id,
-        book_id: book_id,
-      };
-    }
-    like_mutation.mutate(input);
   };
 
-  // Check wether of not a user likes an object
+  // Count the likes of a comment/review
+  const id = currentUser.id
 
-  const {
-    data: liked,
-    isLoading: likedLoading,
-    error: likedError,
-  } = useQuery(`likedQuery/${object_id}`, () => fetchData(check_query));
+  const liked = useIsLiked(id, object_id);
 
-  if (likedLoading) return <p>Loading...</p>;
-  if (likedError) return <p>Error</p>;
+  // Check wether of not a user liked an object
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
+  const count = useFetchLikesCount(object_id);
 
   return (
     <>
@@ -81,21 +56,30 @@ export default function Like({
           alignItems: "center",
         }}
       >
-        {liked ? (
-          <Button size="large" className="likeButton" onClick={handleLike}>
-            <FavoriteSharpIcon color="success" />
-          </Button>
+        {loading ? (
+          <Box>
+            <CircularProgress />
+          </Box>
         ) : (
-          <Button size="large" className="likeButton" onClick={handleLike}>
-            <FavoriteBorderSharpIcon className="likeButton" />{" "}
-            {likes ? (
-              <Typography>{likes}</Typography>
+          <>
+            {(currentUser && liked) ? (
+              <Button size="large" className="likeButton" onClick={onSubmit}>
+                <FavoriteSharpIcon color="success" />
+              </Button>
             ) : (
-              <Typography>0</Typography>
+              <Button size="large" className="likeButton" onClick={onSubmit} sx={{gap: 1}}>
+                <FavoriteBorderSharpIcon className="likeButton" />{" "}
+                {count ? (
+                  <Typography sx={{color: 'primary'}}>{count}</Typography>
+                ) : (
+                  <Typography sx={{color: 'primary'}}>0</Typography>
+                )}
+              </Button>
             )}
-          </Button>
+          </>
         )}
       </Container>
+      {error && <ErrorAlert />}
     </>
   );
 }

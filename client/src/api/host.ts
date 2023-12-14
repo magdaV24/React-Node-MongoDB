@@ -1,2 +1,2 @@
-const port = 8080;
+const port = 5050;
 export const host = `http://localhost:${port}`

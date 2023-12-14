@@ -111,7 +111,6 @@ export const add_review = async (req: any, res: any) => {
     username: username,
     avatar: avatar,
     spoilers: spoilers,
-    likes: [],
   };
   try {
     const check = await books.findOne({ _id: id, "reviews.user_id": user_id });
@@ -150,137 +149,7 @@ export const fetch_reviews = async (req: any, res: any) => {
     return res.json(`Error: ${error}`);
   }
 };
-// Like a review
 
-export const like_review = async (req: any, res: any) => {
-  const { book_id, object_id, user_id } = req.body;
-
-  try {
-   const result = await books.aggregate([
-    { $match: { _id: book_id } },
-    {
-      $project: {
-        review: {
-          $filter: {
-            input: '$reviews',
-            as: 'review',
-            cond: { $eq: ['$$review._id', object_id] }
-          },
-        },
-        likesArray: '$reviews.likes',
-      },
-    },
-    {
-      $addFields: {
-        userGaveLike: {
-          $in: [user_id, { $arrayElemAt: ['$likesArray', 0] }],
-        },
-      }
-    },
-    {
-      $addFields: {
-        check: '$userGaveLike',
-      },
-    },
-   ])
-
-   if(result[0].check){
-    await books.updateOne(
-      { _id: book_id, "reviews._id": object_id },
-      {
-       $pull: { 'reviews.$.likes': user_id }
-      }
-    );
-    return res.json("Successfully retracted the like.")
-   }
-   if(!result[0].check){
-    await books.updateOne(
-      { _id: book_id, "reviews._id": object_id },
-      {
-       $push: { 'reviews.$.likes': user_id }
-      }
-    );
-    return res.json("Successfully gave a like.")
-   }
-  } catch (error) {
-    return res.json(`Error: ${error}`);
-  }
-
-};
-
-// Check if the user liked the review
-
-export const check_liked_review = async (req: any, res: any) => {
-  const book_id = req.params.book_id;
-  const object_id = req.params.object_id;
-  const user_id = req.params.user_id;
-
-  const result = await books.aggregate([
-    { $match: { _id: book_id } },
-    {
-      $project: {
-        review: {
-          $filter: {
-            input: '$reviews',
-            as: 'review',
-            cond: { $eq: ['$$review._id', object_id] }
-          },
-        },
-        likesArray: '$reviews.likes',
-      },
-    },
-    {
-      $addFields: {
-        userGaveLike: {
-          $in: [user_id, { $arrayElemAt: ['$likesArray', 0] }],
-        },
-      }
-    },
-    {
-      $addFields: {
-        check: '$userGaveLike',
-      },
-    },
-   ])
-
-   return res.json(result[0].check)
-
-};
-
-// Count the likes
-
-export const count_review_likes = async (req: any, res: any) => {
-  const book_id = req.params.book_id;
-  const object_id = req.params.object_id;
-
-  try {
-    const result = await books.aggregate([
-      { $match: { _id: book_id } },
-      {
-        $project: {
-          review: {
-            $filter: {
-              input: '$reviews',
-              as: 'review',
-              cond: { $eq: ['$$review._id', object_id] }
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          count: { $size: { $arrayElemAt: ['$review.likes', 0] }, 
-        },}
-      },
-    ])
-    if (!result) {
-      return res.json("Cannot solve!");
-    }
-    return res.json(result[0].count || 0);
-  } catch (error) {
-    return res.json(`Error: ${error}`);
-  }
-};
 // Deleting a user's review
 
 export const delete_user_review = async (req: any, res: any) => {

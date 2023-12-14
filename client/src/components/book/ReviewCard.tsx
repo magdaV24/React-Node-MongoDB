@@ -19,7 +19,6 @@ import CommentForm from "../../forms/CommentForm";
 import Login from "../../forms/Login";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import CommentCard from "./CommentCard";
-import Like from "./Like";
 import { Comment } from "../../types/Comment";
 import {
   body_wrapper,
@@ -38,6 +37,7 @@ import ErrorAlert from "../global/ErrorAlert";
 import SuccessAlert from "../global/SuccessAlert";
 import { useFetchComments } from "../../hooks/queries/useFetchComments";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import Like from "./Like";
 
 interface Props {
   user_id: string;
@@ -240,16 +240,7 @@ export default function ReviewCard({
             )}
           </Container>
           <Container sx={like_box}>
-            {/* {currentUser &&
-              <Like
-                user_id={currentUser.id}
-                object_id={review_id}
-                book_id={book_id}
-                count_query={`${COUNT_REVIEW_LIKES}/${review_id}/${book_id}`}
-                like_query={LIKE_REVIEW}
-                check_query={`${CHECK_LIKED_REVIEW}/${review_id}/${user_id}/${book_id}`}
-              />
-            } */}
+            <Like object_id={review_id} book_id={book_id} />
           </Container>
         </CardActions>
         {isCommenting && (

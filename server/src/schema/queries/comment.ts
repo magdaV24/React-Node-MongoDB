@@ -24,57 +24,6 @@ export const add_comment = async (req: any, res: any) => {
   }
 };
 
-// Like a comment
-
-export const like_comment = async (req: any, res: any) => {
-  const { object_id, user_id } = req.body
-
-  try {
-    const comment = await comments.findOne({ _id: new mongoose.Types.ObjectId(object_id), 'likes.user_id': user_id})
-    if(!comment){
-      await comments.updateOne({_id: new mongoose.Types.ObjectId(object_id)}, { $push: { likes: user_id } })
-    }
-    await comments.updateOne({_id: new mongoose.Types.ObjectId(object_id)}, { $pull: { likes: user_id } })
-
-  } catch (error) {
-    return res.json(`Error: ${error}`)
-  }
-}
-
-// Check if the user liked the comment
-
-export const check_liked_comment = async (req: any, res: any) => {
-  const object_id = req.params.object_id
-  const user_id = req.params.user_id
-
-  try {
-    const liked = await comments.findOne({ _id: new mongoose.Types.ObjectId(object_id), 'likes.user_id': user_id})
-    if(!liked){
-      return false
-    }
-    return true
-
-  } catch (error) {
-    return res.json(`Error: ${error}`)
-  }
-}
-
-// Count the likes
-
-export const count_comment_likes = async (req: any, res: any) => {
-  const object_id = req.params.object_id;
-
-  try {
-    const result = await comments.findOne({ _id: new mongoose.Types.ObjectId(object_id) });
-    if (!result) {
-      return res.json('Cannot find this comment!');
-    }
-    return res.json(result.likes.length);
-  } catch (error) {
-    return res.json(`Error: ${error}`);
-  }
-};
-
 //Fetch comments by parent_id;
 
 export const fetch_comments = async (req: any, res: any) => {

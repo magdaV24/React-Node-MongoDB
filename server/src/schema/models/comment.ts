@@ -1,12 +1,6 @@
 import mongoose from "mongoose";
 
 const comment_schema = new mongoose.Schema();
-const like_schema = new mongoose.Schema({
-  user_id: {
-      type: String,
-      required: true
-  },
-})
 
 comment_schema.add({
   parent_id: {
@@ -37,7 +31,6 @@ comment_schema.add({
     type: String,
     required: true,
   },
-  likes: [like_schema]
 });
 
 const comments = mongoose.model("Comments", comment_schema);

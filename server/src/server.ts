@@ -24,21 +24,16 @@ import {
   delete_photo,
   edit_field,
   search,
-  check_liked_review,
-  count_review_likes,
-  like_review,
 } from "./schema/queries/book";
 import {
   add_comment,
-  check_liked_comment,
-  count_comment_likes,
   delete_user_comment,
   edit_comment,
   fetch_comments,
-  like_comment,
 } from "./schema/queries/comment";
 import { mongooseConfig } from "./schema/mongooseConfig";
 import helmet from "helmet";
+import { check_if_liked, count_likes, like_object } from "./schema/queries/likes";
 
 const main = async () => {
   dotenv.config();
@@ -76,12 +71,6 @@ const main = async () => {
   app.post("/change_status", change_status);
   app.get("/find_status/:id/:book_id", find_status);
   app.post("/delete_review", delete_user_review);
-  app.post("/like_comment", like_comment)
-  app.get("/check_liked_comment/:object_id/:user_id", check_liked_comment)
-  app.get("/count_comment_likes/:object_id", count_comment_likes)
-  app.post("/like_review", like_review)
-  app.get("/check_liked_review/:object_id/:user_id/:book_id", check_liked_review)
-  app.get("/count_review_likes/:object_id/:book_id", count_review_likes)
   app.post("/delete_comment", delete_user_comment);
   app.post("/edit_comment", edit_comment);
   app.post("/edit_review", edit_review);
@@ -91,7 +80,10 @@ const main = async () => {
   app.post('/add_photo', add_photo)
   app.post('/delete_photo', delete_photo)
   app.post('/edit_field', edit_field)
-  app.get('/search/:input', search)
+  app.get('/search/:input', search);
+  app.post('/likes/like', like_object);
+  app.get('/likes/check/:user_id/:object_id', check_if_liked);
+  app.get('/likes/count/:object_id', count_likes)
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
