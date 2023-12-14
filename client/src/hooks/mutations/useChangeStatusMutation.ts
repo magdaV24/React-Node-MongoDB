@@ -8,7 +8,10 @@ export const useChangeStatusMutation = () => {
   const mutation = useMutation(
     async (input: unknown) => await postData(CHANGE_STATUS, input),
     {
-      onError: (error) => authContext.setError(error as string),
+      onError: (error) => {
+        authContext.setError(error as string);
+        authContext.setOpen(true);
+      },
       onSettled: () => authContext.setLoading(false),
     }
   );

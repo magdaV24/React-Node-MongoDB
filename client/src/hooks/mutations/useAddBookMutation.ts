@@ -13,12 +13,17 @@ export const useAddBookMutation = () => {
           res === "This book had already been added to the database!" ||
           res === "Fail!"
         ) {
+          authContext.setOpen(true);
           authContext.setError(res);
         } else {
+          authContext.setOpen(true);
           authContext.setMessage("The book has been added to the database!");
         }
       },
-      onError: (error) => authContext.setError(error as string),
+      onError: (error) => {
+        authContext.setError(error as string);
+        authContext.setOpen(true);
+      },
       onSettled: () => authContext.setLoading(false),
     }
   );

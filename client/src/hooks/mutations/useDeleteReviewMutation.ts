@@ -10,10 +10,15 @@ export const useDeleteReviewMutation = () => {
     async (input: unknown) => await postData(DELETE_REVIEW, input),
     {
       onSuccess: (res) => {
-        if (res === "Success!")
+        if (res === "Success!") {
+          authContext.setOpen(true);
           authContext.setMessage("Review deleted successfully!");
+        }
       },
-      onError: (error) => authContext.setError(error as string),
+      onError: (error) => {
+        authContext.setOpen(true);
+        authContext.setError(error as string);
+      },
       onSettled: () => authContext.setLoading(false),
     }
   );

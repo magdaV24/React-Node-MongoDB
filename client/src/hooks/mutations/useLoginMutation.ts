@@ -13,13 +13,18 @@ export const useLoginMutation = () => {
           res === "This email address is not registered!" ||
           res === "The password is incorrect!"
         ) {
+          authContext.setOpen(true)
           authContext.setError(res);
         } else {
           authContext.setCurrentUser(res);
+          authContext.setOpen(true);
           authContext.setMessage("Success!");
         }
       },
-      onError: (error) => authContext.setError(error as string),
+      onError: (error) => {
+        authContext.setError(error as string);
+        authContext.setOpen(true);
+      },
       onSettled: () => authContext.setLoading(false),
     }
   );

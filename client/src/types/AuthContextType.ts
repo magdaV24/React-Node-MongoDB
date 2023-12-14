@@ -16,5 +16,11 @@ export type AuthContextType = {
     login: (input: unknown) => void;
     toggle_theme: () => void;
     book: Book;
-    setBook: (book: Book) => void
+    setBook: (book: Book) => void;
+    open: boolean;
+    setOpen: (input: boolean) => void;
+    clearMessage: () => void;
+    clearError: () => void;
+    handleCloseMessage: () => void;
+    handleCloseError: () => void;  
 }

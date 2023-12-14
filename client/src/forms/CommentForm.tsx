@@ -83,6 +83,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
       }
     }
   };
+  
   return (
     <>
       <Container sx={style} component="form">
@@ -116,8 +117,8 @@ export default function CommentForm({ parent_id, book_id }: Props) {
           </Button>
         )}
 
-        {message && <SuccessAlert message={message} />}
-        {error && <ErrorAlert message={error as string} />}
+        {message && <SuccessAlert />}
+        {error && <ErrorAlert />}
       </Container>
     </>
   );

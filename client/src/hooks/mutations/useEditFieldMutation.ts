@@ -14,12 +14,17 @@ export const useEditFieldMutation = () => {
           res === "Could not find this book!" ||
           res === "Something went wrong while trying to edit this field!"
         ) {
+          authContext.setOpen(true);
           authContext.setError(res);
         } else {
+          authContext.setOpen(true);
           authContext.setMessage("Field edited successfully!");
         }
       },
-      onError: (error) => authContext.setError(error as string),
+      onError: (error) => {
+        authContext.setOpen(true);
+        authContext.setError(error as string);
+      },
       onSettled: () => authContext.setLoading(false),
     }
   );

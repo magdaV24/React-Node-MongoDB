@@ -37,6 +37,7 @@ import useDeleteReview from "../../hooks/useDeleteReview";
 import ErrorAlert from "../global/ErrorAlert";
 import SuccessAlert from "../global/SuccessAlert";
 import { useFetchComments } from "../../hooks/queries/useFetchComments";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 interface Props {
   user_id: string;
@@ -64,10 +65,13 @@ export default function ReviewCard({
 }: Props) {
   const format_date = date.substring(0, 10);
 
+  const authContext = useAuthContext();
+
   const [showSpoilers, setShowSpoilers] = useState(false);
 
-  const { currentUser, book, loading, error, message,  } = useContext(AuthContext);
-  const [hasFinished, setHasFinished] = useState('')
+  const { currentUser, book, loading, error, message } =
+    useContext(AuthContext);
+  const [hasFinished, setHasFinished] = useState("");
 
   // Open the modal that contains the login form
   const [openLogin, setOpenLogin] = useState(false);
@@ -127,15 +131,17 @@ export default function ReviewCard({
       setShowBtn("Show Replies");
     }
   };
-  useEffect(()=> {
+  useEffect(() => {
     if (finished === "Finished") {
       setHasFinished("Finished");
-    } 
+    }
     if (finished === "DNF") {
       setHasFinished("(Did not finish)");
     }
-  
-  },[finished])
+    if (commentsError) {
+      authContext.setError(commentsError as string);
+    }
+  }, [authContext, commentsError, finished]);
   return (
     <Box sx={review_card_wrapper}>
       <Card sx={{ width: "100%", padding: 2 }}>
@@ -273,17 +279,15 @@ export default function ReviewCard({
                   username={comment.username}
                   avatar={comment.avatar}
                 />
-              ))} 
+              ))}
           </>
         )}
         {loading && <CircularProgress />}
       </Box>
       <Login open={openLogin} handleClose={closeLogin} />
 
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
-      {(commentsError as string) && <ErrorAlert message={commentsError as string} />}
-      {/* {(sortError as string) && <ErrorAlert message={sortError as string} />} */}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </Box>
   );
 }

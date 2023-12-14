@@ -10,14 +10,19 @@ import { Controller, useForm } from "react-hook-form";
 import EditPhotoCard from "./EditPhotoCard";
 import useCloudinary from "../../hooks/useCloudinary";
 import useAddPhoto from "../../hooks/useAddPhoto";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import SuccessAlert from "../../components/global/SuccessAlert";
 import ErrorAlert from "../../components/global/ErrorAlert";
 import { PRESET } from "../../cloudinary/cloudinary";
-import { Book } from "../../types/Book";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
-export default function EditBookPhotos({ photos, _id }: Book) {
+interface Props {
+  photos: [];
+  _id: string;
+}
+
+export default function EditBookPhotos({ photos, _id }: Props) {
   const {
     handleSubmit,
     formState: { errors },
@@ -25,6 +30,7 @@ export default function EditBookPhotos({ photos, _id }: Book) {
     getValues,
   } = useForm();
 
+  const authContext = useAuthContext();
   const { loading, error, message } = useContext(AuthContext);
 
   // Add photo
@@ -53,7 +59,9 @@ export default function EditBookPhotos({ photos, _id }: Book) {
       throw new Error(`Error: ${error}`);
     }
   };
-
+  useEffect(() => {
+    if (errors.photo) authContext.setError(errors.photo.message as string);
+  }, [authContext, errors.photo]);
   return (
     <Container
       sx={{
@@ -96,10 +104,8 @@ export default function EditBookPhotos({ photos, _id }: Book) {
           <AddCircleOutlineSharpIcon sx={{ fontSize: "2rem" }} />
         </Button>
       )}
-
-      {errors.photo && <ErrorAlert message={errors.photo.message as string} />}
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </Container>
   );
 }

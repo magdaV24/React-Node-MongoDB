@@ -1,6 +1,6 @@
 import { Container, Modal } from "@mui/material";
-import EditBookPhotos from "../components/EditBookPhotos";
-import EditBookTable from "../components/EditBookTable";
+import EditBookPhotos from "./EditBookPhotos";
+import EditBookTable from "./EditBookTable";
 
 const style = {
     position: "absolute",
@@ -42,16 +42,7 @@ export default function EditBookForm({
       <Container sx={style}>
       <EditBookPhotos
         _id={_id}
-        author={""}
-        title={""}
-        description={""}
-        language={""}
-        genres={[]}
         photos={photos}
-        reviews={[]}
-        pages={0}
-        grade={[]}
-        published={""}
       />
       <EditBookTable id={_id} title={title} author={author} published={published} description={description} genres={genres} language={language} pages={pages} />
       </Container>

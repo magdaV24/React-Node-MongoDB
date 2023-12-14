@@ -460,8 +460,8 @@ export default function EditBookTable({
           </TableRow>
         </TableHead>
       </Table>
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </TableContainer>
   );
 }

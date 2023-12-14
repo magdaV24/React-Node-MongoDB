@@ -12,12 +12,13 @@ import {
   RadioGroup,
   Checkbox,
 } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContextProvider";
 import useAddReview from "../hooks/useAddReview";
 import ErrorAlert from "../components/global/ErrorAlert";
 import SuccessAlert from "../components/global/SuccessAlert";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 interface Props {
   book_id: string;
@@ -50,8 +51,9 @@ const btnStyles = {
 };
 
 export default function ReviewForm({ book_id, open, close }: Props) {
+  const authContext = useAuthContext();
   const { currentUser, loading, error, message } = useContext(AuthContext);
-  const add_review = useAddReview()
+  const add_review = useAddReview();
 
   const {
     control,
@@ -59,11 +61,11 @@ export default function ReviewForm({ book_id, open, close }: Props) {
     formState: { errors },
     getValues,
     setValue,
-    reset
+    reset,
   } = useForm();
 
   const onSubmit = async () => {
-    setValue("stars", Number(getValues('stars')));
+    setValue("stars", Number(getValues("stars")));
     const data = {
       id: book_id,
       username: currentUser.username,
@@ -73,13 +75,16 @@ export default function ReviewForm({ book_id, open, close }: Props) {
       ...getValues(),
     };
     try {
-     await  add_review(data);
+      await add_review(data);
     } catch (error) {
-      throw new Error(`Error: ${error}`)
+      throw new Error(`Error: ${error}`);
     }
-    reset()
+    reset();
   };
 
+  useEffect(() => {
+    if (errors.stars) authContext.setError(errors.stars.message as string);
+  }, [authContext, errors.stars]);
   return (
     <Modal
       open={open}
@@ -92,13 +97,11 @@ export default function ReviewForm({ book_id, open, close }: Props) {
         <Controller
           name="stars"
           control={control}
+          rules={{ required: "A grade is required!" }}
           render={({ field }) => (
             <Rating {...field} defaultValue={0} precision={0.25} />
           )}
         />
-        {errors.stars && (
-          <ErrorAlert message={errors.stars.message as string} />
-        )}
         <Controller
           name="finished"
           control={control}
@@ -122,9 +125,6 @@ export default function ReviewForm({ book_id, open, close }: Props) {
             </RadioGroup>
           )}
         />
-        {errors.finished && (
-          <ErrorAlert message={errors.finished.message as string} />
-        )}
 
         <Controller
           name="content"
@@ -141,10 +141,6 @@ export default function ReviewForm({ book_id, open, close }: Props) {
             />
           )}
         />
-        {errors.content && (
-          <ErrorAlert message={errors.content.message as string} />
-        )}
-
         <Controller
           name="spoilers"
           control={control}
@@ -161,9 +157,6 @@ export default function ReviewForm({ book_id, open, close }: Props) {
             />
           )}
         />
-        {errors.spoilers && (
-          <ErrorAlert message={errors.spoilers.message as string} />
-        )}
 
         {loading ? (
           <Box sx={btnStyles}>
@@ -175,8 +168,8 @@ export default function ReviewForm({ book_id, open, close }: Props) {
           </Button>
         )}
 
-        {message && <SuccessAlert message={message} />}
-        {error && <ErrorAlert message={error as string} />}
+        {message && <SuccessAlert />}
+        {error && <ErrorAlert />}
       </Container>
     </Modal>
   );

@@ -24,11 +24,12 @@ import {
   wrapper,
 } from "../styles/bookForm";
 import SuccessAlert from "../components/global/SuccessAlert";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
 import useAddBook from "../hooks/useAddBook";
 import useCloudinary from "../hooks/useCloudinary";
 import { PRESET } from "../cloudinary/cloudinary";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function BookForm({ open, handleClose }: ModalInterface) {
   const {
@@ -49,13 +50,11 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
       genres: [] as string[],
     },
   });
-
+  const authContext = useAuthContext();
   const { loading, message, error } = useContext(AuthContext);
 
   const add_book = useAddBook();
   const submit_to_cloudinary = useCloudinary();
-
-  //   const ids = [] as string[];
 
   const onSubmit = async () => {
     try {
@@ -79,6 +78,30 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
       throw new Error(`Error: ${error}`);
     }
   };
+
+  useEffect(() => {
+    if (errors.title) authContext.setError(errors.title.message as string);
+    if (errors.author) authContext.setError(errors.author.message as string);
+    if (errors.published)
+      authContext.setError(errors.published.message as string);
+    if (errors.pages) authContext.setError(errors.pages.message as string);
+    if (errors.genres) authContext.setError(errors.genres.message as string);
+    if (errors.language)
+      authContext.setError(errors.language.message as string);
+    if (errors.description)
+      authContext.setError(errors.description.message as string);
+    if (errors.photos) authContext.setError(errors.photos.message as string);
+  }, [
+    authContext,
+    errors.author,
+    errors.description,
+    errors.genres,
+    errors.language,
+    errors.pages,
+    errors.photos,
+    errors.published,
+    errors.title,
+  ]);
   return (
     <Modal open={open} onClose={handleClose} sx={{ overflow: "scroll" }}>
       <Container sx={wrapper}>
@@ -98,9 +121,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.title && (
-          <ErrorAlert message={errors.title.message as string} />
-        )}
         <Controller
           name="author"
           control={control}
@@ -117,9 +137,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.author && (
-          <ErrorAlert message={errors.author.message as string} />
-        )}
         <Controller
           name="published"
           control={control}
@@ -136,9 +153,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.published && (
-          <ErrorAlert message={errors.published.message as string} />
-        )}
         <Controller
           name="description"
           control={control}
@@ -157,9 +171,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.description && (
-          <ErrorAlert message={errors.description.message as string} />
-        )}
         <Controller
           name="pages"
           control={control}
@@ -181,9 +192,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.pages && (
-          <ErrorAlert message={errors.pages.message as string} />
-        )}
         <FormControl sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="language-select-label">Language</InputLabel>
           <Controller
@@ -207,9 +215,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             )}
           />
         </FormControl>
-        {errors.language && (
-          <ErrorAlert message={errors.language.message as string} />
-        )}
         <Container sx={container}>
           <Container sx={bottom_row}>
             <FormControl sx={{ m: 1, width: 300 }}>
@@ -238,10 +243,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
                 )}
               />
             </FormControl>
-
-            {errors.genres && (
-              <ErrorAlert message={errors.genres.message as string} />
-            )}
             <Controller
               name="photos"
               control={control}
@@ -263,9 +264,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
                 </Button>
               )}
             />
-            {errors.photos && (
-              <ErrorAlert message={errors.photos.message as string} />
-            )}
           </Container>
         </Container>
         {loading ? (
@@ -281,9 +279,8 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             ADD BOOK
           </Button>
         )}
-
-        {message && <SuccessAlert message={message} />}
-        {error && <ErrorAlert message={error} />}
+        {message && <SuccessAlert />}
+        {error && <ErrorAlert />}
       </Container>
     </Modal>
   );

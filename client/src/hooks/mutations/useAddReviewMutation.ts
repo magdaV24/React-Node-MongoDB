@@ -10,12 +10,15 @@ export const useAddReviewMutation = () => {
     {
       onSuccess: (res) => {
         if (res === "You had already given a review!") {
+          authContext.setOpen(true);
           authContext.setError(res);
         } else {
+          authContext.setOpen(true);
           authContext.setMessage("Review was sent successfully!");
         }
       },
       onError: (error) => {
+        authContext.setOpen(true);
         authContext.setError(error as string);
       },
       onSettled: () => authContext.setLoading(false),

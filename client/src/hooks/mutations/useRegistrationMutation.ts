@@ -13,12 +13,15 @@ export const useRegistrationMutation = () => {
           res === "The email provided is already in use!" ||
           res === "This username is taken!"
         ) {
+          authContext.setOpen(true);
           authContext.setError(res);
         } else {
+          authContext.setOpen(true);
           authContext.setMessage("Account created successfully!");
         }
       },
       onError: (error) => {
+        authContext.setOpen(true);
         authContext.setError(error as string);
       },
       onSettled: () => authContext.setLoading(false),

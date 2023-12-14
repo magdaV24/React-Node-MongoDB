@@ -13,12 +13,17 @@ export const useDeletePhotoMutation = () => {
           res === "Could not find this book!" ||
           res === "Could not delete this photo!"
         ) {
+          authContext.setOpen(true);
           authContext.setError(res);
         } else {
+          authContext.setOpen(true);
           authContext.setMessage("Deleted this photo successfully!");
         }
       },
-      onError: (error) => authContext.setError(error as string),
+      onError: (error) => {
+        authContext.setOpen(true);
+        authContext.setError(error as string);
+      },
       onSettled: () => authContext.setLoading(false),
     }
   );

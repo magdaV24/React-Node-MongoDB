@@ -9,13 +9,14 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import ErrorAlert from "../components/global/ErrorAlert";
 import { ModalInterface } from "../interfaces/ModalInterface";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
 import SuccessAlert from "../components/global/SuccessAlert";
 import { PRESET } from "../cloudinary/cloudinary";
 import useCloudinary from "../hooks/useCloudinary";
 import useRegister from "../hooks/useRegister";
 import { wrapper } from "../styles/registerForm";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function Register({ open, handleClose }: ModalInterface) {
   const {
@@ -24,7 +25,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
     formState: { errors },
     handleSubmit,
   } = useForm();
-
+  const authContext = useAuthContext();
   const { error, message, loading } = useContext(AuthContext);
   const submit_to_cloudinary = useCloudinary();
   const register = useRegister();
@@ -39,7 +40,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
     formData.append("file", temp[0]);
     formData.append("upload_preset", PRESET);
     try {
-    const id = await submit_to_cloudinary(formData);
+      const id = await submit_to_cloudinary(formData);
 
       const input = {
         email: getValues("email"),
@@ -52,7 +53,20 @@ export default function Register({ open, handleClose }: ModalInterface) {
       throw new Error(`Error: ${error}`);
     }
   };
-
+  useEffect(() => {
+    if (errors.email) authContext.setError(errors.email.message as string);
+    if (errors.password)
+      authContext.setError(errors.password.message as string);
+    if (errors.username)
+      authContext.setError(errors.username.message as string);
+    if (errors.avatar) authContext.setError(errors.avatar.message as string);
+  }, [
+    authContext,
+    errors.avatar,
+    errors.email,
+    errors.password,
+    errors.username,
+  ]);
   return (
     <Modal
       open={open}
@@ -81,9 +95,6 @@ export default function Register({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.email && (
-          <ErrorAlert message={errors.email.message as string} />
-        )}
         <Controller
           name="username"
           control={control}
@@ -98,9 +109,6 @@ export default function Register({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.username && (
-          <ErrorAlert message={errors.username.message as string} />
-        )}
         <Controller
           name="password"
           control={control}
@@ -116,9 +124,6 @@ export default function Register({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.password && (
-          <ErrorAlert message={errors.password.message as string} />
-        )}
         <Controller
           name="confirmPassword"
           control={control}
@@ -139,9 +144,6 @@ export default function Register({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {errors.confirmPassword && (
-          <ErrorAlert message={errors.confirmPassword.message as string} />
-        )}
         <Controller
           name="avatar"
           control={control}
@@ -158,9 +160,6 @@ export default function Register({ open, handleClose }: ModalInterface) {
             </Button>
           )}
         />
-        {errors.avatar && (
-          <ErrorAlert message={errors.avatar.message as string} />
-        )}
         {loading ? (
           <Box>
             <CircularProgress />
@@ -170,8 +169,8 @@ export default function Register({ open, handleClose }: ModalInterface) {
             REGISTER
           </Button>
         )}
-        {message && <SuccessAlert message={message} />}
-        {error && <ErrorAlert message={error} />}
+        {message && <SuccessAlert />}
+        {error && <ErrorAlert />}
       </Container>
     </Modal>
   );

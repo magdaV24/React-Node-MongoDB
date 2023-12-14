@@ -13,13 +13,12 @@ import {
 } from "@mui/material";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import {
-  // CHECK_LIKED_COMMENT,
-  // COUNT_COMMENT_LIKES,
-  // LIKE_COMMENT,
-} from "../../api/urls";
+import // CHECK_LIKED_COMMENT,
+// COUNT_COMMENT_LIKES,
+// LIKE_COMMENT,
+"../../api/urls";
 // import Like from "./Like";
 import { Comment } from "../../types/Comment";
 import CommentForm from "../../forms/CommentForm";
@@ -38,6 +37,7 @@ import {
   like_button_wrapper,
 } from "../../styles/commentCard";
 import { useFetchComments } from "../../hooks/queries/useFetchComments";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 interface Props {
   book_id: string;
@@ -60,6 +60,7 @@ export default function CommentCard({
 }: Props) {
   const format_date = date.substring(0, 10);
   const { currentUser, loading, error, message } = useContext(AuthContext);
+  const authContext = useAuthContext();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -95,9 +96,8 @@ export default function CommentCard({
   };
 
   // Fetching the children
-  
 
- const { comments, error: childrenError} = useFetchComments(id);
+  const { comments, error: childrenError } = useFetchComments(id);
 
   const handleShowChildren = () => {
     if (showChildren === false) {
@@ -108,7 +108,9 @@ export default function CommentCard({
       setShowBtn("Show Replies");
     }
   };
-
+  useEffect(() => {
+    if (childrenError) authContext.setError(childrenError as string);
+  });
   return (
     <Box sx={comment_card_wrapper}>
       <Card sx={{ width: "100%", padding: 0.5 }}>
@@ -228,11 +230,8 @@ export default function CommentCard({
           </>
         )}
       </Box>
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
-      {(childrenError as string) && (
-        <ErrorAlert message={childrenError as string} />
-      )}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </Box>
   );
 }
