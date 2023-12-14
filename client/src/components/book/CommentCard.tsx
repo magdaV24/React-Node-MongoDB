@@ -15,11 +15,6 @@ import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import // CHECK_LIKED_COMMENT,
-// COUNT_COMMENT_LIKES,
-// LIKE_COMMENT,
-"../../api/urls";
-// import Like from "./Like";
 import { Comment } from "../../types/Comment";
 import CommentForm from "../../forms/CommentForm";
 import CommentEditForm from "../../forms/edit_objects/CommentEditForm";
