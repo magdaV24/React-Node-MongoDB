@@ -18,13 +18,9 @@ import { AuthContext } from "../../context/AuthContextProvider";
 import {
   // CHECK_LIKED_COMMENT,
   // COUNT_COMMENT_LIKES,
-  // DELETE_COMMENT,
-  FETCH_COMMENTS,
   // LIKE_COMMENT,
 } from "../../api/urls";
 // import Like from "./Like";
-import { useQuery } from "react-query";
-import fetchData from "../../functions/fetchData";
 import { Comment } from "../../types/Comment";
 import CommentForm from "../../forms/CommentForm";
 import CommentEditForm from "../../forms/edit_objects/CommentEditForm";
@@ -41,6 +37,7 @@ import {
   content_wrapper,
   like_button_wrapper,
 } from "../../styles/commentCard";
+import { useFetchComments } from "../../hooks/queries/useFetchComments";
 
 interface Props {
   book_id: string;
@@ -98,23 +95,13 @@ export default function CommentCard({
   };
 
   // Fetching the children
-  const [queryKey, setQueryKey] = useState("");
-  const [queryFn, setQueryFn] = useState<Promise<unknown> | undefined>();
-  const fetchChildren = () => fetchData(`${FETCH_COMMENTS}/${id}`);
+  
 
-  const {
-    data,
-    isLoading,
-    error: childrenError,
-    refetch,
-  } = useQuery(queryKey, () => queryFn);
+ const { comments, error: childrenError} = useFetchComments(id);
 
   const handleShowChildren = () => {
     if (showChildren === false) {
       setShowChildren(true);
-      setQueryKey(`commentQuery${id}`);
-      setQueryFn(fetchChildren);
-      refetch();
       setShowBtn("Hide Replies");
     } else {
       setShowChildren(false);
@@ -161,7 +148,7 @@ export default function CommentCard({
             <Button size="large" onClick={handleBtn} variant="outlined">
               {btn}
             </Button>
-            {(data as Comment[]) && (
+            {(comments as Comment[]) && (
               <Button
                 size="large"
                 onClick={handleShowChildren}
@@ -222,10 +209,10 @@ export default function CommentCard({
       <Box sx={children_wrapper}>
         {showChildren && (
           <>
-            {isLoading && (
+            {loading && (
               <>
-                {data &&
-                  (data as Comment[]).map((comment: Comment) => (
+                {comments &&
+                  (comments as Comment[]).map((comment: Comment) => (
                     <CommentCard
                       user_id={comment.user_id}
                       content={comment.content}

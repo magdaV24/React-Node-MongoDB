@@ -14,13 +14,10 @@ import {
 } from "@mui/material";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { useState, useContext, useEffect } from "react";
-import { useQuery } from "react-query";
-import { FETCH_COMMENTS } from "../../api/urls";
 import { AuthContext } from "../../context/AuthContextProvider";
 import CommentForm from "../../forms/CommentForm";
 import Login from "../../forms/Login";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
-import fetchData from "../../functions/fetchData";
 import CommentCard from "./CommentCard";
 import Like from "./Like";
 import { Comment } from "../../types/Comment";
@@ -39,6 +36,7 @@ import ReviewEditForm from "../../forms/edit_objects/ReviewEditForm";
 import useDeleteReview from "../../hooks/useDeleteReview";
 import ErrorAlert from "../global/ErrorAlert";
 import SuccessAlert from "../global/SuccessAlert";
+import { useFetchComments } from "../../hooks/queries/useFetchComments";
 
 interface Props {
   user_id: string;
@@ -64,12 +62,11 @@ export default function ReviewCard({
   book_id,
   spoilers,
 }: Props) {
-  const { error, message, loading } = useContext(AuthContext);
   const format_date = date.substring(0, 10);
 
   const [showSpoilers, setShowSpoilers] = useState(false);
 
-  const { currentUser, book } = useContext(AuthContext);
+  const { currentUser, book, loading, error, message,  } = useContext(AuthContext);
   const [hasFinished, setHasFinished] = useState('')
 
   // Open the modal that contains the login form
@@ -118,24 +115,13 @@ export default function ReviewCard({
 
   const [showComments, setShowComments] = useState(false);
   const [showBtn, setShowBtn] = useState("Show Replies");
-  const [queryKey, setQueryKey] = useState("");
-  const [queryFn, setQueryFn] = useState<Promise<unknown> | undefined>();
-  const fetchComments = () => fetchData(`${FETCH_COMMENTS}/${review_id}`);
 
-  const {
-    data,
-    isLoading,
-    error: sortError,
-    refetch,
-  } = useQuery(queryKey, () => queryFn);
+  const { comments, error: commentsError } = useFetchComments(review_id);
 
   const handleShowComments = () => {
     if (showComments === false) {
       setShowBtn("Hide Replies");
       setShowComments(true);
-      setQueryKey(`commentQuery${review_id}`);
-      setQueryFn(fetchComments);
-      refetch();
     } else {
       setShowComments(false);
       setShowBtn("Show Replies");
@@ -276,8 +262,8 @@ export default function ReviewCard({
       <Box sx={comments_wrapper}>
         {showComments && (
           <>
-            {data &&
-              (data as Comment[]).map((comment: Comment) => (
+            {comments &&
+              (comments as Comment[]).map((comment: Comment) => (
                 <CommentCard
                   book_id={comment.book_id}
                   user_id={comment.user_id}
@@ -287,16 +273,17 @@ export default function ReviewCard({
                   username={comment.username}
                   avatar={comment.avatar}
                 />
-              ))}
+              ))} 
           </>
         )}
-        {isLoading && <CircularProgress />}
+        {loading && <CircularProgress />}
       </Box>
       <Login open={openLogin} handleClose={closeLogin} />
 
       {message && <SuccessAlert message={message} />}
       {error && <ErrorAlert message={error} />}
-      {(sortError as string) && <ErrorAlert message={sortError as string} />}
+      {(commentsError as string) && <ErrorAlert message={commentsError as string} />}
+      {/* {(sortError as string) && <ErrorAlert message={sortError as string} />} */}
     </Box>
   );
 }

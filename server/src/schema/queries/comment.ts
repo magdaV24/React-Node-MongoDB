@@ -15,8 +15,7 @@ export const add_comment = async (req: any, res: any) => {
         content: content,
         date: date,
         username: username,
-        avatar: avatar,
-        likes: 0
+        avatar: avatar
       },
     ]);
     return res.json("Success!");
