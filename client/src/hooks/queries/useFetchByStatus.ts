@@ -1,16 +1,15 @@
 import { useQuery } from "react-query"
 import fetchData from "../../functions/fetchData"
-import { FETCH_BOOK } from "../../api/urls"
 import { useAuthContext } from "../useAuthContext"
 import { useEffect } from "react"
+import { FETCH_BY_STATUS } from "../../api/urls"
 
-export const useBook = (input: string) => {
+export const useFetchByStatus = (user_id: string, field: string) => {
     const authContext = useAuthContext();
     const { data, isLoading, error } = useQuery(
-        `bookQuery/${input}`,
+        `fetchByUser/${user_id}/${field}`,
         async () => {
-          const result = await fetchData(`${FETCH_BOOK}/${input}`);
-          authContext.setBook(result)
+          const result = await fetchData(`${FETCH_BY_STATUS}/${user_id}/${field}`);
           authContext.setLoading(false);
           return result;
         },

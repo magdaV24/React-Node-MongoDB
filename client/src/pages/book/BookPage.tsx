@@ -38,6 +38,7 @@ import ReviewForm from "../../forms/ReviewForm";
 import Grade from '../../components/book/Grade'
 import ReadingStatus from '../../components/book/ReadingStatus'
 import ReviewList from "../../components/book/ReviewsList";
+import { Book } from "../../types/Book";
 
 export default function BookPage() {
     const location = useLocation();
@@ -49,8 +50,8 @@ export default function BookPage() {
     .toString()
     .replace(/[",]/g, " ");
    
-  const { data: book, error, isLoading: loading } = useBook(title);
-  const { currentUser } = useContext(AuthContext)
+  const {  error, isLoading: loading } = useBook(title);
+  const { currentUser, book } = useContext(AuthContext);
 
   const [showReviews, setShowReviews] = useState(true); // The user can choose if they want to see the reviews
   let show = "Show Reviews";
@@ -74,10 +75,10 @@ export default function BookPage() {
       // The carousel of the book's photos
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const moveBack = (photos: []) => {
+  const moveBack = (photos: string[]) => {
     setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
   };
-  const moveForward = (photos: []) => {
+  const moveForward = (photos: string[]) => {
     setCurrentIndex((prev) => (prev + 1) % photos.length);
   };
 
@@ -88,17 +89,18 @@ export default function BookPage() {
     const array = genres.join(", ");
     return setGenres(array);
   };
+
   useEffect(() => {
     if (book) {
       set_genres(book.genres);
     }
-  }, [location.pathname]);
+  }, [book, location.pathname]);
   if (error) return <Typography color="error">{error as string}</Typography>;
 
   return (
     <Container sx={book_page_wrapper}>
       <Bar />
-      {book && (
+      {(book as Book) && (
         <>
           <Container sx={container}>
             <Container sx={card_wrapper}>
@@ -116,7 +118,8 @@ export default function BookPage() {
 
                   <AdvancedImage
                     cldImg={cld
-                      .image(book.photos[currentIndex])
+                      // .image(book.photos.length > 0 ? book.photos[currentIndex] : '')
+                      .image((book as Book).photos[currentIndex] )
                       .resize(fill().width(150).height(250))}
                   />
 

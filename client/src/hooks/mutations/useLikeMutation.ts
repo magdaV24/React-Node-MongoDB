@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import {  useMutation } from "react-query";
 import { useAuthContext } from "../useAuthContext";
 import postData from "../../functions/postData";
 import { LIKE_OBJECT } from "../../api/urls";
@@ -11,7 +11,7 @@ export const useLikeMutation = () => {
     {
       onError: (error) => {
         authContext.setError(error as string);
-        authContext.setOpen(true);
+        authContext.setOpen(true); 
       },
       onSettled: () => authContext.setLoading(false),
     }

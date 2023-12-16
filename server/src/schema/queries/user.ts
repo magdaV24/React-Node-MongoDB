@@ -1,7 +1,9 @@
 import { hash } from "bcryptjs";
 import users from "../models/user";
+import books from '../models/book'
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 
 export const register = async (req: any, res: any) => {
   const {
@@ -151,23 +153,51 @@ export const find_status = async (req: any, res: any) => {
   try {
     const user = await users.findOne({
       _id: id,
-      $or: [
-        { currently_reading: { $in: [book_id] } },
-        { read: { $in: [book_id] } },
-        { want_to_read: { $in: [book_id] } },
-      ],
     });
 
-      if (user) {
-        if (user.currently_reading.includes(book_id)) {
-          return res.json("Currently reading");
-        } else if (user.read.includes(book_id)) {
-          return res.json("Read");
-        } else if (user.want_to_read.includes(book_id)) {
-          return res.json("Want to read");
-        }
-    } else{ return res.json("None")}
+    if(!user){
+      return res.json("An error occurred while looking for this user!");
+    } else{
+      const status = user.fetchReadingStatus(book_id);
+      return res.json(status);
+    }
   } catch (error) {
     return res.json(`Error: ${error}`);
   }
 };
+
+
+//Fetch books by reding status
+
+export const fetch_by_reading_status = async (req: any, res: any) => {
+  const user_id = req.params.user_id;
+  const field = req.params.field;
+
+  try {
+    const user = await users.findOne({_id: new mongoose.Types.ObjectId(user_id)});
+
+    if(!user){
+      res.json("User not found!")
+    }else{
+      let result;
+
+      switch (field) {
+        case 'want_to_read':
+          result = await books.find({ _id: { $in: user.want_to_read } });
+          break;
+        case 'currently_reading':
+          result = await books.find({ _id: { $in: user.currently_reading } });
+          break;
+        case 'read':
+          result = await books.find({ _id: { $in: user.read } });
+          break;
+        default:
+          return res.json("Invalid field");
+      }
+  
+      return res.json(result);
+    }
+  } catch (error) {
+    return res.json(`Error: ${error}`);
+  }
+}

@@ -1,6 +1,6 @@
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
-import { Button, Container, Tooltip, alpha, styled } from "@mui/material";
+import { Box, Button, Container, Tooltip, alpha, styled } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -12,7 +12,7 @@ import { AdvancedImage } from "@cloudinary/react";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import SearchSharpIcon from "@mui/icons-material/SearchSharp";
 import InputBase from "@mui/material/InputBase";
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import SearchResult from "./SearchResult";
 import _debounce from "lodash/debounce";
@@ -22,7 +22,8 @@ import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import { AuthContext } from "../../context/AuthContextProvider";
 import fetchData from "../../functions/fetchData";
 import { Book } from "../../types/Book";
-import { SEARCH } from '../../api/urls'
+import { SEARCH } from "../../api/urls";
+import Drawer from "../user/Drawer";
 
 export default function Bar() {
   const { currentUser, logout } = useContext(AuthContext);
@@ -30,6 +31,14 @@ export default function Bar() {
 
   const [openLogin, setOpenLogin] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const handleCloseDrawer = () => {
+    setOpenDrawer(false);
+  };
+  const handleOpenDrawer = () => {
+    setOpenDrawer(true);
+  };
 
   function closeLogin() {
     setOpenLogin(false);
@@ -99,7 +108,7 @@ export default function Bar() {
             edge="start"
             color="secondary"
             sx={{ mr: 2 }}
-            href="/dash"
+            href="/home"
           >
             <ImportContactsSharpIcon />
           </IconButton>
@@ -174,11 +183,13 @@ export default function Bar() {
               }}
             >
               {currentUser && (
-                <AdvancedImage
+                <Box onClick={handleOpenDrawer}>
+                  <AdvancedImage
                   cldImg={cld
                     .image(currentUser.avatar)
                     .resize(fill().width(50).height(50))}
                 />
+                </Box>
               )}
             </Container>
             {currentUser && (
@@ -245,6 +256,7 @@ export default function Bar() {
       </AppBar>
       <Login open={openLogin} handleClose={closeLogin} />
       <Register open={openRegister} handleClose={closeRegister} />
+      {currentUser && <Drawer isOpen={openDrawer} handleClose={handleCloseDrawer} handleOpen={handleOpenDrawer} />}
     </Container>
   );
 }

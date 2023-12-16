@@ -9,7 +9,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import ErrorAlert from "../components/global/ErrorAlert";
 import { ModalInterface } from "../interfaces/ModalInterface";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
 import SuccessAlert from "../components/global/SuccessAlert";
 import { PRESET } from "../cloudinary/cloudinary";
@@ -25,12 +25,14 @@ export default function Register({ open, handleClose }: ModalInterface) {
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const [disabled, setDisabled] = useState(false)
   const authContext = useAuthContext();
   const { error, message, loading } = useContext(AuthContext);
   const submit_to_cloudinary = useCloudinary();
   const register = useRegister();
 
   const onSubmit = async () => {
+    setDisabled(true)
     const temp = getValues("avatar");
     if (temp === undefined) {
       return console.log("Undefined avatar");
@@ -49,24 +51,24 @@ export default function Register({ open, handleClose }: ModalInterface) {
         avatar: id,
       };
       await register(input);
+      setDisabled(false)
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
   };
   useEffect(() => {
-    if (errors.email) authContext.setError(errors.email.message as string);
-    if (errors.password)
-      authContext.setError(errors.password.message as string);
-    if (errors.username)
-      authContext.setError(errors.username.message as string);
-    if (errors.avatar) authContext.setError(errors.avatar.message as string);
-  }, [
-    authContext,
-    errors.avatar,
-    errors.email,
-    errors.password,
-    errors.username,
-  ]);
+    if (errors.email) {
+      authContext.setError("Email error: " + errors.email.message);
+    } else if (errors.password) {
+      authContext.setError("Password error: " + errors.password.message);
+    } else if (errors.username) {
+      authContext.setError("Username error: " + errors.username.message);
+    } else if (errors.avatar) {
+      authContext.setError("Avatar error: " + errors.avatar.message);
+    } else {
+      authContext.clearError();
+    }
+  }, [authContext, errors.avatar, errors.email, errors.password, errors.username]);
   return (
     <Modal
       open={open}
@@ -165,7 +167,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
             <CircularProgress />
           </Box>
         ) : (
-          <Button type="submit" onClick={handleSubmit(onSubmit)}>
+          <Button type="submit" onClick={handleSubmit(onSubmit)} disabled={disabled} variant="outlined" size="large">
             REGISTER
           </Button>
         )}

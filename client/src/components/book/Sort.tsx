@@ -235,7 +235,7 @@ export default function Sort({
         <Button onClick={() => dispatch({ type: "SHOW_DNF" })}>
           <CheckBoxOutlineBlankSharpIcon /> Did Not Finish
         </Button>
-      )}
+      )} 
       <br />
       {state.showOneStar ? (
         <Button onClick={() => dispatch({ type: "UNCHECK" })}>

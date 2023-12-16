@@ -1,4 +1,4 @@
-import { Container, CircularProgress } from "@mui/material";
+import { Container } from "@mui/material";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { FETCH_REVIEWS, SHOW_FINISHED, SHOW_STARS } from "../../api/urls";
@@ -23,8 +23,6 @@ export default function ReviewList({book_id}: Props){
   
     const {
       data,
-      isLoading: reviewsLoading,
-      error: reviewsError,
       refetch,
     } = useQuery(queryKey, () => queryFn);
   
@@ -75,7 +73,7 @@ export default function ReviewList({book_id}: Props){
                 }}
               >
                 {!data && <p>No data yet.</p>}
-                {data && data.map((review: Review) => (
+                {(data as Review[]) && (data as Review[]).map((review: Review) => (
                   <ReviewCard
                   user_id={review.user_id}
                   content={review.content}
@@ -90,8 +88,6 @@ export default function ReviewList({book_id}: Props){
                   key={review._id}
                 />
                 ))}
-                {reviewsLoading && <CircularProgress />}
-                {reviewsError && <p>An error has occurred!</p>}
               </Container>
             </Container>
     )

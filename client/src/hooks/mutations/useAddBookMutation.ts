@@ -25,8 +25,8 @@ export const useAddBookMutation = () => {
         authContext.setOpen(true);
       },
       onSettled: () => authContext.setLoading(false),
+      onMutate: () => authContext.setLoading(true),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
   return mutation;
 };

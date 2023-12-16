@@ -27,3 +27,5 @@ export const SEARCH = `${host}/search`;
 export const LIKE_OBJECT = `${host}/likes/like`;
 export const CHECK_IF_LIKED = `${host}/likes/check`;
 export const COUNT_LIKES = `${host}/likes/count`;
+
+export const FETCH_BY_STATUS = `${host}/fetch_by_status`;

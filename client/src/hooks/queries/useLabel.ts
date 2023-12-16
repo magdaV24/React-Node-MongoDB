@@ -8,7 +8,7 @@ export const useLabel = (user_id: string, book_id: string) => {
   const authContext = useAuthContext();
 
   const { data, isLoading, error } = useQuery(
-    "labelQuery",
+    `labelQuery/${user_id}/${book_id}`,
     async () => {
       const result = await fetchData(`${FIND_STATUS}/${user_id}/${book_id}`);
       authContext.setLoading(false);

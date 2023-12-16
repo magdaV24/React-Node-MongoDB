@@ -2,7 +2,7 @@ import { Rating, Typography } from "@mui/material";
 import { useMemo } from "react";
 
 interface Props{
-    grade: []
+    grade: number[]
 }
 
 export default function Grade({grade}: Props){
@@ -19,7 +19,7 @@ export default function Grade({grade}: Props){
       return sum / grade.length;
     }
 
-    const averageGrade = useMemo(() => calculate_grade(grade), [grade]);
+    const averageGrade = useMemo(() => calculate_grade(grade as []), [grade]);
 
     return (
       <>

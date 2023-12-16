@@ -1,15 +1,15 @@
 import { Review } from "./Review"
 
 export type Book = {
-    _id: string,
+    id: string,
     author: string,
     title: string,
     description: string,
     language: string,
-    genres: [],
-    photos: [],
+    genres: string[],
+    photos: string[],
     reviews: Review[],
     pages: number,
-    grade: [],
+    grade: number[],
     published: string
 }

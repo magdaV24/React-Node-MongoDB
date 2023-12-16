@@ -14,6 +14,7 @@ import {
   Select,
   Box,
   CircularProgress,
+  FormHelperText,
 } from "@mui/material";
 import ErrorAlert from "../components/global/ErrorAlert";
 import { GENRES_LIST } from "../genres";
@@ -24,7 +25,7 @@ import {
   wrapper,
 } from "../styles/bookForm";
 import SuccessAlert from "../components/global/SuccessAlert";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
 import useAddBook from "../hooks/useAddBook";
 import useCloudinary from "../hooks/useCloudinary";
@@ -37,7 +38,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
     getValues,
     formState: { errors },
     control,
-    setValue,
   } = useForm({
     defaultValues: {
       photos: [] as File[],
@@ -50,13 +50,15 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
       genres: [] as string[],
     },
   });
+  const [disabled, setDisabled] = useState(false);
   const authContext = useAuthContext();
   const { loading, message, error } = useContext(AuthContext);
 
   const add_book = useAddBook();
   const submit_to_cloudinary = useCloudinary();
 
-  const onSubmit = async () => {
+  const submitBook = async () => {
+    setDisabled(true);
     try {
       const ids = await Promise.all(
         getValues("photos").map(async (photo: string | Blob) => {
@@ -72,25 +74,39 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
           }
         })
       );
-      const input = { ...getValues(), photos: ids };
-      await add_book(input);
+      try {
+        const input = { ...getValues(), photos: ids };
+        await add_book(input);
+      } catch (error) {
+        throw new Error(`Error: ${error}`);
+      }
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
+    setDisabled(false);
   };
+  console.log(error);
 
   useEffect(() => {
-    if (errors.title) authContext.setError(errors.title.message as string);
-    if (errors.author) authContext.setError(errors.author.message as string);
-    if (errors.published)
+    if (errors.title) {
+      authContext.setError(errors.title.message as string);
+    } else if (errors.author) {
+      authContext.setError(errors.author.message as string);
+    } else if (errors.published) {
       authContext.setError(errors.published.message as string);
-    if (errors.pages) authContext.setError(errors.pages.message as string);
-    if (errors.genres) authContext.setError(errors.genres.message as string);
-    if (errors.language)
+    } else if (errors.pages)
+      authContext.setError(errors.pages.message as string);
+    else if (errors.genres) {
+      authContext.setError(errors.genres.message as string);
+    } else if (errors.language) {
       authContext.setError(errors.language.message as string);
-    if (errors.description)
+    } else if (errors.description) {
       authContext.setError(errors.description.message as string);
-    if (errors.photos) authContext.setError(errors.photos.message as string);
+    } else if (errors.photos) {
+      authContext.setError(errors.photos.message as string);
+    } else {
+      authContext.clearError();
+    }
   }, [
     authContext,
     errors.author,
@@ -104,184 +120,192 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
   ]);
   return (
     <Modal open={open} onClose={handleClose} sx={{ overflow: "scroll" }}>
-      <Container sx={wrapper}>
-        <Controller
-          name="title"
-          control={control}
-          rules={{
-            required: "Title required!",
-          }}
-          render={({ field }) => (
-            <TextField
-              id="title-standard-basic"
-              label="Title"
-              variant="outlined"
-              autoFocus
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="author"
-          control={control}
-          rules={{
-            required: "Author required!",
-          }}
-          render={({ field }) => (
-            <TextField
-              id="author-standard-basic"
-              label="Author"
-              variant="outlined"
-              autoFocus
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="published"
-          control={control}
-          rules={{
-            required: "Date of publication required!",
-          }}
-          render={({ field }) => (
-            <TextField
-              id="published-standard-basic"
-              label="Date of publication (DD/MM/YYYY)"
-              variant="outlined"
-              autoFocus
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="description"
-          control={control}
-          rules={{
-            required: "Synopsis required!",
-          }}
-          render={({ field }) => (
-            <TextField
-              id="description-standard-basic"
-              label="Synopsis"
-              variant="outlined"
-              multiline
-              minRows={5}
-              autoFocus
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="pages"
-          control={control}
-          rules={{
-            required: "Number of pages required!",
-          }}
-          render={({ field }) => (
-            <TextField
-              id="pages-standard-basic"
-              label="Pages"
-              variant="outlined"
-              autoFocus
-              type="number"
-              {...field}
-              inputProps={{
-                min: 0,
-                step: 1,
-              }}
-            />
-          )}
-        />
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="language-select-label">Language</InputLabel>
+      <>
+        <Container sx={wrapper}>
           <Controller
-            name="language"
+            name="title"
             control={control}
-            defaultValue="English"
-            rules={{ required: "The language is required!" }}
+            rules={{
+              required: "Title required!",
+            }}
             render={({ field }) => (
-              <Select {...field} labelId="language-select" label="Language">
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value="English">English</MenuItem>
-                <MenuItem value="French">French</MenuItem>
-                <MenuItem value="Latin">Latin</MenuItem>
-                <MenuItem value="German">German</MenuItem>
-                <MenuItem value="Romanian">Romanian</MenuItem>
-                <MenuItem value="Spanish">Spanish</MenuItem>
-                <MenuItem value="Japanese">Japanese</MenuItem>
-              </Select>
+              <TextField
+                id="title-standard-basic"
+                label="Title"
+                variant="outlined"
+                autoFocus
+                {...field}
+              />
             )}
           />
-        </FormControl>
-        <Container sx={container}>
-          <Container sx={bottom_row}>
-            <FormControl sx={{ m: 1, width: 300 }}>
-              <InputLabel id="genres-input">Genres</InputLabel>
+          <Controller
+            name="author"
+            control={control}
+            rules={{
+              required: "Author required!",
+            }}
+            render={({ field }) => (
+              <TextField
+                id="author-standard-basic"
+                label="Author"
+                variant="outlined"
+                autoFocus
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="published"
+            control={control}
+            rules={{
+              required: "Date of publication required!",
+            }}
+            render={({ field }) => (
+              <TextField
+                id="published-standard-basic"
+                label="Date of publication (DD/MM/YYYY)"
+                variant="outlined"
+                autoFocus
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="description"
+            control={control}
+            rules={{
+              required: "Synopsis required!",
+            }}
+            render={({ field }) => (
+              <TextField
+                id="description-standard-basic"
+                label="Synopsis"
+                variant="outlined"
+                multiline
+                minRows={5}
+                autoFocus
+                {...field}
+              />
+            )}
+          />
+          <Controller
+            name="pages"
+            control={control}
+            rules={{
+              required: "Number of pages required!",
+            }}
+            render={({ field }) => (
+              <TextField
+                id="pages-standard-basic"
+                label="Pages"
+                variant="outlined"
+                autoFocus
+                type="number"
+                {...field}
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                }}
+              />
+            )}
+          />
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="language-select-label">Language</InputLabel>
+            <Controller
+              name="language"
+              control={control}
+              defaultValue="English"
+              rules={{ required: "The language is required!" }}
+              render={({ field }) => (
+                <Select {...field} labelId="language-select" label="Language">
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="French">French</MenuItem>
+                  <MenuItem value="Latin">Latin</MenuItem>
+                  <MenuItem value="German">German</MenuItem>
+                  <MenuItem value="Romanian">Romanian</MenuItem>
+                  <MenuItem value="Spanish">Spanish</MenuItem>
+                  <MenuItem value="Japanese">Japanese</MenuItem>
+                </Select>
+              )}
+            />
+          </FormControl>
+          <Container sx={container}>
+            <Container sx={bottom_row}>
+              <FormControl sx={{ m: 1, width: 300 }}>
+                <InputLabel id="genres-input">Genres</InputLabel>
+                <Controller
+                  name="genres"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <Select
+                      labelId="genres-label"
+                      id="genres-id"
+                      multiple
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      input={<OutlinedInput label="Genres" />}
+                      renderValue={(selected) => selected.join(", ")}
+                    >
+                      {GENRES_LIST.map((genre) => (
+                        <MenuItem key={genre} value={genre}>
+                          <Checkbox checked={field.value.indexOf(genre) > -1} />
+                          <ListItemText primary={genre} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
               <Controller
-                name="genres"
+                name="photos"
+                rules={{ required: "At least a photo is required!" }}
                 control={control}
                 defaultValue={[]}
                 render={({ field }) => (
-                  <Select
-                    labelId="genres-label"
-                    id="genres-id"
-                    multiple
-                    {...field}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    input={<OutlinedInput label="Genres" />}
-                    renderValue={(selected) => selected.join(", ")}
-                  >
-                    {GENRES_LIST.map((genre) => (
-                      <MenuItem key={genre} value={genre}>
-                        <Checkbox checked={field.value.indexOf(genre) > -1} />
-                        <ListItemText primary={genre} />
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  <>
+                    <InputLabel htmlFor="images">Images</InputLabel>
+                    <input
+                      id="images"
+                      type="file"
+                      accept="/images*"
+                      multiple
+                      onChange={(e) =>
+                        field.onChange([...field.value, ...e.target.files!])
+                      }
+                    />
+                    <FormHelperText>Upload photos</FormHelperText>
+                    <ul>
+                      {field.value.map((file, index) => (
+                        <li key={index}>{file.name}</li>
+                      ))}
+                    </ul>
+                  </>
                 )}
               />
-            </FormControl>
-            <Controller
-              name="photos"
-              control={control}
-              rules={{ required: "At least a photo is required!" }}
-              render={({ field }) => (
-                <Button variant="contained">
-                  Upload photos
-                  <input
-                    id="photos-standard-basic"
-                    type="file"
-                    multiple
-                    onChange={(e) => {
-                      const photos = Array.from(e.target.files || []);
-                      setValue("photos", [...field.value, ...photos]);
-                    }}
-                    key={Math.random()}
-                    // style={{display: 'none'}}
-                  />
-                </Button>
-              )}
-            />
+            </Container>
           </Container>
+          {loading ? (
+            <Box sx={button_styles}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Button
+              sx={button_styles}
+              type="submit"
+              onClick={handleSubmit(submitBook)}
+              disabled={disabled}
+            >
+              ADD BOOK
+            </Button>
+          )}
         </Container>
-        {loading ? (
-          <Box sx={button_styles}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Button
-            sx={button_styles}
-            type="submit"
-            onClick={handleSubmit(onSubmit)}
-          >
-            ADD BOOK
-          </Button>
-        )}
         {message && <SuccessAlert />}
         {error && <ErrorAlert />}
-      </Container>
+      </>
     </Modal>
   );
 }

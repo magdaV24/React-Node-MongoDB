@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import {
   add_reading_status,
   change_status,
+  fetch_by_reading_status,
   find_status,
   login,
   register,
@@ -83,7 +84,8 @@ const main = async () => {
   app.get('/search/:input', search);
   app.post('/likes/like', like_object);
   app.get('/likes/check/:user_id/:object_id', check_if_liked);
-  app.get('/likes/count/:object_id', count_likes)
+  app.get('/likes/count/:object_id', count_likes);
+  app.get('/fetch_by_status/:user_id/:field', fetch_by_reading_status);
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

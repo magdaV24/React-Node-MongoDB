@@ -20,13 +20,13 @@ export const useRegistrationMutation = () => {
           authContext.setMessage("Account created successfully!");
         }
       },
-      onError: (error) => {
+      onError: (error: string) => {
         authContext.setOpen(true);
-        authContext.setError(error as string);
+        authContext.setError(error || "An error occurred");
       },
       onSettled: () => authContext.setLoading(false),
+      onMutate: () => authContext.setLoading(true),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
   return mutation;
 };
