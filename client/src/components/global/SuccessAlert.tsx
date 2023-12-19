@@ -4,9 +4,9 @@ import { AuthContext } from "../../context/AuthContextProvider";
 
 export default function SuccessAlert (){
 
-    const { open, handleCloseMessage, message } = useContext(AuthContext)
+    const { openMessage, handleCloseMessage, message } = useContext(AuthContext)
     return (
-        <Snackbar open={open} onClose={handleCloseMessage}>
+        <Snackbar open={openMessage} onClose={handleCloseMessage}>
             <Alert severity='success'>{message}</Alert>
         </Snackbar>
     )

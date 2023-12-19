@@ -99,7 +99,7 @@ export default function ReviewForm({ book_id, open, close }: Props) {
           control={control}
           rules={{ required: "A grade is required!" }}
           render={({ field }) => (
-            <Rating {...field} defaultValue={0} precision={0.25} />
+            <Rating {...field} precision={0.25} />
           )}
         />
         <Controller

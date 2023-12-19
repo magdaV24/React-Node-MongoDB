@@ -17,10 +17,15 @@ export type AuthContextType = {
     toggle_theme: () => void;
     book: Book;
     setBook: (book: Book) => void;
-    open: boolean;
-    setOpen: (input: boolean) => void;
+    openMessage: boolean;
+    openError: boolean;
+    openBackdrop: boolean;
+    setOpenMessage: (input: boolean) => void;
+    setOpenError: (input: boolean) => void;
+    setOpenBackdrop: (input: boolean) => void;
     clearMessage: () => void;
     clearError: () => void;
     handleCloseMessage: () => void;
-    handleCloseError: () => void;  
+    handleCloseError: () => void;
+    handleCloseBackdrop: () => void;  
 }

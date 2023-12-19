@@ -21,7 +21,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [openMessage, setOpenMessage] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
 
   const clearMessage = () => {
     setMessage("");
@@ -33,12 +35,16 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
 
   const handleCloseMessage = () => {
     clearMessage();
-    setOpen(false);
+    setOpenMessage(false);
   }
 
   const handleCloseError = () => {
     clearError();
-    setOpen(false);
+    setOpenError(false);
+  }
+
+  const handleCloseBackdrop = () => {
+    setOpenBackdrop(false)
   }
 
   const light = createTheme(CustomLightTheme);
@@ -85,12 +91,17 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
         login,
         book, 
         setBook,
-        open,
-        setOpen,
+        openMessage,
+        openError,
+        openBackdrop,
+        setOpenBackdrop,
+        setOpenMessage,
+        setOpenError,
         clearError,
         clearMessage,
         handleCloseError,
-        handleCloseMessage
+        handleCloseMessage,
+        handleCloseBackdrop,
       }}
     >
       {children}

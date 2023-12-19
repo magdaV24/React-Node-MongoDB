@@ -12,7 +12,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  CircularProgress,
   Typography,
 } from "@mui/material";
 import { fill } from "@cloudinary/url-gen/actions/resize";
@@ -39,6 +38,7 @@ import Grade from '../../components/book/Grade'
 import ReadingStatus from '../../components/book/ReadingStatus'
 import ReviewList from "../../components/book/ReviewsList";
 import { Book } from "../../types/Book";
+import Backdrop from "../../components/global/Backdrop";
 
 export default function BookPage() {
     const location = useLocation();
@@ -50,10 +50,10 @@ export default function BookPage() {
     .toString()
     .replace(/[",]/g, " ");
    
-  const {  error, isLoading: loading } = useBook(title);
-  const { currentUser, book } = useContext(AuthContext);
+  const {  error } = useBook(title);
+  const { currentUser, book, openBackdrop } = useContext(AuthContext);
 
-  const [showReviews, setShowReviews] = useState(true); // The user can choose if they want to see the reviews
+  const [showReviews, setShowReviews] = useState(false); // The user can choose if they want to see the reviews
   let show = "Show Reviews";
 
   if (showReviews) {
@@ -188,7 +188,7 @@ export default function BookPage() {
                 </TableHead>
               </Table>
               {currentUser && (
-                <ReadingStatus user_id={currentUser.id} book_id={book.id} />
+                <ReadingStatus user_id={currentUser.id} book_id={book._id} />
               )}
               {currentUser && (
                 <Fab
@@ -208,7 +208,7 @@ export default function BookPage() {
       {book && (
         <>
           {currentUser && (
-            <ReviewForm book_id={book.id} open={open} close={close} />
+            <ReviewForm book_id={book._id} open={open} close={close} />
           )}
           <Button
             variant="outlined"
@@ -217,11 +217,11 @@ export default function BookPage() {
           >
             {show}
           </Button>
-          {showReviews && <ReviewList book_id={book.id} />}
+          {showReviews && <ReviewList book_id={book._id} />}
           <Login open={openLogin} handleClose={closeLogin} />
         </>
       )}
-      {loading && <CircularProgress />}
+      {openBackdrop && <Backdrop />}
     </Container>
   );
 }

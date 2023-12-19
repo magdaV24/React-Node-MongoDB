@@ -18,7 +18,7 @@ export default function AdminPage() {
     }
 
     const {message, error } = useContext(AuthContext)
-    const {data} = useFetchBooks()
+    const {data} = useFetchBooks();
     
   return (
     <Container

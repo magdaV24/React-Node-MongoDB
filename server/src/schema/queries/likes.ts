@@ -6,10 +6,10 @@ export const like_object = async (req: any, res: any) => {
   const { object_id, book_id, user_id } = req.body;
 
   try {
-    const check = await likes.findOne({ object_id: object_id });
+    const check = await likes.findOne({ object_id: object_id, user_id: user_id });
 
     if (check) {
-      await likes.deleteOne({ object_id: object_id });
+      await likes.deleteOne({ object_id: object_id, user_id: user_id });
       return res.json("Liked retrieved successfully!");
     } else {
       await likes.insertMany({

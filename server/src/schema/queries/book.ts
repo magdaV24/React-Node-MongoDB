@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import books from "../models/book";
 import comments from "../models/comment";
 import cloudinary from "../../cloudinary/cloudinaryConfig";
+import likes from "../models/likes";
 
 export const add_book = async (req: any, res: any) => {
   const {
@@ -71,7 +72,7 @@ export const fetch_book = async (req: any, res: any) => {
     }
 
     return res.json({
-      id: data._id,
+      _id: data._id,
       title: data.title,
       author: data.author,
       published: data.published,
@@ -281,6 +282,7 @@ export const delete_book = async (req: any, res: any) => {
   try {
     await books.deleteMany({ _id: id });
     await comments.deleteMany({ book_id: id });
+    await likes.deleteMany({book_id: id})
 
     if (!photos || !Array.isArray(photos)) {
       return res.json("Invalid request");
@@ -351,10 +353,11 @@ export const edit_field = async (req: any, res: any) => {
   const { id, field, update } = req.body;
 
   try {
-    const check = await books.findOne({ _id: new mongoose.Types.ObjectId(id) });
+    const check = await books.findOne({ _id: id });
 
     if (!check) {
-      return res.json("Could not find this book!");
+      // return res.json("Could not find this book!");
+      return res.json(id);
     }
 
     const updateField = await books.updateOne(

@@ -63,8 +63,8 @@ export default function EditPhotoCard({ photo, _id }: Props) {
           <DeleteSharpIcon onClick={onSubmit} />
         </Button>
       )}
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </Container>
   );
 }

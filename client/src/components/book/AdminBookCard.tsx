@@ -4,7 +4,6 @@ import {
   Card,
   CircularProgress,
   Container,
-  Typography,
 } from "@mui/material";
 import BookImagesDisplay from "./BookImagesDisplay";
 import BookTable from "./BookTable";
@@ -17,7 +16,6 @@ import EditBookForm from "../../forms/edit_book/EditBookForm";
 import { Book } from "../../types/Book";
 import {
   buttons_wrapper,
-  card_header,
   card_wrapper,
   container_wrapper,
   table_wrapper,
@@ -83,57 +81,21 @@ export default function AdminBookCard({
           </Button>
         )}
       </Container>
-      <Container sx={container_wrapper}>
-        <Container sx={card_header}>
-          <Typography
-            variant="h5"
-            sx={{ width: "100%", fontSize: "1.5rem", marginBottom: 1 }}
-          >
-            {title}
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{ width: "100%", fontSize: "1.5rem", marginBottom: 1 }}
-          >
-            {author}
-          </Typography>
-        </Container>
-        <BookImagesDisplay
-          photos={photos}
-          _id={""}
-          author={""}
-          title={""}
-          description={""}
-          language={""}
-          genres={[]}
-          reviews={[]}
-          pages={pages}
-          grade={[]}
-          published={""}
-        />
-      </Container>
       <Container sx={table_wrapper}>
         <BookTable
-          _id={_id}
-          author={""}
-          title={""}
-          description={""}
+          author={author}
+          title={title}
+          description={description}
           language={language}
           genres={genres}
-          photos={[]}
-          reviews={[]}
           pages={pages}
-          grade={[]}
           published={published}
         />
-        <Typography sx={{ width: "60%", height: "60vh" }}>
-          {description}
-        </Typography>
       </Container>
       <EditBookForm
         handleClose={closeForm}
         open={showForm}
-        _id={_id}
+        id={_id}
         photos={photos}
         title={title}
         author={author}
@@ -143,6 +105,12 @@ export default function AdminBookCard({
         language={language}
         pages={pages}
       />
+      
+      <Container sx={container_wrapper}>
+        <BookImagesDisplay
+          photos={photos}
+        />
+      </Container>
       {message && <SuccessAlert />}
       {error && <ErrorAlert />}
     </Card>

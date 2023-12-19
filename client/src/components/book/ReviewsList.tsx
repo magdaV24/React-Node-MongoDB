@@ -1,94 +1,104 @@
-import { Container } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { useState } from "react";
-import { useQuery } from "react-query";
-import { FETCH_REVIEWS, SHOW_FINISHED, SHOW_STARS } from "../../api/urls";
-import fetchData from "../../functions/fetchData";
 import { Review } from "../../types/Review";
 import ReviewCard from "./ReviewCard";
 import Sort from "./Sort";
+import { useFetchReviews } from "../../hooks/queries/useFetchReviews";
+import { useFetchByStars } from "../../hooks/queries/useFetchByStars";
+import { useFetchByFinished } from "../../hooks/queries/useFetchByFinished";
 
-interface Props{
-    book_id: string
+interface Props {
+  book_id: string;
 }
 
-export default function ReviewList({book_id}: Props){
-    const fetchAllReviews = () => fetchData(`${FETCH_REVIEWS}/${book_id}`);
-    const fetchByFinished = (finished: string) =>
-      fetchData(`${SHOW_FINISHED}/${book_id}/${finished}`);
-    const fetchByStars = (stars: string) =>
-      fetchData(`${SHOW_STARS}/${book_id}/${stars}`);
-  
-    const [queryKey, setQueryKey] = useState("showAllReviews");
-    const [queryFn, setQueryFn] = useState(fetchAllReviews);
-  
-    const {
-      data,
-      refetch,
-    } = useQuery(queryKey, () => queryFn);
-  
-    const show_all = () => {
-      setQueryKey("showAllReviews");
-      setQueryFn(fetchAllReviews);
-      refetch();
-    };
-  
-    const show_finished = (finished: string) => {
-      setQueryKey(finished);
-      setQueryFn(() => fetchByFinished(finished));
-      refetch();
-    };
-  
-    const show_stars = (stars: string) => {
-      setQueryKey(stars);
-      setQueryFn(() => fetchByStars(stars));
-      refetch();
-    };
-  
-    return(
-        <Container sx={{ display: "flex", width: "100%" }}>
-              <Container
-                sx={{
-                  display: "flex",
-                  width: "25%",
-                  height: "60vh",
-                  position: "sticky",
-                  p: 0,
-                }}
-              >
-                <Sort
-                  show_finished={show_finished}
-                  show_stars={show_stars}
-                  show_all={show_all}
-                />
-              </Container>
-              <Container
-                sx={{
-                  width: "75%",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  p: 0,
-                }}
-              >
-                {!data && <p>No data yet.</p>}
-                {(data as Review[]) && (data as Review[]).map((review: Review) => (
-                  <ReviewCard
-                  user_id={review.user_id}
-                  content={review.content}
-                  date={review.date}
-                  stars={review.stars}
-                  finished={review.finished}
-                  review_id={review._id}
-                  avatar={review.avatar}
-                  username={review.username}
-                  book_id={book_id}
-                  spoilers={review.spoilers}
-                  key={review._id}
-                />
-                ))}
-              </Container>
-            </Container>
-    )
+export default function ReviewList({ book_id }: Props) {
+  const [finished, setFinished] = useState("");
+  const [stars, setStars] = useState("");
+
+  const { reviews, refetch: refetchAll } = useFetchReviews(book_id, true);
+  const { reviewsByStars, refetchByStars } = useFetchByStars(
+    book_id,
+    stars
+  );
+  const { reviewsByFinished, refetchByFinished } = useFetchByFinished(
+    book_id,
+    finished
+  );
+
+  const update_reviews = async () => {
+    if (finished) {
+      await refetchByFinished();
+    } else if (stars) {
+      await refetchByStars();
+    } else {
+      await refetchAll();
+    }
+  };
+  const show_all = async () => {
+    await update_reviews();
+    setFinished('');
+    setStars('');
+  };
+
+  const show_finished = async (finished: string) => {
+    await update_reviews();
+    setFinished(finished);
+    setStars("");
+  };
+
+  const show_stars = async (stars: string) => {
+    await update_reviews();
+    setFinished("");
+    setStars(stars);
+  };
+
+  return (
+    <Container sx={{ display: "flex", width: "100%" }}>
+      <Container
+        sx={{
+          display: "flex",
+          width: "25%",
+          height: "60vh",
+          position: "sticky",
+          p: 0,
+        }}
+      >
+        <Sort
+          show_finished={show_finished}
+          show_stars={show_stars}
+          show_all={show_all}
+        />
+      </Container>
+      <Container
+        sx={{
+          width: "75%",
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          alignItems: "center",
+          justifyContent: "center",
+          p: 0,
+        }}
+      >
+        {(!reviews && !reviewsByFinished && !reviewsByStars) && <Typography>No reviews yet!</Typography>}
+        {(finished ? reviewsByFinished : stars ? reviewsByStars : reviews)?.map(
+          (review: Review) => (
+            <ReviewCard
+              user_id={review.user_id}
+              content={review.content}
+              date={review.date}
+              stars={review.stars}
+              finished={review.finished}
+              review_id={review._id}
+              avatar={review.avatar}
+              username={review.username}
+              book_id={book_id}
+              spoilers={review.spoilers}
+              key={review._id}
+            />
+          )
+        )}
+      </Container>
+    </Container>
+  );
 }

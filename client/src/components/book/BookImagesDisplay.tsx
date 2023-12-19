@@ -1,16 +1,18 @@
 import { ImageList } from "@mui/material";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { AdvancedImage } from "@cloudinary/react";
-import { Book } from "../../types/Book";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 
-export default function BookImagesDisplay({ photos }: Book) {
+interface Props{
+  photos: string[];
+}
+export default function BookImagesDisplay({ photos }: Props) {
   const cld = cloudinaryFnc();
 
   return (
     <ImageList
-      sx={{ width: 650, minHeight: 300, height: 'fit-content', mt: 10 }}
-      cols={3}
+      sx={{ width: '100%', minHeight: 300, height: 'fit-content', p: 1.5 }}
+      cols={5}
       rowHeight={164}>
       {photos &&
         photos.map((photo: string) => (

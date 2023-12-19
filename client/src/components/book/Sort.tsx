@@ -38,6 +38,7 @@ export default function Sort({
   show_all,
   show_stars,
 }: MenuProps) {
+  
   const sortingReducer = (state: State, action: Action) => {
     switch (action.type) {
       case "SHOW_ALL":
@@ -166,6 +167,7 @@ export default function Sort({
   const [state, dispatch] = useReducer(sortingReducer, initialState);
 
   useEffect(() => {
+    show_all()
     if (state.showAll) {
       show_all();
     } else if (state.showFinished) {
@@ -201,14 +203,16 @@ export default function Sort({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
+        justifyContent: 'center',
         gap: 1,
         margin: 0,
         ml: -9,
+        p: 1
       }}
     >
       {/* Shows all the reviews */}
       {state.showAll ? (
-        <Button>
+        <Button onClick={() => dispatch({ type: "UNCHECK" })}>
           <CheckCircleSharpIcon /> All
         </Button>
       ) : (

@@ -17,6 +17,7 @@ export const useFetchBooks = () => {
     {
       onSettled: () => {
         setTimeout(() => authContext.setLoading(false), 0);
+        setTimeout(() => (authContext.setOpenBackdrop(false), 0))
       },
     }
   );
@@ -24,6 +25,7 @@ export const useFetchBooks = () => {
   useEffect(() => {
     if (isLoading) {
       authContext.setLoading(true);
+      authContext.setOpenBackdrop(true)
     }
   }, [isLoading, authContext]);
 

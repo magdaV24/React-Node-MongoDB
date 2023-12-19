@@ -1,10 +1,11 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
 import { ADD_BOOK } from "../../api/urls";
 
 export const useAddBookMutation = () => {
   const authContext = useAuthContext();
+  const queryClient = useQueryClient();
   const mutation = useMutation(
     async (input: unknown) => await postData(ADD_BOOK, input),
     {
@@ -15,6 +16,7 @@ export const useAddBookMutation = () => {
         ) {
           authContext.setOpen(true);
           authContext.setError(res);
+          queryClient.invalidateQueries("booksQuery");
         } else {
           authContext.setOpen(true);
           authContext.setMessage("The book has been added to the database!");
@@ -25,8 +27,8 @@ export const useAddBookMutation = () => {
         authContext.setOpen(true);
       },
       onSettled: () => authContext.setLoading(false),
-      onMutate: () => authContext.setLoading(true),
     }
   );
-  return mutation;
+  const isLoading = mutation.isLoading
+  return {mutation, isLoading};
 };

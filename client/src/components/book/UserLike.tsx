@@ -19,10 +19,10 @@ interface Props {
 }
 
 export default function UserLike({ object_id, book_id }: Props) {
-  const { loading, currentUser, error } = useContext(AuthContext);
+  const { currentUser, error } = useContext(AuthContext);
 
   // Give/Take the user's like;
-  const give_like = useLike();
+  const {give_like, likeLoading} = useLike();
   const onSubmit = async () => {
     const input = {
       user_id: currentUser.id,
@@ -56,7 +56,7 @@ export default function UserLike({ object_id, book_id }: Props) {
           alignItems: "center",
         }}
       >
-        {loading ? (
+        {likeLoading ? (
           <Box>
             <CircularProgress />
           </Box>
@@ -65,12 +65,12 @@ export default function UserLike({ object_id, book_id }: Props) {
             {(currentUser && liked) ? (
               <Button size="large" className="likeButton" onClick={onSubmit} sx={{gap: 1}}>
                 <FavoriteSharpIcon />
-                <Typography sx={{color: 'secondary'}}>{count}</Typography>
+                <Typography>{count}</Typography>
               </Button>
             ) : (
               <Button size="large" className="likeButton" onClick={onSubmit} sx={{gap: 1}}>
                 <FavoriteBorderSharpIcon className="likeButton" />
-                  <Typography sx={{color: 'secondary'}}>{count}</Typography>
+                  <Typography>{count}</Typography>
               </Button>
             )}
           </>

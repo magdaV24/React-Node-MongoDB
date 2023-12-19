@@ -52,9 +52,9 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
   });
   const [disabled, setDisabled] = useState(false);
   const authContext = useAuthContext();
-  const { loading, message, error } = useContext(AuthContext);
+  const { message, error } = useContext(AuthContext);
 
-  const add_book = useAddBook();
+  const {add_book, isLoading} = useAddBook();
   const submit_to_cloudinary = useCloudinary();
 
   const submitBook = async () => {
@@ -85,7 +85,6 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
     }
     setDisabled(false);
   };
-  console.log(error);
 
   useEffect(() => {
     if (errors.title) {
@@ -288,7 +287,7 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
               />
             </Container>
           </Container>
-          {loading ? (
+          {isLoading ? (
             <Box sx={button_styles}>
               <CircularProgress />
             </Box>

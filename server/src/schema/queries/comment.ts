@@ -40,7 +40,7 @@ export const fetch_comments = async (req: any, res: any) => {
 // Deleting a user's comment
 
 export const delete_user_comment = async (req: any, res: any) => {
-  const { id } = req.body;
+  const id  = req.body.id;
 
   try {
     await comments.deleteMany({ parent_id: id });

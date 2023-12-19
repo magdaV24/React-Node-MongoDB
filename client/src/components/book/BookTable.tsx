@@ -5,10 +5,19 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { Book } from "../../../types/Book";
 import { useState, useEffect } from "react";
 
-export default function BookTable({published, language, pages, genres}: Book) {
+interface Book{
+  author: string;
+  title: string;
+  published: string;
+  language: string;
+  pages: number;
+  genres: string[];
+  description: string;
+}
+
+export default function BookTable({title, author, published, language, pages, genres, description}: Book) {
   const [genresArr, setGenresArr] = useState("");
 
   const set_genres = (genres: string[]) => {
@@ -23,7 +32,7 @@ useEffect(()=>{
     sx={{
       display: "flex",
       height: "60vh",
-      width: "25%",
+      width: "100%",
       alignItems: "center",
       justifyContent: "space-between",
       flexDirection: "column",
@@ -33,29 +42,47 @@ useEffect(()=>{
   >
     <Table>
       <TableHead>
+      <TableRow
+          sx={{ align: "left" }}
+        >
+          <TableCell sx={{width: '10%', backgroundColor: "secondary.dark"}}>Title:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "secondary.main"}}>{title}</TableCell>
+        </TableRow>
+        <TableRow
+          sx={{ align: "left"}}
+        >
+          <TableCell sx={{width: '10%', backgroundColor: "primary.dark"}}>Author:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "primary.main"}}>{author}</TableCell>
+        </TableRow>
         <TableRow
           sx={{ align: "left", backgroundColor: "secondary.dark" }}
         >
-          <TableCell>Published:</TableCell>
-          <TableCell>{published}</TableCell>
+          <TableCell sx={{width: '10%', backgroundColor: "secondary.dark"}}>Published:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "secondary.main"}}>{published}</TableCell>
         </TableRow>
         <TableRow
           sx={{ align: "left", backgroundColor: "secondary.light" }}
         >
-          <TableCell>Pages:</TableCell>
-          <TableCell>{pages}</TableCell>
+          <TableCell sx={{width: '10%', backgroundColor: "primary.dark"}}>Pages:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "primary.main"}}>{pages}</TableCell>
         </TableRow>
         <TableRow
           sx={{ align: "left", backgroundColor: "secondary.dark" }}
         >
-          <TableCell>Genres:</TableCell>
-          <TableCell>{genresArr}</TableCell>
+          <TableCell sx={{width: '10%', backgroundColor: "secondary.dark"}}>Genres:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "secondary.main"}}>{genresArr}</TableCell>
         </TableRow>
         <TableRow
           sx={{ align: "left", backgroundColor: "secondary.light" }}
         >
-          <TableCell>Language:</TableCell>
-          <TableCell>{language}</TableCell>
+          <TableCell sx={{width: '10%', backgroundColor: "primary.dark"}}>Language:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "primary.main"}}>{language}</TableCell>
+        </TableRow>
+        <TableRow
+          sx={{ align: "left", backgroundColor: "secondary.dark" }}
+        >
+          <TableCell sx={{width: '10%', backgroundColor: "secondary.dark"}}>Synopsis:</TableCell>
+          <TableCell sx={{width: '90%', backgroundColor: "secondary.main"}}>{description}</TableCell>
         </TableRow>
       </TableHead>
     </Table>

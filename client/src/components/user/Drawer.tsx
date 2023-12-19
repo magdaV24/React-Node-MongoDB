@@ -94,7 +94,7 @@ export default function Drawer({ isOpen, handleClose, handleOpen }: Drawer) {
         {(currently_reading as Book[]) ? (
           (currently_reading as Book[]).map((book: Book) => (
             <DrawerCard
-              key={book.id}
+              key={book._id}
               title={book.title}
               author={book.author}
               photo={
@@ -112,7 +112,7 @@ export default function Drawer({ isOpen, handleClose, handleOpen }: Drawer) {
         {(want_to_read as Book[]) ? (
           (want_to_read as Book[]).map((book: Book) => (
             <DrawerCard
-              key={book.id}
+              key={book._id}
               title={book.title}
               author={book.author}
               photo={
@@ -130,7 +130,7 @@ export default function Drawer({ isOpen, handleClose, handleOpen }: Drawer) {
         {(read as Book[]) ? (
           (read as Book[]).map((book: Book) => (
             <DrawerCard
-              key={book.id}
+              key={book._id}
               title={book.title}
               author={book.author}
               photo={

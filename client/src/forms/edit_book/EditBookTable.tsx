@@ -30,7 +30,7 @@ interface Props {
   author: string;
   published: string;
   description: string;
-  genres: [];
+  genres: string[];
   language: string;
   pages: number;
 }
@@ -79,13 +79,13 @@ export default function EditBookTable({
   const { error, message, loading } = useContext(AuthContext);
   const edit_field = useEditField();
 
-  const submit_edit = async (field: string, update: unknown) => {
+  const submit_edit = async (field: string, update: unknown, id: string) => {
     const data = {
       id: id,
       field: field,
       update: update,
     };
-
+    console.log(data)
     try {
       await edit_field(data);
     } catch (error) {
@@ -109,8 +109,13 @@ export default function EditBookTable({
       <Table>
         <TableHead>
           <TableRow sx={{ align: "left", backgroundColor: "secondary.dark" }}>
-            <TableCell>Title:</TableCell>
-            <TableCell onDoubleClick={() => editingState(0)}>
+            <TableCell sx={{ width: "10%", backgroundColor: "secondary.dark" }}>
+              Title:
+            </TableCell>
+            <TableCell
+              sx={{ width: "90%", backgroundColor: "secondary.main" }}
+              onDoubleClick={() => editingState(0)}
+            >
               {editing[0] ? (
                 <Container
                   sx={{
@@ -125,6 +130,7 @@ export default function EditBookTable({
                     name="title"
                     render={({ field }) => (
                       <TextField
+                        sx={{ width: "90%", backgroundColor: "secondary.main" }}
                         autoFocus
                         {...field}
                         defaultValue={title}
@@ -141,7 +147,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("title", getValues("title"))
+                        submit_edit("title", getValues("title"), id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -186,7 +192,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("author", getValues("author"))
+                        submit_edit("author", getValues("author"), id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -231,7 +237,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("published", getValues("published"))
+                        submit_edit("published", getValues("published"), id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -281,7 +287,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("pages", getValues("pages"))
+                        submit_edit("pages", getValues("pages"), id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -338,7 +344,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("genres", getValues("genres"))
+                        submit_edit("genres", getValues("genres"), id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -396,7 +402,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("language", getValues("language"))
+                        submit_edit("language", getValues("language"), id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -445,7 +451,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("description", getValues("description"))
+                        submit_edit("description", getValues("description"), id)
                       )}
                       sx={{ height: "16vh" }}
                     >

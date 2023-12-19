@@ -20,20 +20,20 @@ const style = {
 interface Modal {
   handleClose: () => void;
   open: boolean;
-  _id: string;
-  photos: [];
+  id: string;
+  photos: string[];
   title: string;
   author: string;
   published: string;
   description: string;
-  genres: [];
+  genres: string[];
   language: string;
   pages: number
 }
 export default function EditBookForm({
   open,
   handleClose,
-  _id,
+  id,
   photos,
   title, author, published, genres, description, language, pages
 }: Modal) {
@@ -41,10 +41,10 @@ export default function EditBookForm({
     <Modal open={open} onClose={handleClose}>
       <Container sx={style}>
       <EditBookPhotos
-        _id={_id}
+        _id={id}
         photos={photos}
       />
-      <EditBookTable id={_id} title={title} author={author} published={published} description={description} genres={genres} language={language} pages={pages} />
+      <EditBookTable id={id} title={title} author={author} published={published} description={description} genres={genres} language={language} pages={pages} />
       </Container>
     </Modal>
   );

@@ -18,7 +18,7 @@ import { PRESET } from "../../cloudinary/cloudinary";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 interface Props {
-  photos: [];
+  photos: string[];
   _id: string;
 }
 

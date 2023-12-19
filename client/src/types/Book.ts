@@ -1,7 +1,7 @@
 import { Review } from "./Review"
 
 export type Book = {
-    id: string,
+    _id: string,
     author: string,
     title: string,
     description: string,

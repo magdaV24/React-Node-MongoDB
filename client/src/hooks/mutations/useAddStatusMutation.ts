@@ -10,7 +10,7 @@ export const useAddStatusMutation = () => {
     {
       onError: (error) => {
         authContext.setError(error as string);
-        authContext.setOpen(true);
+        authContext.setOpenError(true);
       },
       onSettled: () => authContext.setLoading(false),
     }

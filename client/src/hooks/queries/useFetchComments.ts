@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 export const useFetchComments = (input: string) => {
     const authContext = useAuthContext();
-    const { data, isLoading, error } = useQuery(
+    const { data: comments, isLoading, error } = useQuery(
         `fetchComments/${input}`,
         async () => {
             const result = await fetchData(`${FETCH_COMMENTS}/${input}`)
@@ -25,5 +25,5 @@ export const useFetchComments = (input: string) => {
         }
       }, [isLoading, authContext]);
     
-      return { data, isLoading, error };
+      return { comments, isLoading, error };
 }

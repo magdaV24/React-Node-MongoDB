@@ -1,7 +1,7 @@
 import { useAddBookMutation } from "./mutations/useAddBookMutation";
 
 export default function useAddBook() {
-    const mutation = useAddBookMutation()
+    const {mutation, isLoading} = useAddBookMutation()
   
     const add_book = async (input: unknown) => {
       try {
@@ -10,5 +10,5 @@ export default function useAddBook() {
         throw new Error(`Error: ${error}`);
       }
     };
-    return add_book;
+    return {add_book, isLoading};
   }

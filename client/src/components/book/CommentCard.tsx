@@ -43,6 +43,7 @@ interface Props {
   id: string;
   username: string;
   avatar: string;
+  parent_id: string;
 }
 
 export default function CommentCard({
@@ -53,9 +54,10 @@ export default function CommentCard({
   id,
   username,
   avatar,
+  parent_id,
 }: Props) {
   const format_date = date.substring(0, 10);
-  const { currentUser, loading, error, message } = useContext(AuthContext);
+  const { currentUser, error, message } = useContext(AuthContext);
   const authContext = useAuthContext();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -80,12 +82,16 @@ export default function CommentCard({
   };
   // Deleting a comment
 
-  const delete_comment = useDeleteComment();
+  const {delete_comment, deleteCommentLoading} = useDeleteComment();
 
   const handleDelete = (e: unknown) => {
     (e as Event).preventDefault();
+    const input = {
+      id: id,
+      parent_id: parent_id,
+    };
     try {
-      delete_comment(id);
+      delete_comment(input);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
@@ -159,7 +165,7 @@ export default function CommentCard({
               <>
                 {currentUser.id === user_id && (
                   <>
-                    {loading ? (
+                    {deleteCommentLoading ? (
                       <Box>
                         <CircularProgress />
                       </Box>
@@ -189,7 +195,7 @@ export default function CommentCard({
             )}
           </Container>
           <Container sx={like_button_wrapper}>
-            {currentUser && <UserLike object_id={id} book_id={book_id}/>}
+            {currentUser && <UserLike object_id={id} book_id={book_id} />}
           </Container>
         </CardActions>
         {isCommenting && <CommentForm parent_id={id} book_id={book_id} />}
@@ -198,22 +204,19 @@ export default function CommentCard({
       <Box sx={children_wrapper}>
         {showChildren && (
           <>
-            {loading && (
-              <>
-                {comments &&
-                  (comments as Comment[]).map((comment: Comment) => (
-                    <CommentCard
-                      user_id={comment.user_id}
-                      content={comment.content}
-                      date={comment.date}
-                      id={comment._id}
-                      username={comment.username}
-                      avatar={comment.avatar}
-                      book_id={comment.book_id}
-                    />
-                  ))}
-              </>
-            )}
+            {comments &&
+              (comments as Comment[]).map((comment: Comment) => (
+                <CommentCard
+                  user_id={comment.user_id}
+                  content={comment.content}
+                  date={comment.date}
+                  id={comment._id}
+                  username={comment.username}
+                  avatar={comment.avatar}
+                  book_id={comment.book_id}
+                  parent_id={id}
+                />
+              ))}
           </>
         )}
       </Box>

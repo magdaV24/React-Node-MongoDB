@@ -19,19 +19,10 @@ export const container_wrapper = {
   alignItems: "flex-start",
   justifyContent: "space-between",
 };
-export const card_header = {
-  width: "30%",
-  height: "20vh",
-  mt: 5,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-};
 export const table_wrapper = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  marginTop: 3,
-  width: "100",
+  width: "100%",
+  mt: 2
 };

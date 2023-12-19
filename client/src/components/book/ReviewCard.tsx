@@ -271,6 +271,7 @@ export default function ReviewCard({
                   id={comment._id}
                   username={comment.username}
                   avatar={comment.avatar}
+                  parent_id={review_id}
                 />
               ))}
           </>

@@ -13,6 +13,7 @@ import { AVATAR_ANON } from "../cloudinary/cloudinary";
 import useAddComment from "../hooks/useAddComment";
 import SuccessAlert from "../components/global/SuccessAlert";
 import ErrorAlert from "../components/global/ErrorAlert";
+import { CommentInput } from "../interfaces/CommentsInput";
 const style = {
   width: "100%",
   height: "20vh",
@@ -43,12 +44,12 @@ interface Props {
   book_id: string;
 }
 export default function CommentForm({ parent_id, book_id }: Props) {
-  const { currentUser, loading, error, message } = useContext(AuthContext);
+  const { currentUser, error, message } = useContext(AuthContext);
   const date = new Date(new Date());
 
   const { handleSubmit, control, getValues } = useForm();
 
-  const add_comment = useAddComment();
+  const { add_comment, addCommentLoading } = useAddComment();
 
   const submitComment = async () => {
     const input = {
@@ -58,7 +59,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
       content: getValues("content"),
     };
     if (currentUser) {
-      const data = {
+      const data: CommentInput = {
         user_id: currentUser.id,
         username: currentUser.username,
         avatar: currentUser.avatar,
@@ -70,7 +71,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
         throw new Error(`Error: ${error}`);
       }
     } else {
-      const data = {
+      const data: CommentInput = {
         user_id: "Anon_Comment",
         username: "Anonymous",
         avatar: AVATAR_ANON,
@@ -83,7 +84,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
       }
     }
   };
-  
+
   return (
     <>
       <Container sx={style} component="form">
@@ -103,7 +104,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
             />
           )}
         />
-        {loading ? (
+        {addCommentLoading ? (
           <Box sx={btnStyles}>
             <CircularProgress />
           </Box>
