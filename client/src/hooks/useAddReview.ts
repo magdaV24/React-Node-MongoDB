@@ -1,14 +1,14 @@
 import { useAddReviewMutation } from "./mutations/useAddReviewMutation";
 
 export default function useAddReview() {
-  const mutation = useAddReviewMutation();
+  const {mutation, reviewLoading} = useAddReviewMutation();
 
-  const add_book = async (input: unknown) => {
+  const add_review = async (input: unknown) => {
     try {
       await mutation.mutateAsync(input);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
   };
-  return add_book;
+  return {add_review, reviewLoading};
 }

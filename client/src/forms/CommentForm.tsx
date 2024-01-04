@@ -14,6 +14,7 @@ import useAddComment from "../hooks/useAddComment";
 import SuccessAlert from "../components/global/SuccessAlert";
 import ErrorAlert from "../components/global/ErrorAlert";
 import { CommentInput } from "../interfaces/CommentsInput";
+import { useAuthContext } from "../hooks/useAuthContext";
 const style = {
   width: "100%",
   height: "20vh",
@@ -39,12 +40,14 @@ const btnStyles = {
   justifyContent: "center",
 };
 
+
 interface Props {
   parent_id: string;
   book_id: string;
 }
 export default function CommentForm({ parent_id, book_id }: Props) {
   const { currentUser, error, message } = useContext(AuthContext);
+  const authContext = useAuthContext()
   const date = new Date(new Date());
 
   const { handleSubmit, control, getValues } = useForm();
@@ -80,7 +83,8 @@ export default function CommentForm({ parent_id, book_id }: Props) {
       try {
         await add_comment(data);
       } catch (error) {
-        throw new Error(`Error: ${error}`);
+        authContext.setError(error.message)
+        authContext.setOpenError(true)
       }
     }
   };

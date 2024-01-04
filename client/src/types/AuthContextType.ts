@@ -11,6 +11,8 @@ export type AuthContextType = {
     setError: (input: string) => void;
     loading: boolean;
     setLoading: (input: boolean) => void;
+    disabled: boolean;
+    setDisabled: (input: boolean) => void;
     currentTheme: Partial<Theme>;
     logout: () => void;
     login: (input: unknown) => void;

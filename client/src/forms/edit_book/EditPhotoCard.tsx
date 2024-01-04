@@ -40,6 +40,8 @@ export default function EditPhotoCard({ photo, _id }: Props) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: 'column',
+        gap: 1
       }}
     >
       <AdvancedImage
@@ -51,16 +53,11 @@ export default function EditPhotoCard({ photo, _id }: Props) {
         </Box>
       ) : (
         <Button
-          sx={{
-            width: 3,
-            mt: 37,
-            color: "red",
-            ml: -5,
-            backgroundColor: "#EF424C",
-          }}
-          color="warning"
+        color="warning"
+        variant="contained"
+        sx={{width: '100%', display: 'flex', alignItems: 'center', gap: 1}}
         >
-          <DeleteSharpIcon onClick={onSubmit} />
+          <DeleteSharpIcon onClick={onSubmit} /> DELETE
         </Button>
       )}
       {message && <SuccessAlert />}

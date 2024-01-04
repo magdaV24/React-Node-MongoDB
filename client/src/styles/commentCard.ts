@@ -30,7 +30,7 @@ export const content_wrapper = {
   display: "flex",
   justifyContent: "flex-start",
   alignItems: "flex-start",
-  width: "75vw",
+  width: "100%",
   minHeight: "5vh",
   height: "fit-content",
   padding: 3,

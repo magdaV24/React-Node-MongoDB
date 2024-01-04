@@ -2,7 +2,6 @@ import {
   Container,
   TextField,
   Button,
-  Box,
   CircularProgress,
 } from "@mui/material";
 import SendSharpIcon from "@mui/icons-material/SendSharp";
@@ -23,25 +22,20 @@ interface Props {
 }
 
 export default function CommentEditForm({ content, id }: Props) {
-  const { loading, message, error } = useContext(AuthContext);
+  const { message, error, disabled, setDisabled } = useContext(AuthContext);
 
-  const {
-    handleSubmit,
-    control,
-    getValues,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit, control, getValues } = useForm();
 
-  const edit_comment = useEditComment();
+  const { edit_comment, editCommentLoading } = useEditComment();
 
   const submitEdit = async () => {
+    setDisabled(true);
     const data = {
       id: id,
       content: getValues("content"),
     };
     edit_comment(data);
-    reset();
+    setDisabled(false);
   };
 
   return (
@@ -62,25 +56,23 @@ export default function CommentEditForm({ content, id }: Props) {
           />
         )}
       />
-      {errors.content && (
-        <ErrorAlert message={errors.content.message as string} />
-      )}
-      {loading ? (
-        <Box sx={edit_comment_button}>
+      {editCommentLoading ? (
+        <Button sx={edit_comment_button} disabled={disabled}>
           <CircularProgress />
-        </Box>
+        </Button>
       ) : (
         <Button
           sx={edit_comment_button}
           type="submit"
           onClick={handleSubmit(submitEdit)}
+          disabled={disabled}
         >
           <SendSharpIcon />
         </Button>
       )}
 
-      {message && <SuccessAlert message={message} />}
-      {error && <ErrorAlert message={error} />}
+      {message && <SuccessAlert />}
+      {error && <ErrorAlert />}
     </Container>
   );
 }

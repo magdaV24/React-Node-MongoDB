@@ -21,6 +21,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [openMessage, setOpenMessage] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
@@ -60,12 +61,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
 
   const currentTheme = theme === "Light" ? light : dark;
 
-  const login = useLogin();
+  const {login} = useLogin();
   const logout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("book");
     setCurrentUser(null);
-    setBook(null)
   };
 
   useEffect(() => {
@@ -79,6 +78,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderType) => {
       value={{
         currentUser,
         currentTheme,
+        disabled,
+        setDisabled,
         logout,
         toggle_theme,
         message,

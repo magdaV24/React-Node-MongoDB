@@ -27,9 +27,9 @@ export default function Register({ open, handleClose }: ModalInterface) {
   } = useForm();
   const [disabled, setDisabled] = useState(false)
   const authContext = useAuthContext();
-  const { error, message, loading } = useContext(AuthContext);
+  const { error, message } = useContext(AuthContext);
   const submit_to_cloudinary = useCloudinary();
-  const register = useRegister();
+  const {register, registerLoading} = useRegister();
 
   const onSubmit = async () => {
     setDisabled(true)
@@ -151,7 +151,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
           control={control}
           rules={{ required: "Avatar required!" }}
           render={({ field }) => (
-            <Button variant="contained">
+            <Button variant="contained" disabled={disabled}>
               Upload an avatar
               <input
                 id="avatar-standard-basic"
@@ -162,8 +162,8 @@ export default function Register({ open, handleClose }: ModalInterface) {
             </Button>
           )}
         />
-        {loading ? (
-          <Box>
+        {registerLoading ? (
+          <Box className="loading-button">
             <CircularProgress />
           </Box>
         ) : (

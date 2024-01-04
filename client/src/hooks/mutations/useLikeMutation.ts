@@ -15,17 +15,18 @@ export const useLikeMutation = () => {
         authContext.setError(error as string);
         authContext.setOpenError(true);
       },
-      onSettled: () => authContext.setLoading(false),
       onMutate: async (input: LikeInput) => {
         const context = { input };
         return context;
       },
-      onSuccess: (context) => {
+      onSuccess: (context, variables, contextSnapshot) => {
         //Re-fetches the number of likes and check whether or not the user likes the object, so the component will be modified accordingly.
-        const input = context?.input;
-        queryClient.invalidateQueries(`likesCountQuery/${input!.object_id}`);
+        const input: LikeInput = contextSnapshot?.input|| context?.input;
+        const object_id = input?.object_id
+        const user_id = input?.user_id
+        queryClient.invalidateQueries(`likesCountQuery/${object_id}`);
         queryClient.invalidateQueries(
-          `isLikedQuery/${input!.user_id}/${input!.object_id}`
+          `isLikedQuery/${user_id}/${object_id}`
         );
       },
     }

@@ -3,8 +3,9 @@ import { useQuery } from "react-query";
 import { CHECK_IF_LIKED } from "../../api/urls";
 import fetchData from "../../functions/fetchData";
 import { useAuthContext } from "../useAuthContext";
+import { LikeInput } from "../../interfaces/LikeInput";
 
-export const useIsLiked = (user_id: string, object_id: string) => {
+export const useIsLiked = (input: LikeInput) => {
   const authContext = useAuthContext();
 
   const {
@@ -12,28 +13,27 @@ export const useIsLiked = (user_id: string, object_id: string) => {
     isLoading,
     error,
   } = useQuery(
-    `isLikedQuery/${user_id}/${object_id}`,
+    `isLikedQuery/${input.user_id}/${input.object_id}`,
     async () => {
       const result = await fetchData(
-        `${CHECK_IF_LIKED}/${user_id}/${object_id}`
+        `${CHECK_IF_LIKED}/${input.user_id}/${input.object_id}`
       );
-      authContext.setLoading(false);
       return result;
     },
     {
       onSettled: () => {
-        setTimeout(() => authContext.setLoading(false), 0);
+        setTimeout(() => authContext.setOpenBackdrop(false), 0);
       },
     }
   );
 
   useEffect(() => {
     if (isLoading) {
-      authContext.setLoading(true);
+      authContext.setOpenBackdrop(true);
     }
     if (error) {
       authContext.setError(error as string);
-      authContext.setOpen(true);
+      authContext.setOpenError(true);
     }
   }, [isLoading, authContext, error]);
 

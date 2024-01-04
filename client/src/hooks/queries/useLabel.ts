@@ -11,19 +11,18 @@ export const useLabel = (user_id: string, book_id: string) => {
     `labelQuery/${user_id}/${book_id}`,
     async () => {
       const result = await fetchData(`${FIND_STATUS}/${user_id}/${book_id}`);
-      authContext.setLoading(false);
       return result;
     },
     {
       onSettled: () => {
-        setTimeout(() => authContext.setLoading(false), 0);
+        setTimeout(() => authContext.setOpenBackdrop(false), 0);
       },
     }
   );
 
   useEffect(() => {
     if (isLoading) {
-      authContext.setLoading(true);
+      authContext.setOpenBackdrop(true);
     }
   }, [isLoading, authContext]);
 

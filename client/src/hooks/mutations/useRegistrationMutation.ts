@@ -13,20 +13,19 @@ export const useRegistrationMutation = () => {
           res === "The email provided is already in use!" ||
           res === "This username is taken!"
         ) {
-          authContext.setOpen(true);
+          authContext.setOpenError(true);
           authContext.setError(res);
         } else {
-          authContext.setOpen(true);
+          authContext.setOpenMessage(true);
           authContext.setMessage("Account created successfully!");
         }
       },
       onError: (error: string) => {
-        authContext.setOpen(true);
+        authContext.setOpenError(true);
         authContext.setError(error || "An error occurred");
       },
-      onSettled: () => authContext.setLoading(false),
-      onMutate: () => authContext.setLoading(true),
     }
   );
-  return mutation;
+  const registerLoading = mutation.isLoading
+  return {mutation, registerLoading};
 };

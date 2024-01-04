@@ -8,7 +8,6 @@ import {
   Container,
   Typography,
   TextField,
-  Box,
   CircularProgress,
   Button,
 } from "@mui/material";
@@ -29,17 +28,19 @@ export default function Login({ open, handleClose }: ModalInterface) {
     reset,
   } = useForm();
 
-  const { message, loading, error } = useContext(AuthContext);
-  const login = useLogin();
+  const { message, error, disabled } = useContext(AuthContext);
+  const {login, loginLoading} = useLogin();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    authContext.setDisabled(true)
     const input = { ...getValues() };
     try {
-      login(input);
+      await login(input);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
     reset();
+    authContext.setDisabled(false)
   };
 
   useEffect(() => {
@@ -95,15 +96,16 @@ export default function Login({ open, handleClose }: ModalInterface) {
             />
           )}
         />
-        {loading ? (
-          <Box sx={button_style}>
+        {loginLoading ? (
+          <Button className='login-button' variant='contained'>
             <CircularProgress />
-          </Box>
+          </Button>
         ) : (
           <Button
             sx={button_style}
             type="submit"
             onClick={handleSubmit(handleLogin)}
+            disabled={disabled}
           >
             LOGIN
           </Button>

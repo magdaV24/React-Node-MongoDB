@@ -69,7 +69,7 @@ export default function EditBookPhotos({ photos, _id }: Props) {
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        flexDirection: "row",
+        flexDirection: "column"
       }}
     >
       <ImageList
@@ -88,22 +88,24 @@ export default function EditBookPhotos({ photos, _id }: Props) {
             <EditPhotoCard photo={photo} _id={_id} />
           ))}
       </ImageList>
-      <Controller
+<Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>      <Controller
         name="photo"
         control={control}
         render={({ field }) => (
-          <input type="file" onChange={(e) => field.onChange(e.target.files)} />
+          <Button variant="contained" size='large'>
+            <input type="file" onChange={(e) => field.onChange(e.target.files)} /> UPLOAD PHOTO
+          </Button>
         )}
       />
       {loading ? (
-        <Box>
+        <Button>
           <CircularProgress />
-        </Box>
-      ) : (
-        <Button type="submit" onClick={handleSubmit(onSubmit)}>
-          <AddCircleOutlineSharpIcon sx={{ fontSize: "2rem" }} />
         </Button>
-      )}
+      ) : (
+        <Button type="submit" onClick={handleSubmit(onSubmit)} variant="outlined" size='large'>
+          <AddCircleOutlineSharpIcon sx={{ fontSize: "2rem" }} /> ADD PHOTO
+        </Button>
+      )}</Box>
       {message && <SuccessAlert />}
       {error && <ErrorAlert />}
     </Container>

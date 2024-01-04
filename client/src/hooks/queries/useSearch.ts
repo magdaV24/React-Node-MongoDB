@@ -10,19 +10,18 @@ export const useSearch = (input: string) => {
     "searchQuery",
     async () => {
       const result = await fetchData(`${SEARCH}/${input}`);
-      authContext.setLoading(false);
       return result;
     },
     {
       onSettled: () => {
-        setTimeout(() => authContext.setLoading(false), 0);
+        setTimeout(() => authContext.setOpenBackdrop(false), 0);
       },
     }
   );
 
   useEffect(() => {
     if (isLoading) {
-      authContext.setLoading(true);
+      authContext.setOpenBackdrop(true);
     }
   }, [isLoading, authContext]);
 

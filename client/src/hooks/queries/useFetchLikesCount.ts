@@ -3,8 +3,9 @@ import { useQuery } from "react-query";
 import { COUNT_LIKES } from "../../api/urls";
 import fetchData from "../../functions/fetchData";
 import { useAuthContext } from "../useAuthContext";
+import { LikeInput } from "../../interfaces/LikeInput";
 
-export const useFetchLikesCount = (object_id: string) => {
+export const useFetchLikesCount = (input: LikeInput) => {
   const authContext = useAuthContext();
 
   const {
@@ -12,26 +13,25 @@ export const useFetchLikesCount = (object_id: string) => {
     isLoading,
     error,
   } = useQuery(
-    `likesCountQuery/${object_id}`,
+    `likesCountQuery/${input.object_id}`,
     async () => {
-      const result = await fetchData(`${COUNT_LIKES}/${object_id}`);
-      authContext.setLoading(false);
+      const result = await fetchData(`${COUNT_LIKES}/${input.object_id}`);
       return result;
     },
     {
       onSettled: () => {
-        setTimeout(() => authContext.setLoading(false), 0);
+        setTimeout(() => authContext.setOpenBackdrop(false), 0);
       },
     }
   );
 
   useEffect(() => {
     if (isLoading) {
-      authContext.setLoading(true);
+      authContext.setOpenBackdrop(true);
     }
     if (error) {
       authContext.setError(error as string);
-      authContext.setOpen(true);
+      authContext.setOpenError(true);
     }
   }, [isLoading, authContext, error]);
 

@@ -8,6 +8,7 @@ import Welcome from "./pages/welcome/Welcome";
 import AdminPage from "./pages/admin/AdminPage";
 import Home from "./pages/home/Home";
 import BookPage from "./pages/book/BookPage";
+import Backdrop from "./components/global/Backdrop";
 
 function App() {
   const { currentTheme, toggle_theme } = useContext(AuthContext);
@@ -24,6 +25,7 @@ function App() {
           </Routes>
         </BrowserRouter>
         <ThemeButton handleToggleTheme={toggle_theme} />
+        <Backdrop />
       </CssBaseline>
     </ThemeProvider>
   );

@@ -38,7 +38,6 @@ import Grade from '../../components/book/Grade'
 import ReadingStatus from '../../components/book/ReadingStatus'
 import ReviewList from "../../components/book/ReviewsList";
 import { Book } from "../../types/Book";
-import Backdrop from "../../components/global/Backdrop";
 
 export default function BookPage() {
     const location = useLocation();
@@ -51,7 +50,7 @@ export default function BookPage() {
     .replace(/[",]/g, " ");
    
   const {  error } = useBook(title);
-  const { currentUser, book, openBackdrop } = useContext(AuthContext);
+  const { currentUser, book } = useContext(AuthContext);
 
   const [showReviews, setShowReviews] = useState(false); // The user can choose if they want to see the reviews
   let show = "Show Reviews";
@@ -118,7 +117,6 @@ export default function BookPage() {
 
                   <AdvancedImage
                     cldImg={cld
-                      // .image(book.photos.length > 0 ? book.photos[currentIndex] : '')
                       .image((book as Book).photos[currentIndex] )
                       .resize(fill().width(150).height(250))}
                   />
@@ -221,7 +219,6 @@ export default function BookPage() {
           <Login open={openLogin} handleClose={closeLogin} />
         </>
       )}
-      {openBackdrop && <Backdrop />}
     </Container>
   );
 }

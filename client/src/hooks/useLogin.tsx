@@ -1,7 +1,7 @@
 import { useLoginMutation } from "./mutations/useLoginMutation";
 
 export default function useLogin() {
-  const mutation = useLoginMutation();
+  const {mutation, loginLoading} = useLoginMutation();
 
   const login = async (input: unknown) => {
     try {
@@ -10,5 +10,5 @@ export default function useLogin() {
       throw new Error(`Error: ${error}`);
     }
   };
-  return login;
+  return {login, loginLoading};
 }

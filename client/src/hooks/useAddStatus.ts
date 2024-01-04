@@ -1,7 +1,7 @@
 import { useAddStatusMutation } from "./mutations/useAddStatusMutation";
 
 export default function useAddStatus() {
-    const mutation = useAddStatusMutation();
+    const {mutation, statusLoading} = useAddStatusMutation();
   
     const add_status = async (input: unknown) => {
       try {
@@ -10,5 +10,5 @@ export default function useAddStatus() {
         throw new Error(`Error: ${error}`);
       }
     };
-    return add_status;
+    return {add_status, statusLoading};
   }

@@ -2,7 +2,7 @@ import { useRegistrationMutation } from "./mutations/useRegistrationMutation";
 
 
 export default function useRegister() {
-  const mutation = useRegistrationMutation();
+  const {mutation, registerLoading} = useRegistrationMutation();
 
   const register = async (input: unknown) => {
     try {
@@ -11,5 +11,5 @@ export default function useRegister() {
       throw new Error(`Error: ${error}`);
     }
   };
-  return register;
+  return {register, registerLoading};
 }

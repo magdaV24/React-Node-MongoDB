@@ -12,10 +12,9 @@ export const useAddStatusMutation = () => {
         authContext.setError(error as string);
         authContext.setOpenError(true);
       },
-      onSettled: () => authContext.setLoading(false),
     }
   );
 
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
+  const statusLoading = mutation.isLoading;
+  return {mutation, statusLoading};
 };

@@ -10,18 +10,17 @@ export const useFetchComments = (input: string) => {
         `fetchComments/${input}`,
         async () => {
             const result = await fetchData(`${FETCH_COMMENTS}/${input}`)
-            authContext.setLoading(false);
       return result;
         },
         {
           onSettled: () => {
-            setTimeout(() => authContext.setLoading(false), 0);
+            setTimeout(() => authContext.setOpenBackdrop(false), 0);
           },
         }
     )
     useEffect(() => {
         if (isLoading) {
-          authContext.setLoading(true);
+          authContext.setOpenBackdrop(true);
         }
       }, [isLoading, authContext]);
     

@@ -5,7 +5,6 @@ import {
   Button,
   Rating,
   Modal,
-  Box,
   CircularProgress,
   FormControlLabel,
   Radio,
@@ -19,41 +18,18 @@ import useAddReview from "../hooks/useAddReview";
 import ErrorAlert from "../components/global/ErrorAlert";
 import SuccessAlert from "../components/global/SuccessAlert";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { btnStyles, reviewFormStyle } from "../styles/app";
 
 interface Props {
   book_id: string;
   open: boolean;
   close: () => void;
 }
-const style = {
-  width: 600,
-  display: "flex",
-  flexDirection: "column",
-  gap: "2rem",
-  bgcolor: "secondary.light",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "2px",
-  mt: 3,
-};
-
-const btnStyles = {
-  width: "100%",
-  height: "3rem",
-  fontSize: "1.1rem",
-  boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px;",
-  bgcolor: "primary.dark",
-  color: "secondary.dark",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  borderRadius: "2px",
-};
 
 export default function ReviewForm({ book_id, open, close }: Props) {
   const authContext = useAuthContext();
-  const { currentUser, loading, error, message } = useContext(AuthContext);
-  const add_review = useAddReview();
+  const { currentUser, error, message } = useContext(AuthContext);
+  const {add_review, reviewLoading} = useAddReview();
 
   const {
     control,
@@ -65,6 +41,7 @@ export default function ReviewForm({ book_id, open, close }: Props) {
   } = useForm();
 
   const onSubmit = async () => {
+    authContext.setDisabled(true)
     setValue("stars", Number(getValues("stars")));
     const data = {
       id: book_id,
@@ -80,6 +57,7 @@ export default function ReviewForm({ book_id, open, close }: Props) {
       throw new Error(`Error: ${error}`);
     }
     reset();
+    authContext.setDisabled(false)
   };
 
   useEffect(() => {
@@ -92,7 +70,7 @@ export default function ReviewForm({ book_id, open, close }: Props) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Container sx={style}>
+      <Container sx={reviewFormStyle}>
         <Typography variant="h6">Review this book!</Typography>
         <Controller
           name="stars"
@@ -158,12 +136,12 @@ export default function ReviewForm({ book_id, open, close }: Props) {
           )}
         />
 
-        {loading ? (
-          <Box sx={btnStyles}>
+        {reviewLoading ? (
+          <Button variant="contained" disabled={authContext.disabled} sx={btnStyles}>
             <CircularProgress />
-          </Box>
+          </Button>
         ) : (
-          <Button sx={btnStyles} type="submit" onClick={handleSubmit(onSubmit)}>
+          <Button sx={btnStyles} type="submit" onClick={handleSubmit(onSubmit)} disabled={authContext.disabled}>
             SUBMIT REVIEW
           </Button>
         )}

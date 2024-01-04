@@ -13,22 +13,21 @@ export const useLoginMutation = () => {
           res === "This email address is not registered!" ||
           res === "The password is incorrect!"
         ) {
-          authContext.setOpen(true)
+          authContext.setOpenMessage(true)
           authContext.setError(res);
         } else {
           authContext.setCurrentUser(res);
-          authContext.setOpen(true);
+          authContext.setOpenMessage(true);
           authContext.setMessage("Success!");
         }
       },
       onError: (error) => {
         authContext.setError(error as string);
-        authContext.setOpen(true);
+        authContext.setOpenError(true);
       },
-      onSettled: () => authContext.setLoading(false),
     }
   );
 
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
+  const loginLoading = mutation.isLoading;
+  return {mutation, loginLoading};
 };

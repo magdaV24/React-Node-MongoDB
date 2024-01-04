@@ -11,17 +11,16 @@ export const useEditCommentMutation = () => {
     {
       onSuccess: (res) => {
         if (res === "Success!") {
-          authContext.setOpen(true);
+          authContext.setOpenMessage(true);
           authContext.setMessage("Comment edited successfully!");
         }
       },
       onError: (error) => {
-        authContext.setOpen(true);
+        authContext.setOpenError(true);
         authContext.setError(error as string);
       },
-      onSettled: () => authContext.setLoading(false),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
+  const editCommentLoading = mutation.isLoading;
+  return {mutation, editCommentLoading};
 };

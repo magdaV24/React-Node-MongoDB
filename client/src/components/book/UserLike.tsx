@@ -13,6 +13,7 @@ import useLike from "../../hooks/useLike";
 import ErrorAlert from "../global/ErrorAlert";
 import { useIsLiked } from "../../hooks/queries/useIsLiked";
 import { useFetchLikesCount } from "../../hooks/queries/useFetchLikesCount";
+import { useAuthContext } from "../../hooks/useAuthContext";
 interface Props {
   object_id: string;
   book_id: string;
@@ -20,30 +21,32 @@ interface Props {
 
 export default function UserLike({ object_id, book_id }: Props) {
   const { currentUser, error } = useContext(AuthContext);
+  const authContext = useAuthContext();
+  const id = currentUser.id;
+  const input = {
+    user_id: id,
+    object_id: object_id,
+    book_id: book_id,
+  };
 
   // Give/Take the user's like;
   const {give_like, likeLoading} = useLike();
   const onSubmit = async () => {
-    const input = {
-      user_id: currentUser.id,
-      object_id: object_id,
-      book_id: book_id,
-    };
     try {
       await give_like(input);
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+      authContext.setError(error.message as string)
+      authContext.setOpenError(true)
     }
   };
 
   // Count the likes of a comment/review
-  const id = currentUser.id
 
-  const liked = useIsLiked(id, object_id);
+  const liked = useIsLiked(input);
 
   // Check wether of not a user liked an object
 
-  const {count} = useFetchLikesCount(object_id);
+  const {count} = useFetchLikesCount(input);
 
   return (
     <>

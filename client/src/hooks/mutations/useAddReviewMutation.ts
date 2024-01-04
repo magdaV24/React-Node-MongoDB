@@ -14,16 +14,15 @@ export const useAddReviewMutation = () => {
           authContext.setError(data);
         } else {
           authContext.setOpenMessage(true);
-          authContext.setMessage("Review was sent successfully!");
+          authContext.setMessage("Review sent successfully!");
         }
       },
       onError: (error) => {
         authContext.setOpenError(true);
         authContext.setError(error as string);
       },
-      onSettled: () => authContext.setLoading(false),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
+  const reviewLoading = mutation.isLoading
+  return {mutation, reviewLoading};
 };
