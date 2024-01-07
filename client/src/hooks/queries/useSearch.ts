@@ -2,9 +2,10 @@ import { useQuery } from "react-query";
 import { useAuthContext } from "../useAuthContext";
 import { SEARCH } from "../../api/urls";
 import { useEffect } from "react";
-import fetchData from "../../functions/fetchData";
+import useFetchData from "../useFetchData";
 
-export const useSearch = (input: string) => {
+export default function useSearch(input: string)  {
+  const fetchData = useFetchData();
   const authContext = useAuthContext();
   const { data, isLoading, error } = useQuery(
     "searchQuery",
@@ -23,7 +24,10 @@ export const useSearch = (input: string) => {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if (error) {
+      authContext.setError(`Error: ${error}`);
+    }
+  }, [isLoading, authContext, error]);
 
-  return { data, isLoading, error };
-};
+  return { data };
+}

@@ -1,33 +1,41 @@
 import { useMutation } from "react-query";
-import postData from "../../functions/postData";
 import { LOGIN } from "../../api/urls";
 import { useAuthContext } from "../useAuthContext";
+import usePostData from "../usePostData";
+import { useSaveToken } from "../useSaveToken";
 
-export const useLoginMutation = () => {
+function useLoginMutation(){
+  const postData = usePostData();
+  const saveToken = useSaveToken();
   const authContext = useAuthContext();
   const mutation = useMutation(
     async (input: unknown) => await postData(LOGIN, input),
     {
-      onSuccess: (res) => {
-        if (
-          res === "This email address is not registered!" ||
-          res === "The password is incorrect!"
-        ) {
-          authContext.setOpenMessage(true)
-          authContext.setError(res);
-        } else {
-          authContext.setCurrentUser(res);
-          authContext.setOpenMessage(true);
-          authContext.setMessage("Success!");
-        }
+      onSuccess: (data) => {
+        authContext.setCurrentUser(data);
+        authContext.setMessage("Logged in successfully!");
+        saveToken(data.token);
       },
-      onError: (error) => {
-        authContext.setError(error as string);
-        authContext.setOpenError(true);
+      onError: () => {
+        authContext.setCurrentUser(null);
+        authContext.setToken(null);
       },
     }
   );
 
   const loginLoading = mutation.isLoading;
   return {mutation, loginLoading};
-};
+}
+
+export default function useLogin() {
+  const {mutation, loginLoading} = useLoginMutation();
+
+  const login = async (input: unknown) => {
+    try {
+    await  mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error on useLogin: ${error}`);
+    }
+  };
+  return {login, loginLoading};
+}

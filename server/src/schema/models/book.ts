@@ -71,10 +71,6 @@ const book_schema = new mongoose.Schema({
     type: Array,
     required: true,
   },
-  reviews_ids: {
-    type: Array,
-    required: true,
-  },
 });
 
 const books = mongoose.model("Books", book_schema);

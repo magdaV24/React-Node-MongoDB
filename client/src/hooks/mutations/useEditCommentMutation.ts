@@ -1,26 +1,35 @@
 import { useMutation } from "react-query";
 import { useAuthContext } from "../useAuthContext";
-import postData from "../../functions/postData";
 import { EDIT_COMMENT } from "../../api/urls";
+import usePostDataWithToken from "../usePostDataWithToken";
 
-export const useEditCommentMutation = () => {
+function useEditCommentMutation () {
   const authContext = useAuthContext();
+  const postData = usePostDataWithToken()
 
   const mutation = useMutation(
     async (input: unknown) => await postData(EDIT_COMMENT, input),
     {
       onSuccess: (res) => {
         if (res === "Success!") {
-          authContext.setOpenMessage(true);
           authContext.setMessage("Comment edited successfully!");
         }
-      },
-      onError: (error) => {
-        authContext.setOpenError(true);
-        authContext.setError(error as string);
-      },
+      }
     }
   );
   const editCommentLoading = mutation.isLoading;
   return {mutation, editCommentLoading};
-};
+}
+
+export default function useEditComment() {
+  const { mutation, editCommentLoading } = useEditCommentMutation();
+
+  const edit_comment = async (input: unknown) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return { edit_comment, editCommentLoading };
+}

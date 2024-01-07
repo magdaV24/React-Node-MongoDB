@@ -12,11 +12,9 @@ import {
   TableRow,
   TableCell,
   Button,
-  Typography,
 } from "@mui/material";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import Bar from "../../components/global/Bar";
-import { useBook } from "../../hooks/queries/useBook";
 import {
   book_page_wrapper,
   content_card,
@@ -34,23 +32,26 @@ import { AuthContext } from "../../context/AuthContextProvider";
 import { useLocation } from "react-router-dom";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import ReviewForm from "../../forms/ReviewForm";
-import Grade from '../../components/book/Grade'
-import ReadingStatus from '../../components/book/ReadingStatus'
+import Grade from "../../components/book/Grade";
+import ReadingStatus from "../../components/book/ReadingStatus";
 import ReviewList from "../../components/book/ReviewsList";
 import { Book } from "../../types/Book";
+import useBook from "../../hooks/queries/useBook";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 export default function BookPage() {
-    const location = useLocation();
-    const cld = cloudinaryFnc();
+  const location = useLocation();
+  const cld = cloudinaryFnc();
 
   const title: string = location.pathname
     .split("/")[1]
     .split("%20")
     .toString()
     .replace(/[",]/g, " ");
-   
-  const {  error } = useBook(title);
-  const { currentUser, book } = useContext(AuthContext);
+
+  const { data: book } = useBook(title);
+  const authContext = useAuthContext();
+  const { currentUser } = useContext(AuthContext);
 
   const [showReviews, setShowReviews] = useState(false); // The user can choose if they want to see the reviews
   let show = "Show Reviews";
@@ -59,19 +60,19 @@ export default function BookPage() {
     show = "Hide Reviews";
   }
 
-    // Opening/Closing the modal that contains the review form
-    const [open, setOpen] = useState(false);
-    function close() {
-      setOpen(false);
-    }
-  
-    // Open the modal that contains the login form
-    const [openLogin, setOpenLogin] = useState(false);
-    const closeLogin = () => {
-      setOpenLogin(false);
-    };
+  // Opening/Closing the modal that contains the review form
+  const [open, setOpen] = useState(false);
+  function close() {
+    setOpen(false);
+  }
 
-      // The carousel of the book's photos
+  // Open the modal that contains the login form
+  const [openLogin, setOpenLogin] = useState(false);
+  const closeLogin = () => {
+    setOpenLogin(false);
+  };
+
+  // The carousel of the book's photos
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const moveBack = (photos: string[]) => {
@@ -93,8 +94,10 @@ export default function BookPage() {
     if (book) {
       set_genres(book.genres);
     }
-  }, [book, location.pathname]);
-  if (error) return <Typography color="error">{error as string}</Typography>;
+    if (authContext.error !== "") {
+      authContext.setError(authContext.error);
+    }
+  }, [authContext, book, location.pathname]);
 
   return (
     <Container sx={book_page_wrapper}>
@@ -117,7 +120,7 @@ export default function BookPage() {
 
                   <AdvancedImage
                     cldImg={cld
-                      .image((book as Book).photos[currentIndex] )
+                      .image((book as Book).photos[currentIndex])
                       .resize(fill().width(150).height(250))}
                   />
 
@@ -143,20 +146,14 @@ export default function BookPage() {
               </Card>
             </Container>
 
-            <Container
-              sx={content_card_wrapper}
-            >
-              <Card
-                sx={content_card}
-              >
+            <Container sx={content_card_wrapper}>
+              <Card sx={content_card}>
                 <CardHeader subheader="Synopsis:" />
                 <CardContent>{book.description}</CardContent>
               </Card>
             </Container>
 
-            <TableContainer
-              sx={table_container}
-            >
+            <TableContainer sx={table_container}>
               <Table>
                 <TableHead>
                   <TableRow

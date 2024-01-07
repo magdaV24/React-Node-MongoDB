@@ -1,10 +1,11 @@
 import { useMutation } from "react-query";
 import { ADD_REVIEW } from "../../api/urls";
-import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
+import usePostData from "../usePostData";
 
-export const useAddReviewMutation = () => {
+function useAddReviewMutation()  {
   const authContext = useAuthContext();
+  const postData = usePostData();
   const mutation = useMutation(
     async (input: unknown) => await postData(ADD_REVIEW, input),
     {
@@ -25,4 +26,17 @@ export const useAddReviewMutation = () => {
   );
   const reviewLoading = mutation.isLoading
   return {mutation, reviewLoading};
-};
+}
+
+export default function useAddReview() {
+  const {mutation, reviewLoading} = useAddReviewMutation();
+
+  const add_review = async (input: unknown) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return {add_review, reviewLoading};
+}

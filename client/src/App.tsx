@@ -9,6 +9,8 @@ import AdminPage from "./pages/admin/AdminPage";
 import Home from "./pages/home/Home";
 import BookPage from "./pages/book/BookPage";
 import Backdrop from "./components/global/Backdrop";
+import ErrorAlert from "./components/global/ErrorAlert";
+import SuccessAlert from "./components/global/SuccessAlert";
 
 function App() {
   const { currentTheme, toggle_theme } = useContext(AuthContext);
@@ -26,6 +28,8 @@ function App() {
         </BrowserRouter>
         <ThemeButton handleToggleTheme={toggle_theme} />
         <Backdrop />
+        <ErrorAlert />
+        <SuccessAlert />
       </CssBaseline>
     </ThemeProvider>
   );

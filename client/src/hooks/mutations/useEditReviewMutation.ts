@@ -1,27 +1,35 @@
 import { useMutation } from "react-query";
 import { useAuthContext } from "../useAuthContext";
-import postData from "../../functions/postData";
 import { EDIT_REVIEW } from "../../api/urls";
+import usePostDataWithToken from "../usePostDataWithToken";
 
-export const useEditReviewMutation = () => {
+function useEditReviewMutation ()  {
   const authContext = useAuthContext();
+  const postData = usePostDataWithToken()
   const mutation = useMutation(
     async (input: unknown) => await postData(EDIT_REVIEW, input),
     {
       onSuccess: (res) => {
         if (res === "Success!") {
-          authContext.setOpen(true);
           authContext.setMessage("Review edited successfully!");
         }
       },
-      onError: (error) => {
-        authContext.setOpen(true);
-        authContext.setError(error as string);
-      },
-      onSettled: () => authContext.setLoading(false),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
+  const editReviewLoading = mutation.isLoading;
 
-  return mutation;
-};
+  return {mutation, editReviewLoading};
+}
+
+export default function useEditReview() {
+  const {mutation, editReviewLoading} = useEditReviewMutation();
+
+  const edit_review = async (input: unknown) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return {edit_review, editReviewLoading};
+}

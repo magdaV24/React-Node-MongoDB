@@ -1,10 +1,14 @@
 import { useQuery } from "react-query";
 import { useAuthContext } from "../useAuthContext";
-import fetchData from "../../functions/fetchData";
 import { FETCH_REVIEWS } from "../../api/urls";
 import { useEffect } from "react";
+import useFetchData from "../useFetchData";
 
-export const useFetchReviews = (book_id: string, enabled: boolean = true) => {
+export default function useFetchReviews(
+  book_id: string,
+  enabled: boolean = true
+) {
+  const fetchData = useFetchData();
   const authContext = useAuthContext();
 
   const {
@@ -19,17 +23,21 @@ export const useFetchReviews = (book_id: string, enabled: boolean = true) => {
       return result;
     },
     {
-      enabled: enabled, 
+      enabled: enabled,
       onSettled: () => {
         setTimeout(() => authContext.setOpenBackdrop(false), 0);
       },
     }
   );
+
   useEffect(() => {
-    if (isLoading && enabled) {
+    if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext, enabled]);
+    if (error) {
+      authContext.setError(`Error: ${error}`);
+    }
+  }, [isLoading, authContext, error]);
 
-  return { reviews, error, refetch }
-};
+  return { reviews, refetch };
+}

@@ -20,7 +20,9 @@ export const add_comment = async (req: any, res: any) => {
     ]);
     return res.json("Success!");
   } catch (error) {
-      return res.json(`Error: ${error}`)
+     return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -33,7 +35,9 @@ export const fetch_comments = async (req: any, res: any) => {
     const result = await comments.find({ parent_id: parent_id });
     return res.json(result);
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");;
   }
 };
 
@@ -47,7 +51,9 @@ export const delete_user_comment = async (req: any, res: any) => {
     await comments.deleteOne({ _id: id });
     return res.json("Success!");
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");;
   }
 };
 
@@ -60,6 +66,8 @@ export const edit_comment = async (req: any, res: any) => {
     await comments.updateOne({ _id: id }, { $set: { content: content } });
     return res.json("Success!");
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");;
   }
 };

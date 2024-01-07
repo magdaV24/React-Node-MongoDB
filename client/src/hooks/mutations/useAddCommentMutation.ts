@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "react-query";
 import { ADD_COMMENT } from "../../api/urls";
-import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
 import { CommentInput } from "../../interfaces/CommentsInput";
+import usePostData from "../usePostData";
 
-export const useAddCommentMutation = () => {
+function useAddCommentMutation() {
   const authContext = useAuthContext();
   const queryClient = useQueryClient();
+  const postData = usePostData();
   const mutation = useMutation(
     async (input: CommentInput) => await postData(ADD_COMMENT, input),
     {
@@ -14,22 +15,26 @@ export const useAddCommentMutation = () => {
         const context = { input };
         return context;
       },
-      onSuccess(data, variables, context) {
-          authContext.setMessage(data);
-          authContext.setOpenMessage(true);
-
-          const input = context?.input;
-          queryClient.invalidateQueries(`fetchComments/${input?.parent_id}`)
-
+      onSuccess(data, _variables, context) {
+        authContext.setMessage(data);
+        const input = context?.input;
+        queryClient.invalidateQueries(`fetchComments/${input?.parent_id}`);
       },
-      onError: (error) => {
-        authContext.setOpenMessage(true);
-        authContext.setError(error as string);
-      },
-      // onSettled: () => authContext.setLoading(false),
     }
   );
-  // mutation.isLoading ? authContext.setLoading(true) : null;
   const addCommentLoading = mutation.isLoading;
-  return {mutation, addCommentLoading};
-};
+  return { mutation, addCommentLoading };
+}
+
+export default function useAddComment() {
+  const { mutation, addCommentLoading } = useAddCommentMutation();
+
+  const add_comment = async (input: CommentInput) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`);
+    }
+  };
+  return { add_comment, addCommentLoading };
+}

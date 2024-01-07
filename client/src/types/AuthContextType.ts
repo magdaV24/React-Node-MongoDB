@@ -1,16 +1,17 @@
 import { Theme } from "@emotion/react";
 import { User } from "./User"
 import { Book } from "./Book";
+import { Token } from "./Token";
 
 export type AuthContextType = {
     currentUser: User;
     setCurrentUser: (user: User) => void;
+    token: Token;
+    setToken: (input: Token) => void
     message: string;
     setMessage: (input: string) => void;
     error: string;
     setError: (input: string) => void;
-    loading: boolean;
-    setLoading: (input: boolean) => void;
     disabled: boolean;
     setDisabled: (input: boolean) => void;
     currentTheme: Partial<Theme>;

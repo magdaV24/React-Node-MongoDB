@@ -2,21 +2,17 @@ import {
   Modal,
   TextField,
   Button,
-  Box,
   CircularProgress,
   Container,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import ErrorAlert from "../components/global/ErrorAlert";
 import { ModalInterface } from "../interfaces/ModalInterface";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContextProvider";
-import SuccessAlert from "../components/global/SuccessAlert";
+import { useEffect, useState } from "react";
 import { PRESET } from "../cloudinary/cloudinary";
 import useCloudinary from "../hooks/useCloudinary";
-import useRegister from "../hooks/useRegister";
 import { wrapper } from "../styles/registerForm";
 import { useAuthContext } from "../hooks/useAuthContext";
+import useRegister from "../hooks/mutations/useRegistrationMutation";
 
 export default function Register({ open, handleClose }: ModalInterface) {
   const {
@@ -25,14 +21,13 @@ export default function Register({ open, handleClose }: ModalInterface) {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(false);
   const authContext = useAuthContext();
-  const { error, message } = useContext(AuthContext);
   const submit_to_cloudinary = useCloudinary();
-  const {register, registerLoading} = useRegister();
+  const { register, registerLoading } = useRegister();
 
   const onSubmit = async () => {
-    setDisabled(true)
+    setDisabled(true);
     const temp = getValues("avatar");
     if (temp === undefined) {
       return console.log("Undefined avatar");
@@ -51,7 +46,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
         avatar: id,
       };
       await register(input);
-      setDisabled(false)
+      setDisabled(false);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }
@@ -65,10 +60,23 @@ export default function Register({ open, handleClose }: ModalInterface) {
       authContext.setError("Username error: " + errors.username.message);
     } else if (errors.avatar) {
       authContext.setError("Avatar error: " + errors.avatar.message);
+    } else if (authContext.error !== "") {
+      authContext.setError(authContext.error);
+      authContext.setOpenError(true);
+    } else if (authContext.message !== "" && authContext.currentUser !== null) {
+      authContext.setMessage(authContext.message);
+      authContext.setOpenMessage(true);
     } else {
       authContext.clearError();
+      authContext.clearMessage();
     }
-  }, [authContext, errors.avatar, errors.email, errors.password, errors.username]);
+  }, [
+    authContext,
+    errors.avatar,
+    errors.email,
+    errors.password,
+    errors.username,
+  ]);
   return (
     <Modal
       open={open}
@@ -163,16 +171,20 @@ export default function Register({ open, handleClose }: ModalInterface) {
           )}
         />
         {registerLoading ? (
-          <Box className="loading-button">
+          <Button className="loading-button">
             <CircularProgress />
-          </Box>
+          </Button>
         ) : (
-          <Button type="submit" onClick={handleSubmit(onSubmit)} disabled={disabled} variant="outlined" size="large">
+          <Button
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
+            disabled={disabled}
+            variant="outlined"
+            size="large"
+          >
             REGISTER
           </Button>
         )}
-        {message && <SuccessAlert />}
-        {error && <ErrorAlert />}
       </Container>
     </Modal>
   );

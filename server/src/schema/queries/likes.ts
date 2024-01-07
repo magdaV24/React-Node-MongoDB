@@ -20,7 +20,10 @@ export const like_object = async (req: any, res: any) => {
       return res.json("Object liked successfully!");
     }
   } catch (error) {
-    return res.status(500).json({ error: `Internal Server Error: ${error}` });
+    
+    return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -39,7 +42,10 @@ export const check_if_liked = async (req: any, res: any) => {
         return res.json(true)
     }
   } catch (error) {
-    return res.status(500).json({ error: `Internal Server Error: ${error}` });
+    
+    return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 // Count the number of likes an object has
@@ -52,6 +58,9 @@ export const count_likes = async (req: any, res: any) => {
 
     return res.json(count.length)
   } catch (error) {
-    return res.status(500).json({ error: `Internal Server Error: ${error}` });
+    
+    return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };

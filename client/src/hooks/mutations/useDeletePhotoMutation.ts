@@ -1,10 +1,11 @@
 import { useMutation } from "react-query";
 import { DELETE_PHOTO } from "../../api/urls";
-import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
+import usePostDataWithToken from "../usePostDataWithToken";
 
-export const useDeletePhotoMutation = () => {
+function useDeletePhotoMutation () {
   const authContext = useAuthContext();
+  const postData = usePostDataWithToken()
   const mutation = useMutation(
     async (input: unknown) => await postData(DELETE_PHOTO, input),
     {
@@ -13,21 +14,27 @@ export const useDeletePhotoMutation = () => {
           res === "Could not find this book!" ||
           res === "Could not delete this photo!"
         ) {
-          authContext.setOpen(true);
           authContext.setError(res);
         } else {
-          authContext.setOpen(true);
           authContext.setMessage("Deleted this photo successfully!");
         }
       },
-      onError: (error) => {
-        authContext.setOpen(true);
-        authContext.setError(error as string);
-      },
-      onSettled: () => authContext.setLoading(false),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
+ const deletePhotoLoading = mutation.isLoading
 
-  return mutation;
-};
+  return {mutation, deletePhotoLoading};
+}
+
+export default function useDeletePhoto() {
+  const {mutation, deletePhotoLoading} = useDeletePhotoMutation();
+
+  const delete_photo = async (input: unknown) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return {delete_photo, deletePhotoLoading};
+}

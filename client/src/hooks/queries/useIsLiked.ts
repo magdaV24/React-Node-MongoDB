@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { CHECK_IF_LIKED } from "../../api/urls";
-import fetchData from "../../functions/fetchData";
 import { useAuthContext } from "../useAuthContext";
 import { LikeInput } from "../../interfaces/LikeInput";
+import useFetchDataWithToken from "../useFetchDataWithToken";
 
-export const useIsLiked = (input: LikeInput) => {
+export default function useIsLiked(input: LikeInput) {
   const authContext = useAuthContext();
+  const fetchData = useFetchDataWithToken();
 
   const {
     data: liked,
@@ -32,10 +33,9 @@ export const useIsLiked = (input: LikeInput) => {
       authContext.setOpenBackdrop(true);
     }
     if (error) {
-      authContext.setError(error as string);
-      authContext.setOpenError(true);
+      authContext.setError(`Error: ${error}`);
     }
   }, [isLoading, authContext, error]);
 
   return liked;
-};
+}

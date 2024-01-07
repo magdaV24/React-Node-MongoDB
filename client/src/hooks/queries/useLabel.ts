@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { FIND_STATUS } from "../../api/urls";
-import fetchData from "../../functions/fetchData";
 import { useAuthContext } from "../useAuthContext";
+import useFetchDataWithToken from "../useFetchDataWithToken";
 
-export const useLabel = (user_id: string, book_id: string) => {
+export default function useLabel (user_id: string, book_id: string) {
   const authContext = useAuthContext();
+  const fetchData = useFetchDataWithToken();
 
   const { data, isLoading, error } = useQuery(
     `labelQuery/${user_id}/${book_id}`,
@@ -19,12 +20,15 @@ export const useLabel = (user_id: string, book_id: string) => {
       },
     }
   );
-
+    
   useEffect(() => {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if(error){
+      authContext.setError(`Error: ${error}`)
+    }
+  }, [isLoading, authContext, error]);
 
-  return { data, isLoading, error };
-};
+  return { data };
+}

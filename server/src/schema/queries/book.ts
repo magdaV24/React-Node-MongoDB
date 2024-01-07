@@ -24,7 +24,7 @@ export const add_book = async (req: any, res: any) => {
     const test = await books.findOne({ title, author });
 
     if (test) {
-      return res.json("This book had already been added to the database!");
+      return res.status(401).json("This book had already been added to the database!");
     } else {
       const data = {
         title: title,
@@ -41,10 +41,12 @@ export const add_book = async (req: any, res: any) => {
 
       await books.insertMany([data]);
 
-      return res.json("Success!");
+      return res.status(200).json("Book added successfully!");
     }
   } catch (error) {
-    return res.json("Fail!");
+    return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -55,7 +57,9 @@ export const fetch_books = async (req: any, res: any) => {
     const data = await books.find();
     return res.json(data);
   } catch (error) {
-    console.log(error);
+    return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -147,7 +151,9 @@ export const fetch_reviews = async (req: any, res: any) => {
     }
     return res.json(result.reviews);
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -165,7 +171,9 @@ export const delete_user_review = async (req: any, res: any) => {
     await comments.deleteMany({ parent_id: review_id });
     return res.json("Success!");
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -199,7 +207,9 @@ export const edit_review = async (req: any, res: any) => {
       return res.json("Something went wrong!");
     }
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -231,7 +241,9 @@ export const sort_by_finished = async (req: any, res: any) => {
 
     return res.json(reviews[0].reviews);
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -271,7 +283,9 @@ export const sort_by_stars = async (req: any, res: any) => {
     }
     return res.json(reviews[0].reviews);
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -319,7 +333,9 @@ export const add_photo = async (req: any, res: any) => {
     }
     return res.json("Success!");
   } catch (error) {
-    return res.json(`error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -345,7 +361,9 @@ export const delete_photo = async (req: any, res: any) => {
     await cloudinary.v2.uploader.destroy(photo);
     return res.json("Success!");
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -370,7 +388,9 @@ export const edit_field = async (req: any, res: any) => {
     }
     return res.json("Success!");
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -391,6 +411,8 @@ export const search = async (req: any, res: any) => {
 
     return res.json(result);
   } catch (error) {
-    return res.json(`Error: ${error}`);
+   return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };

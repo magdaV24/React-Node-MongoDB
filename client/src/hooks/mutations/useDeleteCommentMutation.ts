@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from "react-query";
 import { DELETE_COMMENT } from "../../api/urls";
-import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
+import usePostDataWithToken from "../usePostDataWithToken";
 
 export interface CommentDeleteProps{
   id: string;
   parent_id: string;
 }
 
-export const useDeleteCommentMutation = () => {
+function useDeleteCommentMutation () {
   const authContext = useAuthContext();
   const queryClient = useQueryClient();
+  const postData = usePostDataWithToken();
 
   const mutation = useMutation(
     async (input: CommentDeleteProps) => await postData(DELETE_COMMENT, input),
@@ -19,20 +20,28 @@ export const useDeleteCommentMutation = () => {
         const context = { input };
         return context;
       },
-      onSuccess: (data, variables, context) => {
+      onSuccess: (data, _variables, context) => {
         if (data === "Success!") {
-          authContext.setOpenMessage(true);
           authContext.setMessage("Comment deleted successfully!");
         }
         const input =  context?.input
         queryClient.invalidateQueries(`fetchComments/${input!.parent_id}`);
       },
-      onError: (error) => {
-        authContext.setOpenError(true);
-        authContext.setError(error as string);
-      },
     }
   );
   const deleteCommentLoading = mutation.isLoading;
   return {mutation, deleteCommentLoading};
-};
+}
+
+export default function useDeleteComment() {
+  const {mutation, deleteCommentLoading} = useDeleteCommentMutation();
+
+  const delete_comment = async (input: CommentDeleteProps) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return{ delete_comment, deleteCommentLoading};
+}

@@ -1,27 +1,38 @@
 import { useMutation } from "react-query";
 import { DELETE_REVIEW } from "../../api/urls";
-import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
+import usePostDataWithToken from "../usePostDataWithToken";
 
-export const useDeleteReviewMutation = () => {
+function useDeleteReviewMutation()  {
   const authContext = useAuthContext();
+  const postData = usePostDataWithToken()
 
   const mutation = useMutation(
     async (input: unknown) => await postData(DELETE_REVIEW, input),
     {
       onSuccess: (res) => {
         if (res === "Success!") {
-          authContext.setOpen(true);
           authContext.setMessage("Review deleted successfully!");
         }
       },
       onError: (error) => {
-        authContext.setOpen(true);
         authContext.setError(error as string);
       },
-      onSettled: () => authContext.setLoading(false),
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
-};
+ const deleteReviewLoading = mutation.isLoading
+  return {mutation, deleteReviewLoading};
+}
+
+export default function useDeleteReview() {
+  const {mutation, deleteReviewLoading} = useDeleteReviewMutation();
+
+  const delete_review = async (input: unknown) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return {delete_review, deleteReviewLoading};
+}

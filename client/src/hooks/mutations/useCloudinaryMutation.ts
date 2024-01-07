@@ -1,20 +1,29 @@
 import { useMutation } from "react-query";
-import postData from "../../functions/postData";
 import { CLOUDINARY } from "../../cloudinary/cloudinary";
-import { useAuthContext } from "../useAuthContext";
+import { useState } from "react";
+import usePostData from "../usePostData";
 
-export const useCloudinaryMutation = () => {
-  const authContext = useAuthContext();
-  const mutation = useMutation(
-    (input: unknown) => postData(CLOUDINARY, input),
-    {
-      onSettled: () => authContext.setLoading(false),
-      onError: (error) => {
-        authContext.setOpen(true);
-        authContext.setError(error as string);
-      },
-    }
-  );
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
+  const useCloudinaryMutation = () => {
+    const postData = usePostData();
+    const mutation = useMutation((input: unknown) => postData(CLOUDINARY, input));
+    return mutation;
+  };
+
+
+export default function useCloudinary() {
+  const [, setId] = useState('')
+const mutation = useCloudinaryMutation()
+
+const submit_to_cloudinary = async (input: FormData) => {
+  try {
+  const result = await mutation.mutateAsync(input);
+  const publicId = result.public_id;
+  setId(publicId);
+  return publicId;
+  } catch (error) {
+    console.log(`Error on useCloudinary: ${error}`)
+  }
 };
+return submit_to_cloudinary;
+}
+

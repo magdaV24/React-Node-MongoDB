@@ -1,17 +1,18 @@
 import { useQuery } from "react-query";
 import { useAuthContext } from "../useAuthContext";
-import fetchData from "../../functions/fetchData";
 import { useEffect } from "react";
 import { SHOW_STARS } from "../../api/urls";
+import useFetchData from "../useFetchData";
 
-export const useFetchByStars = (book_id: string, stars: string) => {
+export default function useFetchByStars(book_id: string, stars: string) {
+  const fetchData = useFetchData();
   const authContext = useAuthContext();
 
   const {
     data: reviewsByStars,
     isLoading,
     error,
-    refetch: refetchByStars
+    refetch: refetchByStars,
   } = useQuery(
     `fetchReviews/${book_id}/${stars}`,
     async () => {
@@ -19,17 +20,21 @@ export const useFetchByStars = (book_id: string, stars: string) => {
       return result;
     },
     {
-      enabled: false, 
+      enabled: false,
       onSettled: () => {
         setTimeout(() => authContext.setOpenBackdrop(false), 0);
       },
     }
   );
+
   useEffect(() => {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if (error) {
+      authContext.setError(`Error: ${error}`);
+    }
+  }, [isLoading, authContext, error]);
 
-  return { reviewsByStars, error, refetchByStars }
-};
+  return { reviewsByStars, refetchByStars };
+}

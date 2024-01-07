@@ -1,10 +1,11 @@
 import { useMutation } from "react-query";
 import { EDIT_FIELD } from "../../api/urls";
-import postData from "../../functions/postData";
 import { useAuthContext } from "../useAuthContext";
+import usePostDataWithToken from "../usePostDataWithToken";
 
-export const useEditFieldMutation = () => {
+function useEditFieldMutation ()  {
   const authContext = useAuthContext();
+  const postData = usePostDataWithToken()
 
   const mutation = useMutation(
     async (input: unknown) => await postData(EDIT_FIELD, input),
@@ -14,20 +15,26 @@ export const useEditFieldMutation = () => {
           res === "Could not find this book!" ||
           res === "Something went wrong while trying to edit this field!"
         ) {
-          authContext.setOpen(true);
           authContext.setError(res);
         } else {
-          authContext.setOpen(true);
           authContext.setMessage("Field edited successfully!");
         }
-      },
-      onError: (error) => {
-        authContext.setOpen(true);
-        authContext.setError(error as string);
-      },
-      onSettled: () => authContext.setLoading(false),
+      }
     }
   );
-  mutation.isLoading ? authContext.setLoading(true) : null;
-  return mutation;
-};
+  const editFieldLoading = mutation.isLoading
+  return {mutation, editFieldLoading};
+}
+
+export default function useEditField() {
+  const {mutation, editFieldLoading} = useEditFieldMutation()
+
+  const edit_field = async (input: unknown) => {
+    try {
+      await mutation.mutateAsync(input);
+    } catch (error) {
+      console.log(`Error: ${error}`)
+    }
+  };
+  return {edit_field, editFieldLoading};
+}

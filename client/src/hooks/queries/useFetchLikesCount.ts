@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { COUNT_LIKES } from "../../api/urls";
-import fetchData from "../../functions/fetchData";
 import { useAuthContext } from "../useAuthContext";
 import { LikeInput } from "../../interfaces/LikeInput";
+import useFetchData from "../useFetchData";
 
-export const useFetchLikesCount = (input: LikeInput) => {
+export default function useFetchLikesCount(input: LikeInput) {
   const authContext = useAuthContext();
+  const fetchData = useFetchData();
 
   const {
     data: count,
@@ -30,10 +31,9 @@ export const useFetchLikesCount = (input: LikeInput) => {
       authContext.setOpenBackdrop(true);
     }
     if (error) {
-      authContext.setError(error as string);
-      authContext.setOpenError(true);
+      authContext.setError(`Error: ${error}`);
     }
   }, [isLoading, authContext, error]);
 
   return { count };
-};
+}
