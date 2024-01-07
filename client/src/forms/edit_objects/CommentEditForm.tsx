@@ -12,17 +12,15 @@ import {
 } from "../../styles/editComment";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import SuccessAlert from "../../components/global/SuccessAlert";
-import useEditComment from "../../hooks/useEditComment";
-import ErrorAlert from "../../components/global/ErrorAlert";
+import useEditComment from "../../hooks/mutations/useEditCommentMutation";
+import { Comment } from '../../types/Comment'
 
 interface Props {
-  content: string;
-  id: string;
+ comment: Comment;
 }
 
-export default function CommentEditForm({ content, id }: Props) {
-  const { message, error, disabled, setDisabled } = useContext(AuthContext);
+export default function CommentEditForm({ comment }: Props) {
+  const { disabled, setDisabled } = useContext(AuthContext);
 
   const { handleSubmit, control, getValues } = useForm();
 
@@ -31,7 +29,7 @@ export default function CommentEditForm({ content, id }: Props) {
   const submitEdit = async () => {
     setDisabled(true);
     const data = {
-      id: id,
+      id: comment?._id,
       content: getValues("content"),
     };
     edit_comment(data);
@@ -51,7 +49,7 @@ export default function CommentEditForm({ content, id }: Props) {
             {...field}
             variant="standard"
             sx={{ width: "100%" }}
-            defaultValue={content}
+            defaultValue={comment?.content}
             onChange={(e) => field.onChange(e.target.value)}
           />
         )}
@@ -70,9 +68,6 @@ export default function CommentEditForm({ content, id }: Props) {
           <SendSharpIcon />
         </Button>
       )}
-
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </Container>
   );
 }

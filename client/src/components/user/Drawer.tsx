@@ -1,6 +1,5 @@
 import {
   Box,
-  CircularProgress,
   SwipeableDrawer,
   Tab,
   Tabs,
@@ -10,8 +9,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { Book } from "../../types/Book";
 import DrawerCard from "./DrawerCard";
-import { useFetchByStatus } from "../../hooks/queries/useFetchByStatus";
-import ErrorAlert from "../global/ErrorAlert";
+import useFetchByStatus from "../../hooks/queries/useFetchByStatus";
 
 interface Drawer {
   isOpen: boolean;
@@ -45,18 +43,15 @@ function CustomTabPanel(props: TabPanelProps) {
   );
 }
 
-
-
 export default function Drawer({ isOpen, handleClose, handleOpen }: Drawer) {
-  // const [books, setBooks] = useState<Book[]>([])
   const [value, setValue] = useState(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const { currentUser, error, loading } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
 
-  const user_id = currentUser.id;
+  const user_id = currentUser!.id;
 
   const { data: currently_reading } = useFetchByStatus(
     user_id,
@@ -144,12 +139,6 @@ export default function Drawer({ isOpen, handleClose, handleOpen }: Drawer) {
           <Typography>This shelf is empty!</Typography>
         )}
       </CustomTabPanel>
-      {error && <ErrorAlert />}
-      {loading && (
-        <Box>
-          <CircularProgress />
-        </Box>
-      )}
     </SwipeableDrawer>
   );
 }

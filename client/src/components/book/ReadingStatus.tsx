@@ -7,42 +7,40 @@ import {
   CircularProgress,
 } from "@mui/material";
 import CheckBoxSharpIcon from "@mui/icons-material/CheckBoxSharp";
-import { useState } from "react";
-import { useLabel } from "../../hooks/queries/useLabel";
-import useAddStatus from "../../hooks/useAddStatus";
-import useChangeStatus from "../../hooks/useChangeStatus";
+import { useContext, useState } from "react";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import useAddStatus, { StatusInput } from "../../hooks/mutations/useAddStatusMutation";
+import useChangeStatus from "../../hooks/mutations/useChangeStatusMutation";
+import useLabel from "../../hooks/queries/useLabel";
+import { AuthContext } from "../../context/AuthContextProvider";
 
-interface Props {
-  user_id: string;
-  book_id: string;
-}
-
-export default function ReadingStatus({ user_id, book_id }: Props) {
+export default function ReadingStatus() {
   const [status, setStatus] = useState(""); // The status that is going to the database
-
+  const { currentUser, book } = useContext(AuthContext)
+  const user_id = currentUser!.id;
+  const book_id = book!._id
   const { add_status, statusLoading } = useAddStatus();
-  const change_status = useChangeStatus();
+  const { change_status, changeStatusLoading } = useChangeStatus();
   const authContext = useAuthContext();
+  const [loading, setLoading] = useState(false);
 
-  const {
-    data: label,
-    error: labelError,
-    isLoading: labelLoading,
-  } = useLabel(user_id, book_id);
-
-  if (labelLoading) return <CircularProgress />;
-  if (labelError) return <p>Error</p>;
+  const { label } = useLabel(user_id, book_id);
 
   const handleStatus = async (e: unknown) => {
     (e as Event).preventDefault();
     authContext.setDisabled(true);
-    const data = {
+    const data: StatusInput = {
       status: status,
-      id: user_id,
+      user_id: user_id,
       book_id: book_id,
     };
-    label === "None" ? await add_status(data) : await change_status(data);
+    if (label === "None") {
+      await add_status(data);
+      setLoading(statusLoading);
+    } else {
+      await change_status(data);
+      setLoading(changeStatusLoading);
+    }
     authContext.setDisabled(false);
   };
 
@@ -75,7 +73,7 @@ export default function ReadingStatus({ user_id, book_id }: Props) {
           Read
         </MenuItem>
       </Select>
-      {statusLoading ? (
+      {loading ? (
         <Button
           type="submit"
           sx={{

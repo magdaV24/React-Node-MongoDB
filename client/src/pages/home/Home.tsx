@@ -1,23 +1,12 @@
-import { useContext, useEffect } from "react";
-import { useFetchBooks } from "../../hooks/queries/useFetchBooks";
-import { AuthContext } from "../../context/AuthContextProvider";
-import { Container, CircularProgress } from "@mui/material";
+import { Container } from "@mui/material";
 import Bar from "../../components/global/Bar";
 import { Book } from "../../types/Book";
-import ErrorAlert from "../../components/global/ErrorAlert";
 import BookThumbnail from "./components/BookThumbnail";
 import { grid, home_wrapper } from "../../styles/homePage";
-import { useAuthContext } from "../../hooks/useAuthContext";
+import useFetchBooks from "../../hooks/queries/useFetchBooks";
 
 export default function Home() {
-  const authContext = useAuthContext();
-  const { data: books, error: booksError } = useFetchBooks();
-  const { error, loading } = useContext(AuthContext);
-  useEffect(() => {
-    if (booksError) {
-      authContext.setError(booksError as string);
-    }
-  }, [authContext, booksError]);
+  const { data: books } = useFetchBooks();
   return (
     <Container sx={home_wrapper}>
       <Bar />
@@ -32,9 +21,6 @@ export default function Home() {
             />
           ))}
       </Container>
-      {loading && <CircularProgress />}
-      {error && <ErrorAlert />}
-      {(booksError as string) && <ErrorAlert />}
     </Container>
   );
 }

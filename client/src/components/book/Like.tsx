@@ -1,8 +1,9 @@
 import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
-import { useFetchLikesCount } from "../../hooks/queries/useFetchLikesCount";
 import Login from "../../forms/Login";
 import { useState } from "react";
 import { Container, Button, Typography } from "@mui/material";
+import useFetchLikesCount from "../../hooks/queries/useFetchLikesCount";
+import { LikeInput } from "../../interfaces/LikeInput";
 
 interface Props {
   object_id: string;
@@ -16,7 +17,12 @@ export default function Like({ object_id }: Props) {
   const handleClick = () => {
     setOpen(true);
   };
-  const { count } = useFetchLikesCount(object_id);
+  const input: LikeInput = {
+    object_id: object_id,
+    user_id: "",
+    book_id: "",
+  };
+  const { count } = useFetchLikesCount(input);
   return (
     <>
       <Container

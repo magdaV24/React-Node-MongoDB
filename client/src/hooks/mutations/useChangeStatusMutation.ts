@@ -1,18 +1,14 @@
 import { useMutation, useQueryClient } from "react-query";
 import { CHANGE_STATUS } from "../../api/urls";
 import usePostDataWithToken from "../usePostDataWithToken";
+import { StatusInput } from "./useAddStatusMutation";
 
-interface ChangeStatusInput {
-  id: string;
-  user_id: string;
-  book_id: string;
-}
 
 function useChangeStatusMutation() {
   const queryClient = useQueryClient();
   const postData = usePostDataWithToken();
   const mutation = useMutation(
-    async (input: ChangeStatusInput) => await postData(CHANGE_STATUS, input),
+    async (input: StatusInput) => await postData(CHANGE_STATUS, input),
     {
       onSuccess: (context) => {
         const input = context?.input;
@@ -20,7 +16,7 @@ function useChangeStatusMutation() {
           `labelQuery/${input?.user_id}/${input?.book_id}`
         );
       },
-      onMutate: async (input: ChangeStatusInput) => {
+      onMutate: async (input: StatusInput) => {
         const context = { input };
         return context;
       }
@@ -34,7 +30,7 @@ function useChangeStatusMutation() {
 export default function useChangeStatus() {
   const { mutation, changeStatusLoading } = useChangeStatusMutation();
 
-  const change_status = async (input: ChangeStatusInput) => {
+  const change_status = async (input: StatusInput) => {
     try {
       await mutation.mutateAsync(input);
     } catch (error) {

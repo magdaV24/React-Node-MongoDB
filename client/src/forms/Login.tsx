@@ -39,15 +39,19 @@ export default function Login({ open, handleClose }: ModalInterface) {
   };
 
   useEffect(() => {
-    if (errors.email) authContext.setError(errors.email.message as string);
+    if (errors.email)
+      authContext.setError(`Email error: ${errors.email.message}`);
     else if (errors.password)
-      authContext.setError(errors.password.message as string);
+      authContext.setError(`Error: ${errors.password.message}`);
     else if (authContext.error !== "") {
       authContext.setError(authContext.error);
       authContext.setOpenError(true);
     } else if (authContext.message !== "" && authContext.currentUser !== null) {
       authContext.setMessage(authContext.message);
       authContext.setOpenMessage(true);
+    } else {
+      authContext.clearError();
+      authContext.clearMessage();
     }
   }, [authContext, errors.email, errors.password]);
 
@@ -65,6 +69,7 @@ export default function Login({ open, handleClose }: ModalInterface) {
         </Container>
         <Controller
           name="email"
+          defaultValue=""
           control={control}
           rules={{
             required: "Email required!",
@@ -86,6 +91,7 @@ export default function Login({ open, handleClose }: ModalInterface) {
         <Controller
           name="password"
           control={control}
+          defaultValue=""
           rules={{ required: "Password required!" }}
           render={({ field }) => (
             <TextField

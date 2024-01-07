@@ -8,7 +8,7 @@ export default function useLabel (user_id: string, book_id: string) {
   const authContext = useAuthContext();
   const fetchData = useFetchDataWithToken();
 
-  const { data, isLoading, error } = useQuery(
+  const { data: label, isLoading, error } = useQuery(
     `labelQuery/${user_id}/${book_id}`,
     async () => {
       const result = await fetchData(`${FIND_STATUS}/${user_id}/${book_id}`);
@@ -30,5 +30,5 @@ export default function useLabel (user_id: string, book_id: string) {
     }
   }, [isLoading, authContext, error]);
 
-  return { data };
+  return { label };
 }

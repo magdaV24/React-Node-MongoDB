@@ -4,6 +4,7 @@ import books from "../models/book";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import cloudinary from "../../cloudinary/cloudinaryConfig";
 
 export const register = async (req: any, res: any) => {
   const { email, username, password, avatar } = req.body;
@@ -13,10 +14,12 @@ export const register = async (req: any, res: any) => {
     const test_username = await users.findOne({ username });
 
     if (test_email) {
-      return res.json("The email provided is already in use!");
+      await cloudinary.v2.uploader.destroy(avatar);
+      return res.status(401).json("The email provided is already in use!");
     }
     if (test_username) {
-      return res.json("This username is taken!");
+      await cloudinary.v2.uploader.destroy(avatar);
+      return res.status(401).json("This username is taken!");
     }
     if (!test_email && !test_username) {
       const hashed: any = (await hash(password, 12)).toString();
@@ -115,10 +118,10 @@ export const login = async (req: any, res: any) => {
 export const add_reading_status = async (req: any, res: any) => {
   const { id, book_id, status } = req.body;
 
-  const user = await users.findById({ _id: id });
+  const user = await users.findOne({ _id: new mongoose.Types.ObjectId(id) });
 
   if (!user) {
-    return res.status(400).json({ success: false, message: "User not found!" });
+    return res.status(401).json("User not found!");
   }
 
   try {
@@ -132,7 +135,7 @@ export const add_reading_status = async (req: any, res: any) => {
         { $push: { currently_reading: book_id } }
       );
     }
-    return res.json("Success!");
+    return res.status(200).json("Success!");
   } catch (error) {
     return res
       .status(500)
@@ -143,15 +146,15 @@ export const add_reading_status = async (req: any, res: any) => {
 // Changing the reading status of a book
 
 export const change_status = async (req: any, res: any) => {
-  const { id, book_id, status } = req.body;
+  const { user_id, book_id, status } = req.body;
 
-  if (!id || !book_id || !status) {
-    return res.status(400).json({ success: false, message: "Invalid input" });
+  if (!user_id || !book_id || !status) {
+    return res.status(401).json("Invalid input");
   }
   try {
     const updateStatus = async (from: string, to: string) => {
       await users.findOneAndUpdate(
-        { _id: id, [from]: { $in: [book_id] } },
+        { _id: user_id, [from]: { $in: [book_id] } },
         { $pull: { [from]: book_id }, $push: { [to]: book_id } }
       );
     };
@@ -170,10 +173,10 @@ export const change_status = async (req: any, res: any) => {
         await updateStatus("currently_reading", "read");
         break;
       default:
-        return res.json({ status: "Error", message: "Unrecognized status" });
+        return res.status(401).json("Unrecognized status");
     }
 
-    return res.json({ message: "Success" });
+    return res.status(200).json("Success" );
   } catch (error) {
     return res
       .status(500)

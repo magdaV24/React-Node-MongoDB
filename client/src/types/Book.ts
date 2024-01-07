@@ -12,4 +12,4 @@ export type Book = {
     pages: number,
     grade: number[],
     published: string
-}
+} | null;

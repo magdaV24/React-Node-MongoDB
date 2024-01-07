@@ -1,11 +1,12 @@
 import { Container, Typography } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Review } from "../../types/Review";
 import ReviewCard from "./ReviewCard";
 import Sort from "./Sort";
-import { useFetchReviews } from "../../hooks/queries/useFetchReviews";
-import { useFetchByStars } from "../../hooks/queries/useFetchByStars";
-import { useFetchByFinished } from "../../hooks/queries/useFetchByFinished";
+import { AuthContext } from "../../context/AuthContextProvider";
+import useFetchByFinished from "../../hooks/queries/useFetchByFinished";
+import useFetchByStars from "../../hooks/queries/useFetchByStars";
+import useFetchReviews from "../../hooks/queries/useFetchReviews";
 
 interface Props {
   book_id: string;
@@ -14,6 +15,7 @@ interface Props {
 export default function ReviewList({ book_id }: Props) {
   const [finished, setFinished] = useState("");
   const [stars, setStars] = useState("");
+  const { book } = useContext(AuthContext)
 
   const { reviews, refetch: refetchAll } = useFetchReviews(book_id, true);
   const { reviewsByStars, refetchByStars } = useFetchByStars(
@@ -84,18 +86,8 @@ export default function ReviewList({ book_id }: Props) {
         {(finished ? reviewsByFinished : stars ? reviewsByStars : reviews)?.map(
           (review: Review) => (
             <ReviewCard
-              user_id={review.user_id}
-              content={review.content}
-              date={review.date}
-              stars={review.stars}
-              finished={review.finished}
-              review_id={review._id}
-              avatar={review.avatar}
-              username={review.username}
-              book_id={book_id}
-              spoilers={review.spoilers}
-              key={review._id}
-            />
+review={review}
+key={review._id} book_id={book!._id}            />
           )
         )}
       </Container>

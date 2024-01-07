@@ -1,42 +1,34 @@
 import { useMutation } from "react-query";
 import { ADD_REVIEW } from "../../api/urls";
 import { useAuthContext } from "../useAuthContext";
-import usePostData from "../usePostData";
+import usePostDataWithToken from "../usePostDataWithToken";
 
-function useAddReviewMutation()  {
+function useAddReviewMutation() {
   const authContext = useAuthContext();
-  const postData = usePostData();
+  const postData = usePostDataWithToken();
   const mutation = useMutation(
     async (input: unknown) => await postData(ADD_REVIEW, input),
     {
       onSuccess: (data) => {
-        if (data === "You had already given a review!") {
-          authContext.setOpenError(true);
-          authContext.setError(data);
-        } else {
-          authContext.setOpenMessage(true);
+        if (data === "Success!") {
           authContext.setMessage("Review sent successfully!");
         }
       },
-      onError: (error) => {
-        authContext.setOpenError(true);
-        authContext.setError(error as string);
-      },
     }
   );
-  const reviewLoading = mutation.isLoading
-  return {mutation, reviewLoading};
+  const reviewLoading = mutation.isLoading;
+  return { mutation, reviewLoading };
 }
 
 export default function useAddReview() {
-  const {mutation, reviewLoading} = useAddReviewMutation();
+  const { mutation, reviewLoading } = useAddReviewMutation();
 
   const add_review = async (input: unknown) => {
     try {
       await mutation.mutateAsync(input);
     } catch (error) {
-      console.log(`Error: ${error}`)
+      console.log(`Error: ${error}`);
     }
   };
-  return {add_review, reviewLoading};
+  return { add_review, reviewLoading };
 }

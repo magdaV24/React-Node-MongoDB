@@ -2,12 +2,8 @@ import { AdvancedImage } from "@cloudinary/react";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { Container, Button, Box, CircularProgress } from "@mui/material";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContextProvider";
-import useDeletePhoto from "../../hooks/useDeletePhoto";
-import ErrorAlert from "../../components/global/ErrorAlert";
-import SuccessAlert from "../../components/global/SuccessAlert";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
+import useDeletePhoto from "../../hooks/mutations/useDeletePhotoMutation";
 
 interface Props {
   photo: string;
@@ -18,9 +14,7 @@ export default function EditPhotoCard({ photo, _id }: Props) {
   const cld = cloudinaryFnc();
 
   // Delete a photo
-
-  const { loading, error, message } = useContext(AuthContext);
-  const delete_photo = useDeletePhoto();
+  const {delete_photo, deletePhotoLoading} = useDeletePhoto();
   const onSubmit = () => {
     const data = {
       id: _id,
@@ -47,7 +41,7 @@ export default function EditPhotoCard({ photo, _id }: Props) {
       <AdvancedImage
         cldImg={cld.image(photo).resize(fill().width(200).height(300))}
       />
-      {loading ? (
+      {deletePhotoLoading ? (
         <Box>
           <CircularProgress />
         </Box>
@@ -60,8 +54,6 @@ export default function EditPhotoCard({ photo, _id }: Props) {
           <DeleteSharpIcon onClick={onSubmit} /> DELETE
         </Button>
       )}
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </Container>
   );
 }

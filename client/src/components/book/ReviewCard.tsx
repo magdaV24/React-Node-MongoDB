@@ -32,45 +32,27 @@ import {
   review_card_wrapper,
 } from "../../styles/reviewCard";
 import ReviewEditForm from "../../forms/edit_objects/ReviewEditForm";
-import useDeleteReview from "../../hooks/useDeleteReview";
-import ErrorAlert from "../global/ErrorAlert";
-import SuccessAlert from "../global/SuccessAlert";
-import { useFetchComments } from "../../hooks/queries/useFetchComments";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import UserLike from "./UserLike";
 import Like from "./Like";
+import useDeleteReview from "../../hooks/mutations/useDeleteReviewMutation";
+import useFetchComments from "../../hooks/queries/useFetchComments";
+import { Review } from "../../types/Review";
 
 interface Props {
-  user_id: string;
-  content: string;
-  date: string;
-  stars: number;
-  finished: string;
-  review_id: string;
-  avatar: string;
-  username: string;
-  book_id: string;
-  spoilers: boolean;
+  review: Review;
+  book_id: string
 }
 export default function ReviewCard({
-  user_id,
-  content,
-  date,
-  stars,
-  finished,
-  review_id,
-  avatar,
-  username,
-  book_id,
-  spoilers,
+review, book_id
 }: Props) {
-  const format_date = date.substring(0, 10);
+  const format_date = review?.date.substring(0, 10);
 
   const authContext = useAuthContext();
 
   const [showSpoilers, setShowSpoilers] = useState(false);
 
-  const { currentUser, book, loading, error, message } =
+  const { currentUser, book } =
     useContext(AuthContext);
   const [hasFinished, setHasFinished] = useState("");
 
@@ -103,13 +85,13 @@ export default function ReviewCard({
     setCancel((prev) => !prev);
   };
 
-  const delete_review = useDeleteReview();
+  const {delete_review, deleteReviewLoading} = useDeleteReview();
   const handleDelete = async (e: unknown) => {
     (e as Event).preventDefault();
     const input = {
-      id: book._id,
-      review_id: review_id,
-      stars: stars,
+      id: book!._id,
+      review_id: review?._id,
+      stars: review?.stars,
     };
     try {
       await delete_review(input);
@@ -121,7 +103,7 @@ export default function ReviewCard({
   const [showComments, setShowComments] = useState(false);
   const [showBtn, setShowBtn] = useState("Show Replies");
 
-  const { comments, error: commentsError } = useFetchComments(review_id);
+  const { comments } = useFetchComments(review?._id);
 
   const handleShowComments = () => {
     if (showComments === false) {
@@ -133,16 +115,13 @@ export default function ReviewCard({
     }
   };
   useEffect(() => {
-    if (finished === "Finished") {
+    if (review?.finished === "Finished") {
       setHasFinished("Finished");
     }
-    if (finished === "DNF") {
+    if (review?.finished === "DNF") {
       setHasFinished("(Did not finish)");
     }
-    if (commentsError) {
-      authContext.setError(commentsError as string);
-    }
-  }, [authContext, commentsError, finished]);
+  }, [authContext, review?.finished]);
   return (
     <Box sx={review_card_wrapper}>
       <Card sx={{ width: "100%", padding: 2 }}>
@@ -151,7 +130,7 @@ export default function ReviewCard({
             <Container sx={header}>
               <Avatar alt="Avatar">
                 <AdvancedImage
-                  cldImg={cld.image(avatar).resize(fill().width(50).height(50))}
+                  cldImg={cld.image(review?.avatar).resize(fill().width(50).height(50))}
                 />
               </Avatar>
               <Typography
@@ -159,7 +138,7 @@ export default function ReviewCard({
                 color="text.secondary"
                 gutterBottom
               >
-                {username}'s review:
+                {review?.username}'s review:
               </Typography>
             </Container>
 
@@ -172,16 +151,16 @@ export default function ReviewCard({
           </Container>
           <Divider />
           <Container sx={body_wrapper}>
-            <Rating name="disabled" value={stars} disabled precision={0.25} />
-            <Typography component="legend">{stars}</Typography>
+            <Rating name="disabled" value={review?.stars} disabled precision={0.25} />
+            <Typography component="legend">{review?.stars}</Typography>
             <Typography>{hasFinished}</Typography>
           </Container>
 
-          {spoilers ? (
+          {review?.spoilers ? (
             <>
               {showSpoilers ? (
                 <Typography variant="body2" sx={content_box}>
-                  {content}
+                  {review?.content}
                 </Typography>
               ) : (
                 <Button onClick={() => setShowSpoilers(true)}>
@@ -191,7 +170,7 @@ export default function ReviewCard({
             </>
           ) : (
             <Typography variant="body2" sx={content_box}>
-              {content}
+              {review?.content}
             </Typography>
           )}
           <Divider />
@@ -211,9 +190,9 @@ export default function ReviewCard({
             </Button>
             {currentUser && (
               <>
-                {currentUser.id === user_id && (
+                {currentUser.id === review?.user_id && (
                   <>
-                    {loading ? (
+                    {deleteReviewLoading ? (
                       <Box>
                         <CircularProgress />
                       </Box>
@@ -241,18 +220,15 @@ export default function ReviewCard({
             )}
           </Container>
           <Container sx={like_box}>
-            {currentUser && <UserLike object_id={review_id} book_id={book_id} />}
-            {!currentUser && <Like object_id={review_id}/>}
+            {currentUser && <UserLike object_id={review?._id} book_id={book_id} />}
+            {!currentUser && <Like object_id={review?._id}/>}
           </Container>
         </CardActions>
         {isCommenting && (
-          <CommentForm parent_id={review_id} book_id={book_id} />
+          <CommentForm parent_id={review?._id} />
         )}
         <ReviewEditForm
-          content={content}
-          id={review_id}
-          stars={stars}
-          finished={finished}
+          review={review}
           book_id={book_id}
           open={openEdit}
           close={closeEdit}
@@ -264,24 +240,14 @@ export default function ReviewCard({
             {comments &&
               (comments as Comment[]).map((comment: Comment) => (
                 <CommentCard
-                  book_id={comment.book_id}
-                  user_id={comment.user_id}
-                  content={comment.content}
-                  date={comment.date}
-                  id={comment._id}
-                  username={comment.username}
-                  avatar={comment.avatar}
-                  parent_id={review_id}
+                  comment={comment}
+                  parent_id={review?._id}
                 />
               ))}
           </>
         )}
-        {loading && <CircularProgress />}
       </Box>
       <Login open={openLogin} handleClose={closeLogin} />
-
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </Box>
   );
 }

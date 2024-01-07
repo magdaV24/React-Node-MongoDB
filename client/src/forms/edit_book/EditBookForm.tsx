@@ -1,6 +1,7 @@
 import { Container, Modal } from "@mui/material";
 import EditBookPhotos from "./EditBookPhotos";
 import EditBookTable from "./EditBookTable";
+import { Book } from "../../types/Book";
 
 const style = {
     position: "absolute",
@@ -18,33 +19,24 @@ const style = {
     overflowY: 'auto'
   };
 interface Modal {
-  handleClose: () => void;
   open: boolean;
-  id: string;
-  photos: string[];
-  title: string;
-  author: string;
-  published: string;
-  description: string;
-  genres: string[];
-  language: string;
-  pages: number
+  handleClose: () => void
+  book: Book
 }
 export default function EditBookForm({
   open,
   handleClose,
-  id,
-  photos,
-  title, author, published, genres, description, language, pages
+  book
+  
 }: Modal) {
   return (
     <Modal open={open} onClose={handleClose}>
       <Container sx={style}>
       <EditBookPhotos
-        _id={id}
-        photos={photos}
+        _id={book?._id}
+        photos={book?.photos}
       />
-      <EditBookTable id={id} title={title} author={author} published={published} description={description} genres={genres} language={language} pages={pages} />
+      <EditBookTable book={book} />
       </Container>
     </Modal>
   );

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContextProvider";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
@@ -11,19 +11,25 @@ import BookPage from "./pages/book/BookPage";
 import Backdrop from "./components/global/Backdrop";
 import ErrorAlert from "./components/global/ErrorAlert";
 import SuccessAlert from "./components/global/SuccessAlert";
+import { useCheckToken } from "./hooks/useCheckToken";
 
 function App() {
   const { currentTheme, toggle_theme } = useContext(AuthContext);
+  const checkToken = useCheckToken();
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   return (
     <ThemeProvider theme={currentTheme}>
       <CssBaseline>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Welcome />}/>
-            <Route path="/admin" element={<AdminPage />}/>
-            <Route path="/home" element={<Home />}/>
-            <Route path="/:title" element={<BookPage />}/>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/:title" element={<BookPage />} />
           </Routes>
         </BrowserRouter>
         <ThemeButton handleToggleTheme={toggle_theme} />

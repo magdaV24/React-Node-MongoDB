@@ -13,14 +13,11 @@ import {
 } from "@mui/material";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { Comment } from "../../types/Comment";
 import CommentForm from "../../forms/CommentForm";
 import CommentEditForm from "../../forms/edit_objects/CommentEditForm";
-import useDeleteComment from "../../hooks/useDeleteComment";
-import ErrorAlert from "../global/ErrorAlert";
-import SuccessAlert from "../global/SuccessAlert";
 import {
   card_actions,
   card_actions_wrapper,
@@ -31,34 +28,20 @@ import {
   content_wrapper,
   like_button_wrapper,
 } from "../../styles/commentCard";
-import { useFetchComments } from "../../hooks/queries/useFetchComments";
-import { useAuthContext } from "../../hooks/useAuthContext";
 import UserLike from "./UserLike";
+import useFetchComments from "../../hooks/queries/useFetchComments";
+import useDeleteComment from "../../hooks/mutations/useDeleteCommentMutation";
 
 interface Props {
-  book_id: string;
-  user_id: string;
-  content: string;
-  date: string;
-  id: string;
-  username: string;
-  avatar: string;
+  comment: Comment;
   parent_id: string;
 }
 
 export default function CommentCard({
-  user_id,
-  book_id,
-  content,
-  date,
-  id,
-  username,
-  avatar,
-  parent_id,
+  comment
 }: Props) {
-  const format_date = date.substring(0, 10);
-  const { currentUser, error, message } = useContext(AuthContext);
-  const authContext = useAuthContext();
+  const format_date = comment?.date.substring(0, 10);
+  const { currentUser } = useContext(AuthContext);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -87,8 +70,8 @@ export default function CommentCard({
   const handleDelete = (e: unknown) => {
     (e as Event).preventDefault();
     const input = {
-      id: id,
-      parent_id: parent_id,
+      id: comment?._id,
+      parent_id: comment?.parent_id,
     };
     try {
       delete_comment(input);
@@ -99,7 +82,7 @@ export default function CommentCard({
 
   // Fetching the children
 
-  const { comments, error: childrenError } = useFetchComments(id);
+  const { comments } = useFetchComments(comment?._id);
 
   const handleShowChildren = () => {
     if (showChildren === false) {
@@ -110,9 +93,6 @@ export default function CommentCard({
       setShowBtn("Show Replies");
     }
   };
-  useEffect(() => {
-    if (childrenError) authContext.setError(childrenError as string);
-  });
   return (
     <Box sx={comment_card_wrapper}>
       <Card sx={{ width: "100%", padding: 0.5 }}>
@@ -121,7 +101,7 @@ export default function CommentCard({
             <Container sx={comment_card_header}>
               <Avatar alt="Avatar">
                 <AdvancedImage
-                  cldImg={cld.image(avatar).resize(fill().width(50).height(50))}
+                  cldImg={cld.image(comment?.avatar).resize(fill().width(50).height(50))}
                 />
               </Avatar>
               <Typography
@@ -129,7 +109,7 @@ export default function CommentCard({
                 color="text.secondary"
                 gutterBottom
               >
-                {username}'s comment:
+                {comment?.username}'s comment:
               </Typography>
             </Container>
 
@@ -143,7 +123,7 @@ export default function CommentCard({
           <Divider />
 
           <Typography variant="body2" sx={content_wrapper}>
-            {content}
+            {comment?.content}
           </Typography>
           <Divider />
         </CardContent>
@@ -163,7 +143,7 @@ export default function CommentCard({
             )}
             {currentUser && (
               <>
-                {currentUser.id === user_id && (
+                {currentUser.id === comment?.user_id && (
                   <>
                     {deleteCommentLoading ? (
                       <Box>
@@ -181,7 +161,7 @@ export default function CommentCard({
                     )}
                   </>
                 )}
-                {currentUser.id === user_id && (
+                {currentUser.id === comment?.user_id && (
                   <Button
                     variant="outlined"
                     onClick={() => setIsEditing((prev) => !prev)}
@@ -195,33 +175,25 @@ export default function CommentCard({
             )}
           </Container>
           <Container sx={like_button_wrapper}>
-            {currentUser && <UserLike object_id={id} book_id={book_id} />}
+            {currentUser && <UserLike object_id={comment?._id} book_id={comment?.book_id} />}
           </Container>
         </CardActions>
-        {isCommenting && <CommentForm parent_id={id} book_id={book_id} />}
+        {isCommenting && <CommentForm parent_id={comment?._id} />}
       </Card>
-      {isEditing && <CommentEditForm content={content} id={id} />}
+      {isEditing && <CommentEditForm comment={comment} />}
       <Box sx={children_wrapper}>
         {showChildren && (
           <>
             {comments &&
               (comments as Comment[]).map((comment: Comment) => (
                 <CommentCard
-                  user_id={comment.user_id}
-                  content={comment.content}
-                  date={comment.date}
-                  id={comment._id}
-                  username={comment.username}
-                  avatar={comment.avatar}
-                  book_id={comment.book_id}
-                  parent_id={id}
+                  comment={comment}
+                  parent_id={comment?._id}
                 />
               ))}
           </>
         )}
       </Box>
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </Box>
   );
 }

@@ -9,20 +9,19 @@ import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
 import FavoriteSharpIcon from "@mui/icons-material/FavoriteSharp";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import useLike from "../../hooks/useLike";
-import ErrorAlert from "../global/ErrorAlert";
-import { useIsLiked } from "../../hooks/queries/useIsLiked";
-import { useFetchLikesCount } from "../../hooks/queries/useFetchLikesCount";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import useLike from "../../hooks/mutations/useLikeMutation";
+import useFetchLikesCount from "../../hooks/queries/useFetchLikesCount";
+import useIsLiked from "../../hooks/queries/useIsLiked";
 interface Props {
   object_id: string;
   book_id: string;
 }
 
 export default function UserLike({ object_id, book_id }: Props) {
-  const { currentUser, error } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const authContext = useAuthContext();
-  const id = currentUser.id;
+  const id = currentUser!.id;
   const input = {
     user_id: id,
     object_id: object_id,
@@ -35,8 +34,7 @@ export default function UserLike({ object_id, book_id }: Props) {
     try {
       await give_like(input);
     } catch (error) {
-      authContext.setError(error.message as string)
-      authContext.setOpenError(true)
+      authContext.setError(`Error: ${error}`)
     }
   };
 
@@ -79,7 +77,6 @@ export default function UserLike({ object_id, book_id }: Props) {
           </>
         )}
       </Container>
-      {error && <ErrorAlert />}
     </>
   );
 }

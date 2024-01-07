@@ -9,15 +9,16 @@ import { useForm, Controller } from "react-hook-form";
 import { ModalInterface } from "../interfaces/ModalInterface";
 import { useEffect, useState } from "react";
 import { PRESET } from "../cloudinary/cloudinary";
-import useCloudinary from "../hooks/useCloudinary";
 import { wrapper } from "../styles/registerForm";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useRegister from "../hooks/mutations/useRegistrationMutation";
+import useCloudinary from "../hooks/mutations/useCloudinaryMutation";
 
 export default function Register({ open, handleClose }: ModalInterface) {
   const {
     control,
     getValues,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm();
@@ -47,8 +48,9 @@ export default function Register({ open, handleClose }: ModalInterface) {
       };
       await register(input);
       setDisabled(false);
+      reset()
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+      console.log(`Error: ${error}`)
     }
   };
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
     } else if (authContext.message !== "" && authContext.currentUser !== null) {
       authContext.setMessage(authContext.message);
       authContext.setOpenMessage(true);
-    } else {
+    }  else {
       authContext.clearError();
       authContext.clearMessage();
     }
@@ -88,6 +90,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
         <Controller
           name="email"
           control={control}
+          defaultValue=""
           rules={{
             required: "Email required!",
             pattern: {
@@ -108,6 +111,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
         <Controller
           name="username"
           control={control}
+          defaultValue=""
           rules={{ required: "Username required!" }}
           render={({ field }) => (
             <TextField
@@ -122,6 +126,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
         <Controller
           name="password"
           control={control}
+          defaultValue=""
           rules={{ required: "Password required!" }}
           render={({ field }) => (
             <TextField
@@ -137,6 +142,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
         <Controller
           name="confirmPassword"
           control={control}
+          defaultValue=""
           rules={{
             required: "Confirm you password!",
             validate: (password) =>
@@ -157,6 +163,7 @@ export default function Register({ open, handleClose }: ModalInterface) {
         <Controller
           name="avatar"
           control={control}
+          defaultValue=""
           rules={{ required: "Avatar required!" }}
           render={({ field }) => (
             <Button variant="contained" disabled={disabled}>

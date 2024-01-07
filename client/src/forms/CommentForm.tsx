@@ -1,19 +1,16 @@
-import { useContext } from "react";
+import { useContext , useEffect} from "react";
 import {
   Container,
   TextField,
   Button,
-  Box,
   CircularProgress,
 } from "@mui/material";
 import SendSharpIcon from "@mui/icons-material/SendSharp";
 import { Controller, useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContextProvider";
 import { AVATAR_ANON } from "../cloudinary/cloudinary";
-import useAddComment from "../hooks/useAddComment";
-import SuccessAlert from "../components/global/SuccessAlert";
-import ErrorAlert from "../components/global/ErrorAlert";
 import { CommentInput } from "../interfaces/CommentsInput";
+import useAddComment from "../hooks/mutations/useAddCommentMutation";
 import { useAuthContext } from "../hooks/useAuthContext";
 const style = {
   width: "100%",
@@ -43,14 +40,14 @@ const btnStyles = {
 
 interface Props {
   parent_id: string;
-  book_id: string;
 }
-export default function CommentForm({ parent_id, book_id }: Props) {
-  const { currentUser, error, message } = useContext(AuthContext);
+export default function CommentForm({ parent_id }: Props) {
+  const { currentUser, book } = useContext(AuthContext);
+  const book_id = book!._id;
   const authContext = useAuthContext()
   const date = new Date(new Date());
 
-  const { handleSubmit, control, getValues } = useForm();
+  const { handleSubmit, control, getValues, formState: { errors } } = useForm();
 
   const { add_comment, addCommentLoading } = useAddComment();
 
@@ -71,7 +68,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
       try {
         await add_comment(data);
       } catch (error) {
-        throw new Error(`Error: ${error}`);
+        console.log(`Error: ${error}`)
       }
     } else {
       const data: CommentInput = {
@@ -83,11 +80,25 @@ export default function CommentForm({ parent_id, book_id }: Props) {
       try {
         await add_comment(data);
       } catch (error) {
-        authContext.setError(error.message)
-        authContext.setOpenError(true)
+        console.log(`Error: ${error}`)
       }
     }
   };
+
+  useEffect(() => {
+    if (errors.content)
+      authContext.setError(`Content error: ${errors.content.message}`);
+    else if (authContext.error !== "") {
+      authContext.setError(authContext.error);
+      authContext.setOpenError(true);
+    } else if (authContext.message !== "") {
+      authContext.setMessage(authContext.message);
+      authContext.setOpenMessage(true);
+    } else {
+      authContext.clearError();
+      authContext.clearMessage();
+    }
+  }, [authContext, errors.content]);
 
   return (
     <>
@@ -95,6 +106,7 @@ export default function CommentForm({ parent_id, book_id }: Props) {
         <Controller
           name="content"
           control={control}
+          defaultValue=''
           render={({ field }) => (
             <TextField
               id="standard-basic"
@@ -109,9 +121,9 @@ export default function CommentForm({ parent_id, book_id }: Props) {
           )}
         />
         {addCommentLoading ? (
-          <Box sx={btnStyles}>
+          <Button sx={btnStyles}>
             <CircularProgress />
-          </Box>
+          </Button>
         ) : (
           <Button
             sx={btnStyles}
@@ -121,10 +133,8 @@ export default function CommentForm({ parent_id, book_id }: Props) {
             <SendSharpIcon />
           </Button>
         )}
-
-        {message && <SuccessAlert />}
-        {error && <ErrorAlert />}
       </Container>
     </>
   );
 }
+

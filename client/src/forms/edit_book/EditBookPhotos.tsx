@@ -8,14 +8,11 @@ import {
 import AddCircleOutlineSharpIcon from "@mui/icons-material/AddCircleOutlineSharp";
 import { Controller, useForm } from "react-hook-form";
 import EditPhotoCard from "./EditPhotoCard";
-import useCloudinary from "../../hooks/useCloudinary";
-import useAddPhoto from "../../hooks/useAddPhoto";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../../context/AuthContextProvider";
-import SuccessAlert from "../../components/global/SuccessAlert";
-import ErrorAlert from "../../components/global/ErrorAlert";
+import {  useEffect } from "react";
 import { PRESET } from "../../cloudinary/cloudinary";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import useAddPhoto from "../../hooks/mutations/useAddPhotoMutation";
+import useCloudinary from "../../hooks/mutations/useCloudinaryMutation";
 
 interface Props {
   photos: string[];
@@ -31,11 +28,10 @@ export default function EditBookPhotos({ photos, _id }: Props) {
   } = useForm();
 
   const authContext = useAuthContext();
-  const { loading, error, message } = useContext(AuthContext);
 
   // Add photo
   const submit_to_cloudinary = useCloudinary();
-  const add_photo = useAddPhoto();
+  const {add_photo, addPhotoLoading} = useAddPhoto();
 
   const onSubmit = async () => {
     const photo = getValues("photo");
@@ -56,7 +52,7 @@ export default function EditBookPhotos({ photos, _id }: Props) {
 
       add_photo(input);
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+      console.log(`Error: ${error}`)
     }
   };
   useEffect(() => {
@@ -97,7 +93,7 @@ export default function EditBookPhotos({ photos, _id }: Props) {
           </Button>
         )}
       />
-      {loading ? (
+      {addPhotoLoading ? (
         <Button>
           <CircularProgress />
         </Button>
@@ -106,8 +102,6 @@ export default function EditBookPhotos({ photos, _id }: Props) {
           <AddCircleOutlineSharpIcon sx={{ fontSize: "2rem" }} /> ADD PHOTO
         </Button>
       )}</Box>
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </Container>
   );
 }

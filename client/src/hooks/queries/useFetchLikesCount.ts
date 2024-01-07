@@ -8,7 +8,6 @@ import useFetchData from "../useFetchData";
 export default function useFetchLikesCount(input: LikeInput) {
   const authContext = useAuthContext();
   const fetchData = useFetchData();
-
   const {
     data: count,
     isLoading,

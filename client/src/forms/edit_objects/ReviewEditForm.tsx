@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import {
   Modal,
   Container,
@@ -12,26 +11,18 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { AuthContext } from "../../context/AuthContextProvider";
-import ErrorAlert from "../../components/global/ErrorAlert";
-import SuccessAlert from "../../components/global/SuccessAlert";
-import useEditReview from "../../hooks/useEditReview";
 import { edit_review_button, edit_review_wrapper } from "../../styles/editReview";
+import { Review } from "../../types/Review";
+import useEditReview from "../../hooks/mutations/useEditReviewMutation";
 
 interface Props {
-  id: string;
-  content: string;
-  stars: number;
-  finished: string;
+  review: Review;
   book_id: string;
   open: boolean;
   close: () => void;
 }
 export default function ReviewEditForm({
-  id,
-  content,
-  stars,
-  finished,
+  review,
   book_id,
   open,
   close,
@@ -40,24 +31,22 @@ export default function ReviewEditForm({
   const {
     control,
     handleSubmit,
-    formState: { errors },
     getValues,
     reset,
   } = useForm();
 
-const { message, error, loading} = useContext(AuthContext);
-const edit_review = useEditReview();
+const {edit_review, editReviewLoading} = useEditReview();
   const onSubmit = async () => {
     const data = {
-      id: id,
+      id: review?._id,
       book_id: book_id,
-      old_stars: stars,
+      old_stars: review?.stars,
       ...getValues()
     };
     try {
       await edit_review(data);
     } catch (error) {
-      throw new Error(`Error: ${error}`)
+      console.log(`Error: ${error}`)
     }
     reset()
   };
@@ -75,17 +64,14 @@ const edit_review = useEditReview();
             name="newStars"
             control={control}
             render={({ field }) => (
-              <Rating {...field} defaultValue={stars} precision={0.25} />
+              <Rating {...field} defaultValue={review?.stars} precision={0.25} />
             )}
           />
-          {errors.newStars && (
-            <ErrorAlert message={errors.newStars.message as string} />
-          )}
 
           <Controller
             name="newFinished"
             control={control}
-            defaultValue={finished}
+            defaultValue={review?.finished}
             render={({ field }) => (
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
@@ -105,10 +91,6 @@ const edit_review = useEditReview();
               </RadioGroup>
             )}
           />
-          {errors.newFinished && (
-            <ErrorAlert message={errors.newFinished.message as string} />
-          )}
-
           <Controller
             name="newContent"
             control={control}
@@ -120,15 +102,12 @@ const edit_review = useEditReview();
                 {...field}
                 variant="standard"
                 sx={{ width: "100%" }}
-                defaultValue={content}
+                defaultValue={review?.content}
                 onChange={(e) => field.onChange(e.target.value)}
               />
             )}
           />
-          {errors.newContent && (
-            <ErrorAlert message={errors.newContent.message as string} />
-          )}
-          {loading ? (
+          {editReviewLoading ? (
             <Box sx={edit_review_button}>
               <CircularProgress />
             </Box>
@@ -141,9 +120,6 @@ const edit_review = useEditReview();
               SUBMIT REVIEW
             </Button>
           )}
-
-          {message && <SuccessAlert message={message} />}
-          {error && <ErrorAlert message={error} />}
         </Container>
       </Modal>
     </>

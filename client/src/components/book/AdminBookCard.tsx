@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CircularProgress,
@@ -7,11 +6,7 @@ import {
 } from "@mui/material";
 import BookImagesDisplay from "./BookImagesDisplay";
 import BookTable from "./BookTable";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContextProvider";
-import useDeleteBook from "../../hooks/useDeleteBook";
-import ErrorAlert from "../global/ErrorAlert";
-import SuccessAlert from "../global/SuccessAlert";
+import { useState } from "react";
 import EditBookForm from "../../forms/edit_book/EditBookForm";
 import { Book } from "../../types/Book";
 import {
@@ -20,27 +15,21 @@ import {
   container_wrapper,
   table_wrapper,
 } from "../../styles/adminBookCard";
-
+import useDeleteBook from "../../hooks/mutations/useDeleteBookMutation";
+interface Props{
+  book : Book;
+}
 export default function AdminBookCard({
-  _id,
-  author,
-  title,
-  description,
-  language,
-  genres,
-  photos,
-  pages,
-  published,
-}: Book) {
-  const { error, message, loading } = useContext(AuthContext);
+book
+}: Props) {
 
   // Deleting a book
 
-  const delete_book = useDeleteBook();
+  const {delete_book, deleteBookLoading} = useDeleteBook();
   const submitDelete = async () => {
     const data = {
-      id: _id,
-      photos: photos,
+      id: book?._id,
+      photos: book?.photos,
     };
     try {
       await delete_book(data);
@@ -66,10 +55,10 @@ export default function AdminBookCard({
         >
           EDIT
         </Button>
-        {loading ? (
-          <Box>
+        {deleteBookLoading? (
+          <Button>
             <CircularProgress />
-          </Box>
+          </Button>
         ) : (
           <Button
             color="warning"
@@ -83,36 +72,20 @@ export default function AdminBookCard({
       </Container>
       <Container sx={table_wrapper}>
         <BookTable
-          author={author}
-          title={title}
-          description={description}
-          language={language}
-          genres={genres}
-          pages={pages}
-          published={published}
+          book={book}
         />
       </Container>
       <EditBookForm
         handleClose={closeForm}
         open={showForm}
-        id={_id}
-        photos={photos}
-        title={title}
-        author={author}
-        published={published}
-        description={description}
-        genres={genres}
-        language={language}
-        pages={pages}
+        book={book}
       />
       
       <Container sx={container_wrapper}>
         <BookImagesDisplay
-          photos={photos}
+          photos={book?.photos}
         />
       </Container>
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </Card>
   );
 }

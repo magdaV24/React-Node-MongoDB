@@ -55,7 +55,7 @@ export const add_book = async (req: any, res: any) => {
 export const fetch_books = async (req: any, res: any) => {
   try {
     const data = await books.find();
-    return res.json(data);
+    return res.status(200).json(data);
   } catch (error) {
     return res
       .status(500)
@@ -72,7 +72,7 @@ export const fetch_book = async (req: any, res: any) => {
     const data = await books.findOne({ title: title });
 
     if (!data) {
-      return res.json(req.body);
+      return res.status(401).json("Could not find the book!")
     }
 
     return res.json({
@@ -89,7 +89,9 @@ export const fetch_book = async (req: any, res: any) => {
       grade: data.grade,
     });
   } catch (error) {
-    console.log(error);
+    return res
+      .status(500)
+      .json("Internal server error. Please try again later.");
   }
 };
 
@@ -121,7 +123,7 @@ export const add_review = async (req: any, res: any) => {
     const check = await books.findOne({ _id: id, "reviews.user_id": user_id });
 
     if (check) {
-      return res.json("You had already given a review!");
+      return res.status(401).json("You had already given a review!");
     }
 
     const update = await books.updateOne(
@@ -132,12 +134,15 @@ export const add_review = async (req: any, res: any) => {
       { _id: id },
       { $push: { grade: Number(stars) } }
     );
-    if (!update || !update_grade) {
-      throw new Error("Something went wrong!");
+    if (!update || !update_grade) {     
+       return res.status(401).json("Something went wrong!");
+
     }
-    return res.json("Success!");
+    return res.status(200).json("Success!");
   } catch (error) {
-    return res.json(`error: ${error}`);
+    return res
+    .status(500)
+    .json("Internal server error. Please try again later.");
   }
 };
 
@@ -346,7 +351,7 @@ export const delete_photo = async (req: any, res: any) => {
     const check = await books.findOne({ _id: id });
 
     if (!check) {
-      return res.json("Could not find this book!");
+      return res.status(401).json("Could not find this book!");
     }
 
     const update = await books.updateOne(
@@ -355,11 +360,10 @@ export const delete_photo = async (req: any, res: any) => {
     );
 
     if (!update) {
-    return res.json("Could not delete this photo!");
+    return res.status(401).json("Could not delete this photo!");
     }
-
     await cloudinary.v2.uploader.destroy(photo);
-    return res.json("Success!");
+    return res.status(200).json("Photo deleted successfully from MongoDB and Cloudinary!");
   } catch (error) {
    return res
       .status(500)
@@ -374,8 +378,7 @@ export const edit_field = async (req: any, res: any) => {
     const check = await books.findOne({ _id: id });
 
     if (!check) {
-      // return res.json("Could not find this book!");
-      return res.json(id);
+      return res.status(401).json("Could not find this book!");
     }
 
     const updateField = await books.updateOne(
@@ -384,9 +387,9 @@ export const edit_field = async (req: any, res: any) => {
     );
 
     if (!updateField) {
-      res.json("Something went wrong while trying to edit this field!");
+      res.status(401).json("Something went wrong while trying to edit this field!");
     }
-    return res.json("Success!");
+    return res.status(200).json("Success!");
   } catch (error) {
    return res
       .status(500)

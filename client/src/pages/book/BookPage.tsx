@@ -120,7 +120,7 @@ export default function BookPage() {
 
                   <AdvancedImage
                     cldImg={cld
-                      .image((book as Book).photos[currentIndex])
+                      .image(book!.photos[currentIndex])
                       .resize(fill().width(150).height(250))}
                   />
 
@@ -183,7 +183,7 @@ export default function BookPage() {
                 </TableHead>
               </Table>
               {currentUser && (
-                <ReadingStatus user_id={currentUser.id} book_id={book._id} />
+                <ReadingStatus />
               )}
               {currentUser && (
                 <Fab

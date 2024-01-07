@@ -14,11 +14,9 @@ import {
 import { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContextProvider";
-import useAddReview from "../hooks/useAddReview";
-import ErrorAlert from "../components/global/ErrorAlert";
-import SuccessAlert from "../components/global/SuccessAlert";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { btnStyles, reviewFormStyle } from "../styles/app";
+import useAddReview from "../hooks/mutations/useAddReviewMutation";
 
 interface Props {
   book_id: string;
@@ -28,8 +26,8 @@ interface Props {
 
 export default function ReviewForm({ book_id, open, close }: Props) {
   const authContext = useAuthContext();
-  const { currentUser, error, message } = useContext(AuthContext);
-  const {add_review, reviewLoading} = useAddReview();
+  const { currentUser } = useContext(AuthContext);
+  const { add_review, reviewLoading } = useAddReview();
 
   const {
     control,
@@ -41,28 +39,31 @@ export default function ReviewForm({ book_id, open, close }: Props) {
   } = useForm();
 
   const onSubmit = async () => {
-    authContext.setDisabled(true)
+    authContext.setDisabled(true);
     setValue("stars", Number(getValues("stars")));
     const data = {
       id: book_id,
-      username: currentUser.username,
-      avatar: currentUser.avatar,
+      username: currentUser!.username,
+      avatar: currentUser!.avatar,
       date: new Date(Date.now()),
-      user_id: currentUser.id,
+      user_id: currentUser!.id,
       ...getValues(),
     };
     try {
       await add_review(data);
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+      console.log(`Error: ${error}`);
     }
     reset();
-    authContext.setDisabled(false)
+    authContext.setDisabled(false);
   };
 
   useEffect(() => {
-    if (errors.stars) authContext.setError(errors.stars.message as string);
-  }, [authContext, errors.stars]);
+    if (errors.stars)
+      authContext.setError(`Review error: ${errors.stars.message}`);
+    if (errors.content)
+      authContext.setError(`Review error: ${errors.content.message}`);
+  }, [authContext, errors.content, errors.stars]);
   return (
     <Modal
       open={open}
@@ -75,10 +76,9 @@ export default function ReviewForm({ book_id, open, close }: Props) {
         <Controller
           name="stars"
           control={control}
+          defaultValue={0}
           rules={{ required: "A grade is required!" }}
-          render={({ field }) => (
-            <Rating {...field} precision={0.25} />
-          )}
+          render={({ field }) => <Rating {...field} precision={0.25} />}
         />
         <Controller
           name="finished"
@@ -106,6 +106,7 @@ export default function ReviewForm({ book_id, open, close }: Props) {
 
         <Controller
           name="content"
+          rules={{ required: "Your review has no content!" }}
           control={control}
           render={({ field }) => (
             <TextField
@@ -137,17 +138,23 @@ export default function ReviewForm({ book_id, open, close }: Props) {
         />
 
         {reviewLoading ? (
-          <Button variant="contained" disabled={authContext.disabled} sx={btnStyles}>
+          <Button
+            variant="contained"
+            disabled={authContext.disabled}
+            sx={btnStyles}
+          >
             <CircularProgress />
           </Button>
         ) : (
-          <Button sx={btnStyles} type="submit" onClick={handleSubmit(onSubmit)} disabled={authContext.disabled}>
+          <Button
+            sx={btnStyles}
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
+            disabled={authContext.disabled}
+          >
             SUBMIT REVIEW
           </Button>
         )}
-
-        {message && <SuccessAlert />}
-        {error && <ErrorAlert />}
       </Container>
     </Modal>
   );

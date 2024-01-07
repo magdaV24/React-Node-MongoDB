@@ -15,37 +15,21 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
 import { Controller, useForm } from "react-hook-form";
-import { AuthContext } from "../../context/AuthContextProvider";
-import useEditField from "../../hooks/useEditField";
-import ErrorAlert from "../../components/global/ErrorAlert";
-import SuccessAlert from "../../components/global/SuccessAlert";
 import { GENRES_LIST } from "../../genres";
+import useEditField from "../../hooks/mutations/useEditFieldMutation";
+import { Book } from "../../types/Book";
 
 interface Props {
-  id: string;
-  title: string;
-  author: string;
-  published: string;
-  description: string;
-  genres: string[];
-  language: string;
-  pages: number;
+  book: Book
 }
 
 const genres_list = GENRES_LIST;
 
 export default function EditBookTable({
-  id,
-  title,
-  author,
-  published,
-  description,
-  genres,
-  language,
-  pages,
+ book
 }: Props) {
   const [genresArr, setGenresArr] = useState("");
 
@@ -73,11 +57,10 @@ export default function EditBookTable({
 
   const { control, handleSubmit, getValues } = useForm();
   useEffect(() => {
-    set_genres(genres);
-  }, [genres]);
+    set_genres(book?.genres);
+  }, [book?.genres]);
 
-  const { error, message, loading } = useContext(AuthContext);
-  const edit_field = useEditField();
+  const {edit_field, editFieldLoading} = useEditField();
 
   const submit_edit = async (field: string, update: unknown, id: string) => {
     const data = {
@@ -89,7 +72,7 @@ export default function EditBookTable({
     try {
       await edit_field(data);
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+     console.log(`Error: ${error}`)
     }
   };
 
@@ -133,13 +116,13 @@ export default function EditBookTable({
                         sx={{ width: "90%", backgroundColor: "secondary.main" }}
                         autoFocus
                         {...field}
-                        defaultValue={title}
+                        defaultValue={book?.title}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     )}
                   />
 
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -147,7 +130,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("title", getValues("title"), id)
+                        submit_edit("title", getValues("title"), book?._id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -156,7 +139,7 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-                title
+                book?.title
               )}
             </TableCell>
           </TableRow>
@@ -179,12 +162,12 @@ export default function EditBookTable({
                       <TextField
                         autoFocus
                         {...field}
-                        defaultValue={author}
+                        defaultValue={book?.author}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     )}
                   />
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -192,7 +175,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("author", getValues("author"), id)
+                        submit_edit("author", getValues("author"), book?._id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -201,7 +184,7 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-                author
+                book?.author
               )}
             </TableCell>
           </TableRow>
@@ -224,12 +207,12 @@ export default function EditBookTable({
                       <TextField
                         autoFocus
                         {...field}
-                        defaultValue={published}
+                        defaultValue={book?.published}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     )}
                   />
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -237,7 +220,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("published", getValues("published"), id)
+                        submit_edit("published", getValues("published"), book?._id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -246,7 +229,7 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-                published
+                book?.published
               )}
             </TableCell>
           </TableRow>
@@ -274,12 +257,12 @@ export default function EditBookTable({
                           step: 1,
                         }}
                         {...field}
-                        defaultValue={pages}
+                        defaultValue={book?.pages}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     )}
                   />
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -287,7 +270,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("pages", getValues("pages"), id)
+                        submit_edit("pages", getValues("pages"), book?._id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -296,7 +279,7 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-                pages
+                book?.pages
               )}
             </TableCell>
           </TableRow>
@@ -325,7 +308,7 @@ export default function EditBookTable({
                         input={<OutlinedInput label="Genres" />}
                         renderValue={(selected) => selected.join(", ")}
                         defaultChecked={true}
-                        defaultValue={genres}
+                        defaultValue={book?.genres}
                       >
                         {genres_list.map((genre) => (
                           <MenuItem key={genre} value={genre}>
@@ -336,7 +319,7 @@ export default function EditBookTable({
                       </Select>
                     )}
                   />
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -344,7 +327,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("genres", getValues("genres"), id)
+                        submit_edit("genres", getValues("genres"), book?._id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -378,7 +361,7 @@ export default function EditBookTable({
                         labelId="language-select"
                         label="Language"
                         sx={{ width: "10vw" }}
-                        defaultValue={language}
+                        defaultValue={book?.language}
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -394,7 +377,7 @@ export default function EditBookTable({
                     )}
                   />
 
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -402,7 +385,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("language", getValues("language"), id)
+                        submit_edit("language", getValues("language"), book?._id)
                       )}
                       sx={{ height: "7vh" }}
                     >
@@ -411,7 +394,7 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-                language
+                book?.language
               )}
             </TableCell>
           </TableRow>
@@ -438,12 +421,12 @@ export default function EditBookTable({
                         {...field}
                         variant="standard"
                         sx={{ width: "100%" }}
-                        defaultValue={description}
+                        defaultValue={book?.description}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     )}
                   />
-                  {loading ? (
+                  {editFieldLoading ? (
                     <Box>
                       <CircularProgress />
                     </Box>
@@ -451,7 +434,7 @@ export default function EditBookTable({
                     <Button
                       variant="outlined"
                       onClick={handleSubmit(() =>
-                        submit_edit("description", getValues("description"), id)
+                        submit_edit("description", getValues("description"), book?._id)
                       )}
                       sx={{ height: "16vh" }}
                     >
@@ -460,14 +443,12 @@ export default function EditBookTable({
                   )}
                 </Container>
               ) : (
-                description
+                book?.description
               )}
             </TableCell>
           </TableRow>
         </TableHead>
       </Table>
-      {message && <SuccessAlert />}
-      {error && <ErrorAlert />}
     </TableContainer>
   );
 }

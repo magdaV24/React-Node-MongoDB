@@ -1,18 +1,29 @@
-import { useMutation } from "react-query";
-import { useAuthContext } from "../useAuthContext";
+import { useMutation, useQueryClient } from "react-query";
 import { ADD_READING_STATUS } from "../../api/urls";
 import usePostData from "../usePostData";
 
+export interface StatusInput {
+  status: string;
+  user_id: string;
+  book_id: string;
+}
+
 function useAddStatusMutation () {
-  const authContext = useAuthContext();
+  const queryClient = useQueryClient();
   const postData = usePostData();
   const mutation = useMutation(
-    async (input: unknown) => await postData(ADD_READING_STATUS, input),
+    async (input: StatusInput) => await postData(ADD_READING_STATUS, input),
     {
-      onError: (error) => {
-        authContext.setError(error as string);
-        authContext.setOpenError(true);
+      onSuccess: (context) => {
+        const input = context?.input;
+        queryClient.invalidateQueries(
+          `labelQuery/${input?.user_id}/${input?.book_id}`
+        );
       },
+      onMutate: async (input: StatusInput) => {
+        const context = { input };
+        return context;
+      }
     }
   );
 
@@ -23,7 +34,7 @@ function useAddStatusMutation () {
 export default function useAddStatus() {
   const {mutation, statusLoading} = useAddStatusMutation();
 
-  const add_status = async (input: unknown) => {
+  const add_status = async (input: StatusInput) => {
     try {
     await  mutation.mutateAsync(input);
     } catch (error) {

@@ -12,7 +12,6 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  Box,
   CircularProgress,
   FormHelperText,
 } from "@mui/material";
@@ -27,10 +26,10 @@ import {
 import SuccessAlert from "../components/global/SuccessAlert";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
-import useAddBook from "../hooks/useAddBook";
-import useCloudinary from "../hooks/useCloudinary";
 import { PRESET } from "../cloudinary/cloudinary";
 import { useAuthContext } from "../hooks/useAuthContext";
+import useAddBook from "../hooks/mutations/useAddBookMutation";
+import useCloudinary from "../hooks/mutations/useCloudinaryMutation";
 
 export default function BookForm({ open, handleClose }: ModalInterface) {
   const {
@@ -54,7 +53,7 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
   const authContext = useAuthContext();
   const { message, error } = useContext(AuthContext);
 
-  const {add_book, isLoading} = useAddBook();
+  const { add_book, isLoading } = useAddBook();
   const submit_to_cloudinary = useCloudinary();
 
   const submitBook = async () => {
@@ -65,44 +64,39 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
           const formData = new FormData();
           formData.append("file", photo);
           formData.append("upload_preset", PRESET);
-
-          try {
-            const id = await submit_to_cloudinary(formData);
-            return id;
-          } catch (error) {
-            throw new Error(`Error: ${error}`);
-          }
+          const id = await submit_to_cloudinary(formData);
+          return id;
         })
       );
-      try {
-        const input = { ...getValues(), photos: ids };
-        await add_book(input);
-      } catch (error) {
-        throw new Error(`Error: ${error}`);
-      }
+
+      const input = { ...getValues(), photos: ids };
+      await add_book(input);
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+      authContext.setError(`Error: ${error}`);
     }
     setDisabled(false);
   };
 
   useEffect(() => {
     if (errors.title) {
-      authContext.setError(errors.title.message as string);
+      authContext.setError(`Title error: ${errors.title.message}`);
     } else if (errors.author) {
-      authContext.setError(errors.author.message as string);
+      authContext.setError(`Error: ${errors.author.message}`);
     } else if (errors.published) {
-      authContext.setError(errors.published.message as string);
+      authContext.setError(`Published error: ${errors.published.message}`);
     } else if (errors.pages)
-      authContext.setError(errors.pages.message as string);
+      authContext.setError(`Pages error: ${errors.pages.message}`);
     else if (errors.genres) {
-      authContext.setError(errors.genres.message as string);
+      authContext.setError(`Genres error: ${errors.genres.message}`);
     } else if (errors.language) {
-      authContext.setError(errors.language.message as string);
+      authContext.setError(`Language error: ${errors.language.message}`);
     } else if (errors.description) {
-      authContext.setError(errors.description.message as string);
+      authContext.setError(`Description error: ${errors.description.message}`);
     } else if (errors.photos) {
-      authContext.setError(errors.photos.message as string);
+      authContext.setError(`Photos error: ${errors.photos.message}`);
+    } else if (authContext.error !== "") {
+      authContext.setError(`Error: ${authContext.error}`);
+      authContext.setOpenError(true)
     } else {
       authContext.clearError();
     }
@@ -288,9 +282,9 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
             </Container>
           </Container>
           {isLoading ? (
-            <Box sx={button_styles}>
+            <Button sx={button_styles}>
               <CircularProgress />
-            </Box>
+            </Button>
           ) : (
             <Button
               sx={button_styles}

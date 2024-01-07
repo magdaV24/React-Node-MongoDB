@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import { Box, Button, Container, Tooltip, alpha, styled } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,10 +19,10 @@ import Register from "../../forms/Register";
 import Login from "../../forms/Login";
 import { cloudinaryFnc } from "../../functions/cloudinaryFnc";
 import { AuthContext } from "../../context/AuthContextProvider";
-import fetchData from "../../functions/fetchData";
 import { Book } from "../../types/Book";
 import { SEARCH } from "../../api/urls";
 import Drawer from "../user/Drawer";
+import useFetchData from "../../hooks/useFetchData";
 
 export default function Bar() {
   const { currentUser, logout } = useContext(AuthContext);
@@ -90,6 +89,7 @@ export default function Bar() {
   }));
 
   // Search function
+  const fetchData = useFetchData();
   const searchQuery = (input: string) => fetchData(`${SEARCH}/${input}`);
   const [searchResult, setSearchResult] = useState([]);
 
