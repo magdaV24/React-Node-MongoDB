@@ -4,6 +4,7 @@ import {
   Button,
   CircularProgress,
   Container,
+  styled,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { ModalInterface } from "../interfaces/ModalInterface";
@@ -13,6 +14,19 @@ import { wrapper } from "../styles/registerForm";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useRegister from "../hooks/mutations/useRegistrationMutation";
 import useCloudinary from "../hooks/mutations/useCloudinaryMutation";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export default function Register({ open, handleClose }: ModalInterface) {
   const {
@@ -163,16 +177,18 @@ export default function Register({ open, handleClose }: ModalInterface) {
         <Controller
           name="avatar"
           control={control}
-          defaultValue=""
           rules={{ required: "Avatar required!" }}
           render={({ field }) => (
-            <Button variant="contained" disabled={disabled}>
-              Upload an avatar
-              <input
-                id="avatar-standard-basic"
+            <Button
+              component="label"
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+              fullWidth
+            >
+              Upload avatar
+              <VisuallyHiddenInput
                 type="file"
                 onChange={(e) => field.onChange(e.target.files)}
-                // style={{display: 'none'}}
               />
             </Button>
           )}

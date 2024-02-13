@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     checkToken();
-  }, []);
+  }, [checkToken]);
 
   return (
     <ThemeProvider theme={currentTheme}>

@@ -13,7 +13,7 @@ import {
   OutlinedInput,
   Select,
   CircularProgress,
-  FormHelperText,
+  styled,
 } from "@mui/material";
 import ErrorAlert from "../components/global/ErrorAlert";
 import { GENRES_LIST } from "../genres";
@@ -30,6 +30,19 @@ import { PRESET } from "../cloudinary/cloudinary";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useAddBook from "../hooks/mutations/useAddBookMutation";
 import useCloudinary from "../hooks/mutations/useCloudinaryMutation";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export default function BookForm({ open, handleClose }: ModalInterface) {
   const {
@@ -259,26 +272,23 @@ export default function BookForm({ open, handleClose }: ModalInterface) {
                 control={control}
                 defaultValue={[]}
                 render={({ field }) => (
-                  <>
-                    <InputLabel htmlFor="images">Images</InputLabel>
-                    <input
-                      id="images"
-                      type="file"
-                      accept="/images*"
-                      multiple
+                 <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                  fullWidth
+                >
+                  Add photos
+                  <VisuallyHiddenInput
+                    type="file"
+                    multiple
                       onChange={(e) =>
                         field.onChange([...field.value, ...e.target.files!])
                       }
-                    />
-                    <FormHelperText>Upload photos</FormHelperText>
-                    <ul>
-                      {field.value.map((file, index) => (
-                        <li key={index}>{file.name}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              />
+                  />
+                </Button>
+            )}
+          />
             </Container>
           </Container>
           {isLoading ? (
