@@ -25,3 +25,4 @@ dist-ssr
 
 /src/tests/hooks
 /src/utils/cloudinary.ts
+/src/tests/components/Navbar.test.tsx

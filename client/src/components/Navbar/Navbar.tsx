@@ -1,6 +1,6 @@
 import { Box, AppBar, Toolbar, Modal } from "@mui/material";
 import "../../styles/components/navbar.css";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Register from "../../forms/Register";
 import Login from "../../forms/Login";
 import useGetUser from "../../hooks/useGetUser";
@@ -38,7 +38,7 @@ export default function Navbar({ id }: Id) {
   const user = useGetUser(id);
   const token = appContext.token;
   const setToken = appContext.setToken;
-  const { logout } = useToken(setToken);
+  const { logout, reload } = useToken(setToken);
 
   // User menu
 
@@ -75,6 +75,9 @@ export default function Navbar({ id }: Id) {
   const { data: currentlyReading } = useQueryHook(urlOne, queryOne);
   const { data: wantToRead } = useQueryHook(urlTwo, queryTwo);
   const { data: read } = useQueryHook(urlThree, queryThree);
+
+  useEffect(()=>{
+  },[reload])
 
   return (
     <Box sx={{ flexGrow: 1 }}>

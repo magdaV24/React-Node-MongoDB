@@ -1,7 +1,9 @@
 import { jwtDecode } from "jwt-decode";
 import { Token } from "../types/Token";
+import { useState } from "react";
 
 export function useToken(setToken: (token: string)=>void) {
+  const [reload, setReload] = useState(false)
   const saveToken = (token: string) => {
     const decodedToken = jwtDecode(token) as Token;
 
@@ -33,13 +35,10 @@ export function useToken(setToken: (token: string)=>void) {
     setToken("");
     if (decodedToken?.rememberMe) {
     localStorage.removeItem("Token");
-    // reloadPage()
-    window.location.reload();
     } else {
       sessionStorage.removeItem("Token");
-      // reloadPage();
-      window.location.reload();
     }
+    setReload(prev=>!prev)
   };
 
   const setTheToken = () => {
@@ -62,6 +61,6 @@ export function useToken(setToken: (token: string)=>void) {
   };
 
 
-  return { saveToken, getUserId, checkToken, setTheToken, logout };
+  return { saveToken, getUserId, checkToken, setTheToken, logout, reload };
 }
 
