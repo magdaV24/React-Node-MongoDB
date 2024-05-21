@@ -1,0 +1,51 @@
+.review-card-wrapper {
+  width: 100%;
+}
+
+.review-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.review-card-header-one{
+    display: flex;
+    gap: 0.5rem;
+    width: fit-content;
+}
+
+.review-card-date{
+    opacity: 0.6;
+    margin-top: 0.4rem;
+}
+
+.review-card-rating{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+
+.review-card-buttons-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.review-card-buttons-col-one{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.review-card-content{
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    min-height: 3rem;
+    height: fit-content;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

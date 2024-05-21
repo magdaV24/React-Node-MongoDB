@@ -1,0 +1,32 @@
+.comment-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.comment-card-date {
+  opacity: 0.6;
+  margin-top: 0.4rem;
+}
+.comment-card-buttons-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.comment-card-buttons-col-one {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-card-content {
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 3rem;
+  height: fit-content;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

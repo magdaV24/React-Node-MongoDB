@@ -1,0 +1,25 @@
+.book-card-wrapper {
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 15rem;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+    rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  min-height: 20rem;
+  height: fit-content;
+}
+
+.book-card-buttons {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-around;
+}
+
+.book-card-button {
+  width: 4.5rem;
+}

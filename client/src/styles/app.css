@@ -1,0 +1,48 @@
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: scroll;
+    height: 100%; 
+    padding: 5rem;
+}
+
+.form-wrapper {
+    width: 30vw;
+    max-width: 100%; 
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+.link{
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.page-wrapper{
+    min-width: 100vw;
+    width: fit-content;
+    min-height: 100vh;
+    height: fit-content;
+    padding: 2rem;
+    display: flex;
+}
+
+.form-header{
+    display: flex;
+    gap: 1rem;
+}
+
+.icon{
+    size: 2rem;
+}
+
+
+.divider{
+    opacity: 0.3;
+    margin: 0.4rem 0 0.4rem 0;
+}

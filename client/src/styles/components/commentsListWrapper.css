@@ -1,0 +1,8 @@
+.comments-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 1rem;
+}

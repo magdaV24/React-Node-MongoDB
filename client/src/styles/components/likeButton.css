@@ -1,0 +1,6 @@
+.like-button{
+    display:flex;
+    gap: 0.7rem;
+    justify-content: center;
+    align-items: center;
+}

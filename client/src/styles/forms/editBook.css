@@ -1,0 +1,21 @@
+.display-photos {
+  display: grid;
+  column-gap: 0.2rem;
+  row-gap: 0.2rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.photo-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-photo-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}

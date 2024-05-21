@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Sevillana&display=swap');
+
+.book-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 4rem;
+  width: 100%;
+  padding: 1rem;
+  min-height: 29rem;
+  height: fit-content;
+}
+
+.book-card {
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 85vh;
+  position: fixed;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  margin-top: -2rem;
+}
+
+.card-header {
+  width: 100%;
+}
+
+.card-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  width: 100%;
+}
+
+.book-media-btn {
+  width: 1.5rem;
+}
+
+.book-synopsis-wrapper {
+  width: 60vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-table-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.book-table{
+    width: 60vw;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.book-grade-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.reading-status-wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.book-info{
+    display: flex;
+    flex-direction: column;
+    width: 65vw;
+    min-height: 80vh;
+    height: fit-content;
+    margin-left: 30rem;
+    gap: 5rem;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.show-reviews-button{
+    width: 15rem;
+    margin-left: 14rem;
+}
+
+.book-description::first-letter {
+    font-size: 2rem; 
+    font-family: "Sevillana", cursive;
+}
