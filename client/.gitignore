@@ -23,6 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 
-/src/tests/hooks
 /src/utils/cloudinary.ts
-/src/tests/components/Navbar.test.tsx

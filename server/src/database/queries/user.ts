@@ -94,7 +94,7 @@ export const login = async (req: any, res: any) => {
 export const fetchUser = async (req: any, res: any) => {
   try {
     const id = req.params.id;
-    if (!id) {
+    if (!id || id===null) {
       return res.status(200).json(null);
     }
     const currentUser = await user.findOne({ _id: id });
@@ -109,8 +109,6 @@ export const fetchUser = async (req: any, res: any) => {
 
 export const addReadingStatus = async (req: any, res: any) => {
   const { userId, bookId, status } = req.body;
-
-  //new mongoose.Types.ObjectId(id)
 
   const data = await user.findOne({ _id: userId });
 
@@ -202,15 +200,11 @@ export const fetchByReadingStatus = async (req: any, res: any) => {
     return res.status(200).json([]);
   } else
   try {
-    // If userId is not provided or is equal to "null", return an empty array or appropriate response
-   
-
     const currentUser = await user.findOne({
       _id: userId,
     });
 
     if (!currentUser) {
-      // If user with the provided ID is not found, return a response with status 404
       return res.status(404).json("User not found");
     }
 
@@ -229,7 +223,6 @@ export const fetchByReadingStatus = async (req: any, res: any) => {
         result = await book.find({ _id: { $in: currentUser.read } });
         break;
       default:
-        // If the provided field is invalid, return a response with status 400
         return res.status(400).json("Invalid field");
     }
 

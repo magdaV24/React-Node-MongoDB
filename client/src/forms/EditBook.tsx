@@ -163,7 +163,7 @@ export default function EditBook({ book }: Props) {
       style={{ marginTop: `${marginTop}px` }}
     >
       <Box className="form-header">
-        <Typography variant="h4">Add Book</Typography>
+        <Typography variant="h4">Edit {book?.title}</Typography>
       </Box>
       <Controller
         name="title"

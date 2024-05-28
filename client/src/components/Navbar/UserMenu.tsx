@@ -26,7 +26,7 @@ export default function UserMenu({
   const cld = cloudinaryFnc();
   return (
     <Box className="review-card-header-two">
-      <Button className="app-bar-btn" onClick={(event: {currentTarget: SetStateAction<null>;}) => handleOpenMenu(event)}>
+      <Button className="app-bar-btn" onClick={(event: {currentTarget: SetStateAction<null>;}) => handleOpenMenu(event)} color="primary">
         <Box className="app-bar-avatar app-bar-username">
           <AdvancedImage
             cldImg={cld.image(user!.avatar).resize(fill().width(50).height(50))}

@@ -10,15 +10,16 @@ export default function usePostDataWithToken() {
       Authorization: `Bearer ${token}`,
     };
     if (!token) {
-      appContext.setError("User not authenticated!");
+      throw new Error("No user is authenticated!");
     }
     try {
       const response = await axios.post(url, input, { headers: headers });
       return response;
     } catch (error: unknown) {
       const errorMessage = (error as AxiosError).response?.data;
-      appContext.setOpenErrorAlert(true);
-      appContext.setError(`Error: ${errorMessage}`);
+      throw new Error(
+        `Error while trying to post data for an authenticated user: ${errorMessage}`
+      );
     }
   };
   return postDataWithToken;

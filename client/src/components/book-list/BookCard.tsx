@@ -1,11 +1,5 @@
 import { AdvancedImage } from "@cloudinary/react";
-import {
-  CardMedia,
-  CardContent,
-  Typography,
-  Box,
-  Modal,
-} from "@mui/material";
+import { CardMedia, CardContent, Typography, Box, Modal } from "@mui/material";
 import { Link } from "react-router-dom";
 import { cloudinaryFnc } from "../../utils/cloudinaryFnc";
 import { fill } from "@cloudinary/url-gen/actions/resize";
@@ -27,7 +21,7 @@ export default function BookCard({ book }: Props) {
   const appContext = useAppContext();
   const token = appContext.token;
   const setToken = appContext.setToken;
-  const { getUserId } = useToken(token, setToken);
+  const { getUserId } = useToken(setToken);
   const userId = getUserId(token);
 
   const currentUser = useGetUser(userId);
@@ -35,15 +29,17 @@ export default function BookCard({ book }: Props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
-  function openEditForm(){
-    setOpenEdit(true)
+  function openEditForm() {
+    setOpenEdit(true);
   }
 
-  function openDeleteForm(){
-    setOpenDelete(true)
+  function openDeleteForm() {
+    setOpenDelete(true);
   }
   return (
-    <Box className="book-card-wrapper" sx={{backgroundColor: 'secondary.main'}}
+    <Box
+      className="book-card-wrapper"
+      sx={{ backgroundColor: "secondary.main" }}
     >
       <CardMedia>
         <AdvancedImage
@@ -60,7 +56,10 @@ export default function BookCard({ book }: Props) {
           {book?.author}
         </Typography>
         {currentUser?.role === "Admin" && (
-         <AdminButtons openEditForm={openEditForm} openDeleteForm={openDeleteForm} />
+          <AdminButtons
+            openEditForm={openEditForm}
+            openDeleteForm={openDeleteForm}
+          />
         )}
       </CardContent>
       <Modal

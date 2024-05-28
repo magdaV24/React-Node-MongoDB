@@ -60,11 +60,11 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
   useEffect(() => {
     if (errors.stars) {
       appContext.setError(`Review error: ${errors.stars.message}`);
-      appContext.setOpenBackdrop(true);
+      appContext.setOpenErrorAlert(true);
     }
     if (errors.content) {
       appContext.setError(`Review error: ${errors.content.message}`);
-      appContext.setOpenBackdrop(true);
+      appContext.setOpenErrorAlert(true);
     }
   }, [appContext, errors.content, errors.stars]);
   return (

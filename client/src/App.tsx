@@ -12,6 +12,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorBoundary as FallbackComponent } from "./components/error-handling/ErrorBoundary";
 import useQueryHook from "./hooks/useQueryHook";
 import { FETCH_BOOKS } from "./utils/urls";
+import ErrorAlert from "./components/ErrorAlert";
+import SuccessAlert from "./components/SuccessAlert";
 
 function App() {
   const appContext = useAppContext();
@@ -21,8 +23,8 @@ function App() {
 
   const [currentUserId, setCurrentUserId] = useState<string | null>("");
   
-  const queryName = "booksQuery";
-  const { data } = useQueryHook(FETCH_BOOKS, queryName);
+  const queryKey = "booksQuery";
+  const { data } = useQueryHook(FETCH_BOOKS, queryKey);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +57,8 @@ function App() {
         </BrowserRouter>
         <Navbar id={currentUserId}/>
         <ThemeButton handleToggleTheme={appContext.toggleTheme} />
+        <ErrorAlert />
+        <SuccessAlert/>
       </CssBaseline>
     </ThemeProvider>
     </ErrorBoundary>

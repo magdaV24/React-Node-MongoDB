@@ -42,54 +42,54 @@ describe("Navbar component", () => {
     screen.debug();
   });
 
-  // it("should open the user dropdown when the username button is clicked and if the user is an admin, it should open the modal that contains the Add Book Form", async () => {
-  //   mockedUseGetUser.mockReturnValue(mockUser);
-  //   render(WithProviders(<Navbar id={mockUser.id} />));
-  //   const usernameButton = screen.getByText(mockUser.username);
-  //   await user.click(usernameButton);
+  it("should open the user dropdown when the username button is clicked and if the user is an admin, it should open the modal that contains the Add Book Form", async () => {
+    mockedUseGetUser.mockReturnValue(mockUser);
+    render(WithProviders(<Navbar id={mockUser.id} />));
+    const usernameButton = screen.getByText(mockUser.username);
+    await user.click(usernameButton);
 
-  //   const addBook = screen.getByText("Add Book");
-  //   expect(addBook).toBeInTheDocument();
-  //   expect(screen.getByText("Log out")).toBeInTheDocument();
+    const addBook = screen.getByText("Add Book");
+    expect(addBook).toBeInTheDocument();
+    expect(screen.getByText("Log out")).toBeInTheDocument();
 
-  //   await userEvent.click(addBook);
+    await userEvent.click(addBook);
 
-  //   screen.debug();
+    screen.debug();
 
-  //   await waitFor(() => {
-  //     const addBookHeader = screen.getByTitle("Add Book Form");
-  //     expect(addBookHeader).toBeInTheDocument();
-  //   });
-  //   screen.debug();
-  // });
+    await waitFor(() => {
+      const addBookHeader = screen.getByTitle("Add Book Form");
+      expect(addBookHeader).toBeInTheDocument();
+    });
+    screen.debug();
+  });
 
-  // it('should not show the "Add Book" button when the user is not an admin', async () => {
-  //   mockedUseGetUser.mockReturnValue(notAdminUser);
-  //   render(WithProviders(<Navbar id={notAdminUser.id} />));
-  //   const usernameButton = screen.getByText(notAdminUser.username);
+  it('should not show the "Add Book" button when the user is not an admin', async () => {
+    mockedUseGetUser.mockReturnValue(notAdminUser);
+    render(WithProviders(<Navbar id={notAdminUser.id} />));
+    const usernameButton = screen.getByText(notAdminUser.username);
 
-  //   await user.click(usernameButton);
-  //   const addBook = screen.queryByText("Add Book");
-  //   expect(addBook).toBeNull();
-  //   screen.debug();
-  // });
+    await user.click(usernameButton);
+    const addBook = screen.queryByText("Add Book");
+    expect(addBook).toBeNull();
+    screen.debug();
+  });
 
-  // it("should display the Login and Register buttons if the user is not logged in and show the Login and Register forms when their associated buttons are clicked", async () => {
-  //   render(WithProviders(<Navbar id={null} />));
-  //   const loginButton = screen.getByText("Login");
-  //   const registerButton = screen.getByText("Register");
+  it("should display the Login and Register buttons if the user is not logged in and show the Login and Register forms when their associated buttons are clicked", async () => {
+    render(WithProviders(<Navbar id={null} />));
+    const loginButton = screen.getByText("Login");
+    const registerButton = screen.getByText("Register");
 
-  //   expect(loginButton).toBeInTheDocument();
-  //   expect(registerButton).toBeInTheDocument();
+    expect(loginButton).toBeInTheDocument();
+    expect(registerButton).toBeInTheDocument();
 
-  //   await user.click(loginButton);
+    await user.click(loginButton);
 
-  //   const loginHeader = screen.getByTitle("Login Form");
-  //   expect(loginHeader).toBeInTheDocument();
+    const loginHeader = screen.getByTitle("Login Form");
+    expect(loginHeader).toBeInTheDocument();
 
-  //   await user.click(registerButton);
-  //   const registerHeader = screen.getByTitle("Register Form");
-  //   expect(registerHeader).toBeInTheDocument();
-  //   screen.debug();
-  // });
+    await user.click(registerButton);
+    const registerHeader = screen.getByTitle("Register Form");
+    expect(registerHeader).toBeInTheDocument();
+    screen.debug();
+  });
 });

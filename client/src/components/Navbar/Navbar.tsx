@@ -1,6 +1,6 @@
 import { Box, AppBar, Toolbar, Modal } from "@mui/material";
 import "../../styles/components/navbar.css";
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import Register from "../../forms/Register";
 import Login from "../../forms/Login";
 import useGetUser from "../../hooks/useGetUser";
@@ -16,11 +16,11 @@ import AddBook from "../../forms/AddBook";
 import useQueryHook from "../../hooks/useQueryHook";
 import { useAppContext } from "../../hooks/useAppContext";
 
-interface Id {
+interface Props {
   id: string | null;
 }
 
-export default function Navbar({ id }: Id) {
+export default function Navbar({ id }: Props) {
   const appContext = useAppContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
@@ -38,7 +38,7 @@ export default function Navbar({ id }: Id) {
   const user = useGetUser(id);
   const token = appContext.token;
   const setToken = appContext.setToken;
-  const { logout, reload } = useToken(setToken);
+  const { logout } = useToken(setToken);
 
   // User menu
 
@@ -76,12 +76,9 @@ export default function Navbar({ id }: Id) {
   const { data: wantToRead } = useQueryHook(urlTwo, queryTwo);
   const { data: read } = useQueryHook(urlThree, queryThree);
 
-  useEffect(()=>{
-  },[reload])
-
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{backgroundColor: 'background.paper'}}>
         <Toolbar className="bar-wrapper">
           <AppName />
           <SearchBar
