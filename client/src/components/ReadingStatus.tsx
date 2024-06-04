@@ -52,7 +52,7 @@ export default function ReadingStatus({ userId, bookId }: Props) {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }}>
+    <FormControl sx={{ m: 1, minWidth: 120 }} title="Reading Status">
       {label && <InputLabel id="label">{label}</InputLabel>}
       <Select
         labelId="demo-simple-select-helper-label"

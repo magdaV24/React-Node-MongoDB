@@ -75,7 +75,7 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
       aria-describedby="modal-modal-description"
       className="modal"
     >
-      <Card className="form-wrapper">
+      <Card className="form-wrapper" title='Review Form'>
         <Typography variant="h6" title="Review Form">
           Review this book!
         </Typography>

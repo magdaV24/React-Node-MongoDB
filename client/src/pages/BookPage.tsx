@@ -13,7 +13,7 @@ import useGetUser from "../hooks/useGetUser";
 import AddReview from "../forms/AddReview";
 import ReviewList from "../components/ReviewsList";
 
-// The app's context
+// Context Management
 import { useAppContext } from "../hooks/useAppContext";
 
 // URLs
@@ -102,6 +102,7 @@ export default function BookPage({ id }: Id) {
                 variant="outlined"
                 onClick={() => setShowReviews((prev) => !prev)}
                 className="show-reviews-button"
+                title="Show Reviews"
               >
                 {show}
               </Button>

@@ -5,7 +5,7 @@ interface Props {
 }
 export default function ReviewButton({ handleSetOpen }: Props) {
   return (
-    <Fab variant="extended" onClick={handleSetOpen}>
+    <Fab variant="extended" onClick={handleSetOpen} title="Add Review Button">
       <CreateSharpIcon sx={{ mr: 1 }} />
       Write a Review
     </Fab>
