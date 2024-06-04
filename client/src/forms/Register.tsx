@@ -2,7 +2,6 @@ import {
   TextField,
   Button,
   CircularProgress,
-  styled,
   Card,
   Box,
   Typography,
@@ -17,18 +16,7 @@ import PasswordPattern from "../components/PasswordPattern";
 import { useAppContext } from "../hooks/useAppContext";
 import useMutationHook from "../hooks/useMutationHook";
 import { REGISTER } from "../utils/urls";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+import { VisuallyHiddenInput } from "../utils/VisuallyHiddenInput";
 
 export default function Register() {
   const {

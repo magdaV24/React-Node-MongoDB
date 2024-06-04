@@ -1,3 +1,7 @@
+// React imports
+import { useEffect, useState } from "react";
+
+// MUI imports
 import { Controller, useForm } from "react-hook-form";
 import {
   TextField,
@@ -10,37 +14,36 @@ import {
   OutlinedInput,
   Select,
   CircularProgress,
-  styled,
   Box,
-  Card,
   Typography,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteOutlineSharpIcon from '@mui/icons-material/DeleteOutlineSharp';
+
+// Context management
 import { useAppContext } from "../hooks/useAppContext";
+
+// Custom hooks
 import useCloudinary from "../hooks/useCloudinary";
+import useMutationWithToken from "../hooks/useMutationWithToken";
+
+// Cloudinary imports
 import { FOLDER_NAME, PRESET } from "../utils/cloudinary";
-import { GENRES_LIST } from "../utils/genres";
-import { ADD_PHOTO, DELETE_PHOTO, EDIT_FIELDS } from "../utils/urls";
-import { useEffect, useRef, useState } from "react";
-import { Book } from "../types/Book";
 import { AdvancedImage } from "@cloudinary/react";
 import { cloudinaryFnc } from "../utils/cloudinaryFnc";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import "../styles/forms/editBook.css";
-import useMutationWithToken from "../hooks/useMutationWithToken";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+// Utils
+import { GENRES_LIST } from "../utils/genres";
+import { ADD_PHOTO, DELETE_PHOTO, EDIT_FIELDS } from "../utils/urls";
+import { VisuallyHiddenInput } from "../utils/VisuallyHiddenInput";
+
+// Types
+import { Book } from "../types/Book";
+
+// Styles
+import "../styles/forms/editBook.css";
+import { LANGUAGES } from "../utils/languages";
 
 interface Props {
   book: Book;
@@ -67,19 +70,26 @@ export default function EditBook({ book }: Props) {
     },
   });
 
-  const [marginTop, setMarginTop] = useState(0);
-  const formRef = useRef<HTMLDivElement | null>(null);
-
+  // Context management
   const appContext = useAppContext();
+
+  // Setting the loading state
   const [loading, setLoading] = useState(false)
+
+  // Using the custom hook to import the images to Cloudinary and returning their public_ids
   const submitToCloudinary = useCloudinary();
+
+  // Setting the necessary mutations; only a logged in admin can have access to the editing form, so a token is necessary
   const { postData: addPhoto } = useMutationWithToken(ADD_PHOTO);
   const { postData: deletePhoto } = useMutationWithToken(DELETE_PHOTO);
   const { postData: editFields } = useMutationWithToken(EDIT_FIELDS);
 
+  // The edit function 
   const submitEdit = async () => {
     try {
-      setLoading(true)
+      setLoading(true) // Setting the loading state to true
+
+      // Going through each file and uploading it to Cloudinary
       await Promise.all(
         getValues("newPhotos")!.map(async (photo: string | Blob) => {
           const formData = new FormData();
@@ -91,6 +101,7 @@ export default function EditBook({ book }: Props) {
           await addPhoto(photoInput);
         })
       );
+
       const input = {
         id: book?._id,
         title: getValues("title"),
@@ -102,7 +113,7 @@ export default function EditBook({ book }: Props) {
         published: getValues("published"),
       }
       await editFields(input);
-      setLoading(false)
+      setLoading(false) // Setting the loading state to false
     } catch (error) {
       appContext.setError(`Error: ${error}`);
     }
@@ -137,30 +148,11 @@ export default function EditBook({ book }: Props) {
       appContext.clearErrorMessage();
     }
 
-    const updateMarginTop = () => {
-      if (formRef.current) {
-        const formHeight = formRef.current.offsetHeight;
-        const marginTopValue = (window.innerHeight + formHeight) / 3;
-        setMarginTop(marginTopValue);
-      }
-    };
-
-    updateMarginTop();
-
-    const observer = new ResizeObserver(updateMarginTop);
-    if (formRef.current) {
-      observer.observe(formRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
   }, [appContext, errors.author, errors.description, errors.genres, errors.language, errors.newPhotos, errors.pages, errors.published, errors.title]);
   return (
-    <Card
-      ref={formRef}
+    <Box sx={{backgroundColor: 'background.paper'}}
       className="form-wrapper edit-form"
-      style={{ marginTop: `${marginTop}px` }}
+      title="Edit Form"
     >
       <Box className="form-header">
         <Typography variant="h4">Edit {book?.title}</Typography>
@@ -264,13 +256,9 @@ export default function EditBook({ book }: Props) {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value="English">English</MenuItem>
-              <MenuItem value="French">French</MenuItem>
-              <MenuItem value="Latin">Latin</MenuItem>
-              <MenuItem value="German">German</MenuItem>
-              <MenuItem value="Romanian">Romanian</MenuItem>
-              <MenuItem value="Spanish">Spanish</MenuItem>
-              <MenuItem value="Japanese">Japanese</MenuItem>
+              {LANGUAGES.map((language)=>(
+                <MenuItem value={language} key={Math.random()}>{language}</MenuItem>
+              ))}
             </Select>
           )}
         />
@@ -347,6 +335,6 @@ export default function EditBook({ book }: Props) {
           SUBMIT EDIT
         </Button>
       )}
-    </Card>
+    </Box>
   );
 }

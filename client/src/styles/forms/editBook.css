@@ -19,3 +19,9 @@
   align-items: center;
   width: 50%;
 }
+
+.edit-form{
+  height: 90vh;
+  overflow-y: scroll;
+  border-radius: 1rem;
+}

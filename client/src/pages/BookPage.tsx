@@ -1,7 +1,8 @@
+// React and React-Router-Dom imports
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-// Material-UI imports
+// MUI imports
 import { Container, Button, Box } from "@mui/material";
 
 // Custom Hooks
@@ -69,6 +70,7 @@ export default function BookPage({ id }: Id) {
   }, [appContext, book, location.pathname]);
 
   const [showReviews, setShowReviews] = useState(false); // The user can choose if they want to see the reviews
+
   let show = "Show Reviews";
 
   if (showReviews) {
@@ -81,7 +83,7 @@ export default function BookPage({ id }: Id) {
     <Container className="page-wrapper">
       {(book as Book) && (
         <>
-          <Box className="book-wrapper">
+          <Box className="book-wrapper" title={`book-page-${book.id}`}>
             <FixedCard user={user} book={book} handleSetOpen={handleSetOpen} />
             <Box className="book-info">
               <Box className="book-table-wrapper">

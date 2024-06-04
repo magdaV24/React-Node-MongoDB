@@ -39,7 +39,7 @@ export default function DeleteBook({ close, bookId, photos }: Props) {
     }
   };
   return (
-    <Card className="form-wrapper" component="form">
+    <Card className="form-wrapper" component="form" title="Delete Form">
       <Box className="form-header">
         <Typography>Are you sure you want to delete this book?</Typography>
       </Box>

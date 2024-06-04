@@ -3,28 +3,19 @@ import { render, screen, waitFor } from "@testing-library/react";
 import Navbar from "../../components/Navbar/Navbar";
 import { WithProviders } from "../../utils/WithProviders";
 import userEvent from "@testing-library/user-event";
+import { mockAdmin, mockUser } from "../mockVariables";
 
 describe("Navbar component", () => {
+
+  // Setting an "user" to mimic the interactions a real user could have with the application
   const user = userEvent.setup();
 
+  // Resetting all mocks after each test
   afterEach(() => {
     vi.resetAllMocks();
   });
 
-  const mockUser = {
-    id: "mockedId",
-    username: "mockedUsername",
-    avatar: "mocked-avatar-url",
-    role: "Admin",
-  };
-
-  const notAdminUser = {
-    id: "mockedSecondId",
-    username: "anotherUsername",
-    avatar: "another-avatar-url",
-    role: "User",
-  };
-
+  // Mocking the hook that fetches the current user
   const { mockedUseGetUser } = vi.hoisted(() => {
     return { mockedUseGetUser: vi.fn() };
   });
@@ -35,17 +26,17 @@ describe("Navbar component", () => {
 
   it("renders correctly with user logged in, showing the username button", () => {
 
-    mockedUseGetUser.mockReturnValue(mockUser);
+    mockedUseGetUser.mockReturnValue(mockAdmin);
 
-    render(WithProviders(<Navbar id={mockUser.id} />));
-    expect(screen.getByText(mockUser.username)).toBeInTheDocument();
+    render(WithProviders(<Navbar id={mockAdmin.id} />));
+    expect(screen.getByText(mockAdmin.username)).toBeInTheDocument();
     screen.debug();
   });
 
   it("should open the user dropdown when the username button is clicked and if the user is an admin, it should open the modal that contains the Add Book Form", async () => {
-    mockedUseGetUser.mockReturnValue(mockUser);
-    render(WithProviders(<Navbar id={mockUser.id} />));
-    const usernameButton = screen.getByText(mockUser.username);
+    mockedUseGetUser.mockReturnValue(mockAdmin);
+    render(WithProviders(<Navbar id={mockAdmin.id} />));
+    const usernameButton = screen.getByText(mockAdmin.username);
     await user.click(usernameButton);
 
     const addBook = screen.getByText("Add Book");
@@ -64,9 +55,9 @@ describe("Navbar component", () => {
   });
 
   it('should not show the "Add Book" button when the user is not an admin', async () => {
-    mockedUseGetUser.mockReturnValue(notAdminUser);
-    render(WithProviders(<Navbar id={notAdminUser.id} />));
-    const usernameButton = screen.getByText(notAdminUser.username);
+    mockedUseGetUser.mockReturnValue(mockUser);
+    render(WithProviders(<Navbar id={mockUser.id} />));
+    const usernameButton = screen.getByText(mockUser.username);
 
     await user.click(usernameButton);
     const addBook = screen.queryByText("Add Book");

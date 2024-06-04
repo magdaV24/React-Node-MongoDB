@@ -12,12 +12,11 @@ export default function useQueryHook(url: string, queryName: string, queriesToIn
     async () => {
       const result = await fetchData(url);
       return result;
-    }
+    },
   );
 
-  const invalidateQuery = () => {
-    queryClient.invalidateQueries(queriesToInvalidate);
-  }
+  queryClient.invalidateQueries(queriesToInvalidate);
+
   useEffect(() => {
     if (isLoading) {
         appContext.setOpenBackdrop(true);
@@ -26,5 +25,5 @@ export default function useQueryHook(url: string, queryName: string, queriesToIn
       appContext.setError(`Error while fetching data: ${error}`);
     }
   }, [isLoading, error, appContext]);
-  return { data, invalidateQuery };
+  return { data };
 }

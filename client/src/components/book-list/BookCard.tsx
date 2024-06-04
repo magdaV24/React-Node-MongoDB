@@ -41,7 +41,7 @@ export default function BookCard({ book }: Props) {
       className="book-card-wrapper"
       sx={{ backgroundColor: "secondary.main" }}
     >
-      <CardMedia>
+      <CardMedia title={`book-thumbnail-${book?._id}`}>
         <AdvancedImage
           cldImg={cld
             .image(book?.thumbnail)

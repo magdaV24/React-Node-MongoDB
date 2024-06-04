@@ -10,7 +10,6 @@ import {
   OutlinedInput,
   Select,
   CircularProgress,
-  styled,
   Box,
   Card,
   Typography,
@@ -23,18 +22,8 @@ import { FOLDER_NAME, PRESET } from "../utils/cloudinary";
 import { GENRES_LIST } from "../utils/genres";
 import { ADD_BOOK } from "../utils/urls";
 import { useEffect } from "react";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+import { LANGUAGES } from "../utils/languages";
+import { VisuallyHiddenInput } from "../utils/VisuallyHiddenInput";
 
 export default function AddBook() {
   const {
@@ -218,13 +207,9 @@ export default function AddBook() {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value="English">English</MenuItem>
-              <MenuItem value="French">French</MenuItem>
-              <MenuItem value="Latin">Latin</MenuItem>
-              <MenuItem value="German">German</MenuItem>
-              <MenuItem value="Romanian">Romanian</MenuItem>
-              <MenuItem value="Spanish">Spanish</MenuItem>
-              <MenuItem value="Japanese">Japanese</MenuItem>
+              {LANGUAGES.map((language)=>(
+                <MenuItem value={language} key={Math.random()}>{language}</MenuItem>
+              ))}
             </Select>
           )}
         />

@@ -7,6 +7,5 @@ describe('Book Page', () => {
     it('should render the Book Page', () => {
         render(WithProviders(<BookPage id={null} />))
     })
-
     
 })
