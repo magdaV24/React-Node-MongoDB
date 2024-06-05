@@ -37,6 +37,7 @@ export function useToken(
     if (!token) return;
     const decodedToken = jwtDecode(token) as Token;
     setToken("");
+    setAuth(false)
     if (decodedToken?.rememberMe) {
       localStorage.removeItem("Token");
       localStorage.removeItem("Auth");
