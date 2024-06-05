@@ -6,18 +6,29 @@ Drawing inspiration from popular websites like Goodreads and Storygraph, I have 
 
 ## Technologies Used
 
-The frontend is built using React, while the backend is implemented with Node and MongoDB.
+- A ReactJS single page applications as this project's frontend;
+- Context management with React Context;
+- File uploading facilitated by Cloudinary;
+- Material UI is used for it's large library of components and the ease of implementing themes;
+- Testing with React Testing Library and Vitest;
+- The server side is developed using NodeJS;
+- The data is saved in a MongoDB database;
 
 ### Frontend
 This project's client side is constructed with React, incorporating various features to enhance the overall user experience.
+
 #### Features
 
-* **MaterialUI:** A React library that provides visually appealing components and theming, contributing to an enhanced user interface.
-* **React Hook Form:** A React library meant to effortlessly handle form submissions.
+* **MaterialUI:** 
+* **React Hook Form:** for handling form submission.
 * **Cloudinary:** Integrated as a cloud-based media management and delivery service, enabling users to upload one or multiple pictures.
 * **React Query:** The app utilizes this library to manage and fetch data seamlessly, providing a responsive and dynamic user experience.
-* **Axios:** A Javascript library for the management of HTTP requests to the server.
-* **Vitest:** Paired with React Testing Library and jsdom, Vitest was my dependency choice for testing the hooks and the components. 
+* **Axios:**  for the management of HTTP requests to the server.
+* **Vitest:** Paired with React Testing Library and jsdom, Vitest was my dependency choice for testing the hooks and the components.
+
+#### Context management
+
+In order to facilitate the state sharing across the application's components and set global state, such as the user's token or the theme, I decided to incorporate state management in my application. React Context was my choice of tool for this part of the app's functionality. 
 
 ### Backend
 The server side of the app is developed using Node and MongoDB, with other dependencies in order to add more functionality to the server.
