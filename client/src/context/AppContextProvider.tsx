@@ -57,12 +57,20 @@ export const AppContextProvider = ({ children }: AppContextProviderType) => {
  
   const currentTheme = theme === "Light" ? lightTheme : darkTheme;
 
+  const [bookNumber, setBookNumber] = useState(0);
+
+  const increment =()=>{
+    setBookNumber(prev=> prev++)
+  }
+
   useEffect(() => {
     localStorage.setItem("Theme", JSON.stringify(theme));
-  }, [theme, token]);
+  }, [theme]);
   return (
     <AppContext.Provider
       value={{
+        bookNumber,
+        increment,
         token,
         setToken,
         currentTheme,

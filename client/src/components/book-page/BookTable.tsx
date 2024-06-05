@@ -7,36 +7,33 @@ interface Props {
 export default function BookTable({ book, genres }: Props) {
   return (
     <Box className="book-table">
-      <Box sx={{ width: "100%" }}>
         <Box
           sx={{
-            align: "left",
             backgroundColor: "secondary.dark",
-            width: "100%",
           }}
+          className='book-table-row'
         >
-          <Box sx={{ align: "left", width: "10%" }}>Published:</Box>
-          <Box sx={{ align: "left", width: "90%" }}>
+          <Box className="book-table-row-name">Published:</Box>
+          <Box className="book-table-row-value">
             {book!.published}
           </Box>
         </Box>
-        <Box sx={{ align: "left", backgroundColor: "secondary.light" }}>
-          <Box sx={{ align: "left", width: "10%" }}>Pages:</Box>
-          <Box sx={{ align: "left", width: "90%" }}>
+        <Box sx={{ backgroundColor: "secondary.light" }} className='book-table-row'>
+          <Box className="book-table-row-name">Pages:</Box>
+          <Box className="book-table-row-value">
             {book!.pages}
           </Box>
         </Box>
-        <Box sx={{ align: "left", backgroundColor: "secondary.dark" }} title="Genres List">
-          <Box sx={{ align: "left", width: "10%" }}>Genres:</Box>
-          <Box sx={{ align: "left", width: "90%" }}>{genres}</Box>
+        <Box sx={{ backgroundColor: "secondary.dark" }} title="Genres List" className='book-table-row'>
+          <Box className="book-table-row-name">Genres:</Box>
+          <Box className="book-table-row-value">{genres}</Box>
         </Box>
-        <Box sx={{ align: "left", backgroundColor: "secondary.light" }}>
-          <Box sx={{ align: "left", width: "10%" }}>Language:</Box>
-          <Box sx={{ align: "left", width: "90%" }}>
+        <Box sx={{ backgroundColor: "secondary.light" }} className='book-table-row'>
+          <Box className="book-table-row-name">Language:</Box>
+          <Box className="book-table-row-value">
             {book!.language}
           </Box>
         </Box>
-      </Box>
     </Box>
   );
 }

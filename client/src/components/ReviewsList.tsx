@@ -14,14 +14,14 @@ interface Props {
 export default function ReviewList({ bookId, userId }: Props) {
   const [finished, setFinished] = useState("");
   const [stars, setStars] = useState("");
-  const queryNameOne = `bookReviews/${bookId}`;
-  const queryNameTwo = `bookReviews/${bookId}/${finished}`;
-  const queryNameThree = `bookReviews/${bookId}/${stars}`;
+  const queryKeyOne = `bookReviews/${bookId}`;
+  const queryKeyTwo = `bookReviews/${bookId}/${finished}`;
+  const queryKeyThree = `bookReviews/${bookId}/${stars}`;
 
-  const queriesToInvalidate = [queryNameOne, queryNameTwo, queryNameThree];
+  const queriesToInvalidate = [queryKeyOne, queryKeyTwo, queryKeyThree];
   const { data: allReviews } = useQueryHook(
     `${FETCH_REVIEWS}/${bookId}`,
-    queryNameOne,
+    queryKeyOne,
     [queriesToInvalidate[1], queriesToInvalidate[2]]
   );
 
@@ -29,12 +29,12 @@ export default function ReviewList({ bookId, userId }: Props) {
 
   const { data: reviewsByFinished } = useQueryHook(
     `${SORT_FINISHED}/${bookId}/${finished}`,
-    queryNameTwo,
+    queryKeyTwo,
     [queriesToInvalidate[0], queriesToInvalidate[2]]
   );
   const { data: reviewsByStars } = useQueryHook(
     `${SORT_STARS}/${bookId}/${stars}`,
-    queryNameThree,
+    queryKeyThree,
     [queriesToInvalidate[0], queriesToInvalidate[1]]
   );
 
@@ -55,7 +55,6 @@ export default function ReviewList({ bookId, userId }: Props) {
   }, [finished, stars, allReviews, reviewsByFinished, reviewsByStars]);
 
   const handleSortChange = (finished: string, stars: string) => {
-    console.log(stars, finished);
     setFinished(finished);
     setStars(stars);
   };

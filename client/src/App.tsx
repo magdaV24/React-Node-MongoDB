@@ -44,14 +44,15 @@ function App() {
             const id = await getUserId(token);
             setCurrentUserId(id);
           } catch (error) {
-            console.log(error);
+            appContext.setError(`${error}`);
+            appContext.setOpenErrorAlert(true)
           }
         }
       }
     };
 
     fetchData();
-  }, [appContext.token]);
+  }, [token, appContext, setTheToken, checkToken, getUserId]);
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>
       <ThemeProvider theme={appContext.currentTheme}>

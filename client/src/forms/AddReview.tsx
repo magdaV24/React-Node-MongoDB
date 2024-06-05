@@ -76,7 +76,7 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
       className="modal"
     >
       <Card className="form-wrapper" title='Review Form'>
-        <Typography variant="h6" title="Review Form">
+        <Typography variant="h6">
           Review this book!
         </Typography>
         <Controller

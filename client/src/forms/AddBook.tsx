@@ -47,7 +47,8 @@ export default function AddBook() {
 
   const appContext = useAppContext();
   const submitToCloudinary = useCloudinary();
-  const { postData, loading } = useMutationHook(ADD_BOOK);
+  const queryKey = "booksQuery"
+  const { postData, loading } = useMutationHook(ADD_BOOK, queryKey);
 
   const submitBook = async () => {
     try {
@@ -64,6 +65,7 @@ export default function AddBook() {
       setValue("photos", ids);
       const input = { ...getValues() };
       await postData(input);
+      appContext.increment();
     } catch (error) {
       appContext.setError(`Error: ${error}`);
     }

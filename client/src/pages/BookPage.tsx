@@ -28,18 +28,18 @@ import BookTable from "../components/book-page/BookTable";
 import BookDescription from "../components/book-page/BookDescription";
 import FixedCard from "../components/book-page/FixedCard";
 
-interface Id {
+interface Props {
   id: string | null;
 }
 
-export default function BookPage({ id }: Id) {
+export default function BookPage({ id }: Props) {
   const location = useLocation();
 
   const title: string = location.pathname
     .split("/")[1]
     .split("%20")
     .toString()
-    .replace(/[",]/g, " ");
+    .replace(/[",]/g, " "); // Cleaning the string that contains the book's title from the page's URL
 
   const queryKey = `bookQuery/${id}`;
   const { data: book } = useQueryHook(`${FETCH_BOOK}/${title}`, queryKey);
@@ -71,12 +71,6 @@ export default function BookPage({ id }: Id) {
 
   const [showReviews, setShowReviews] = useState(false); // The user can choose if they want to see the reviews
 
-  let show = "Show Reviews";
-
-  if (showReviews) {
-    show = "Hide Reviews";
-  }
-
   const user = useGetUser(id);
 
   return (
@@ -104,7 +98,7 @@ export default function BookPage({ id }: Id) {
                 className="show-reviews-button"
                 title="Show Reviews"
               >
-                {show}
+                {showReviews ? "Hide Reviews" : "Show Reviews"}
               </Button>
               {showReviews && <ReviewList bookId={book._id} userId={id} />}
             </Box>

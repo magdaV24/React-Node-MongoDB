@@ -1,6 +1,8 @@
 import { Theme } from "@emotion/react";
 
 export type AppContextType = {
+   bookNumber: number;
+   increment: ()=>void;
    token: string;
    setToken: (input: string) => void;
    currentTheme: Partial<Theme>;

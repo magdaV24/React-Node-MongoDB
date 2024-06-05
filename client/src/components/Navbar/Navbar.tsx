@@ -1,20 +1,36 @@
+//  React imports
+import { useState, SetStateAction } from "react";
+
+// MUI imports
 import { Box, AppBar, Toolbar, Modal } from "@mui/material";
+
+// Context management
+import { useAppContext } from "../../hooks/useAppContext";
+
+// Styles
 import "../../styles/components/navbar.css";
-import { SetStateAction, useState } from "react";
+
+// Custom forms
 import Register from "../../forms/Register";
 import Login from "../../forms/Login";
+
+// Custom hooks
 import useGetUser from "../../hooks/useGetUser";
 import { useToken } from "../../hooks/useToken";
-import Drawer from "../Drawer";
+import useSearchBooks from "../../hooks/useSearchBooks";
+import useQueryWithToken from "../../hooks/useQueryWithToken";
+
+// Utils
 import { FETCH_DRAWER_BOOKS, SEARCH } from "../../utils/urls";
+
+// Custom components
+import Drawer from "../Drawer";
 import AppName from "./AppName";
 import UserMenu from "./UserMenu";
 import AuthMenu from "./AuthMenu";
 import SearchBar from "./SearchBar";
-import useSearchBooks from "../../hooks/useSearchBooks";
 import AddBook from "../../forms/AddBook";
-import useQueryHook from "../../hooks/useQueryHook";
-import { useAppContext } from "../../hooks/useAppContext";
+
 
 interface Props {
   id: string | null;
@@ -72,9 +88,9 @@ export default function Navbar({ id }: Props) {
   const urlOne = `${FETCH_DRAWER_BOOKS}/${userId}/currentlyReading`;
   const urlTwo = `${FETCH_DRAWER_BOOKS}/${userId}/wantToRead`;
   const urlThree = `${FETCH_DRAWER_BOOKS}/${userId}/read`;
-  const { data: currentlyReading } = useQueryHook(urlOne, queryOne);
-  const { data: wantToRead } = useQueryHook(urlTwo, queryTwo);
-  const { data: read } = useQueryHook(urlThree, queryThree);
+  const { data: currentlyReading } = useQueryWithToken(urlOne, queryOne);
+  const { data: wantToRead } = useQueryWithToken(urlTwo, queryTwo);
+  const { data: read } = useQueryWithToken(urlThree, queryThree);
 
   return (
     <Box sx={{ flexGrow: 1 }}>

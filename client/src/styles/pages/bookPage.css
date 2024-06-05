@@ -61,6 +61,23 @@
 .book-table{
     width: 60vw;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin-top: 2rem;
+}
+
+.book-table-row{
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.book-table-row-name{
+  width: 10%;
+}
+
+
+.book-table-row-value{
+  width: 90%;
 }
 
 .book-grade-wrapper {

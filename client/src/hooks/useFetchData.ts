@@ -7,7 +7,7 @@ export default function useFetchData() {
       return response.data;
     } catch (error: unknown) {
       const errorMessage = (error as AxiosError).response?.data;
-      console.log(errorMessage)
+      throw new Error(`${errorMessage}`); 
     }
   };
   return fetchData;

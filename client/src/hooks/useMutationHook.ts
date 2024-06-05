@@ -9,7 +9,6 @@ const useDataMutation = (url: string, queryToInvalidate?: string) => {
   const mutation = useMutation(
     async (input: unknown) => {
      const response =  await postData(url, input);
-     queryClient.invalidateQueries(queryToInvalidate);
      return response?.data;
     },
     {
@@ -19,6 +18,8 @@ const useDataMutation = (url: string, queryToInvalidate?: string) => {
       },
     }
   );
+
+  (queryToInvalidate && queryToInvalidate.length>0) && queryClient.invalidateQueries(queryToInvalidate) 
   const loading = mutation.isLoading;
   return { mutation, loading };
 };

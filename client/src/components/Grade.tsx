@@ -7,7 +7,7 @@ interface Props{
 
 export default function Grade({grade}: Props){
 
-    const calculate_grade = (input: []) => {
+    const calculateGrade = (input: []) => {
       if (input.length === 0) {
         return 0;
       }
@@ -19,7 +19,7 @@ export default function Grade({grade}: Props){
       return sum / grade.length;
     }
 
-    const averageGrade = useMemo(() => calculate_grade(grade as []), [grade]);
+    const averageGrade = useMemo(() => calculateGrade(grade as []), [grade]);
 
     return (
       <>

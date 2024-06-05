@@ -2,10 +2,10 @@ import { Box, Typography } from "@mui/material";
 import { Book } from "../types/Book";
 import DrawerCard from "./DrawerCard";
 
-interface Props{
-    value: number;
-    index: number;
-    data: Book[];
+interface Props {
+  value: number;
+  index: number;
+  data: Book[];
 }
 
 interface TabPanelProps {
@@ -26,32 +26,32 @@ function CustomTabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography component='div'>{children}</Typography>
+          <Typography component="div">{children}</Typography>
         </Box>
       )}
     </div>
   );
 }
 
-export default function Shelf({value, data, index}:Props) {
+export default function Shelf({ value, data, index }: Props) {
   if (data === undefined || data.length === 0) {
     return (
-        <CustomTabPanel index={index} value={value}>
-            <Typography>This shelf is empty!</Typography>
-        </CustomTabPanel>
+      <CustomTabPanel index={index} value={value}>
+        <Typography>This shelf is empty!</Typography>
+      </CustomTabPanel>
     );
-}
+  }
 
-return (
+  return (
     <CustomTabPanel index={index} value={value}>
-        {data.map((book) => (
-            <DrawerCard
-                key={book!._id}
-                title={book!.title}
-                author={book!.author}
-                photo={book!.photos.length > 0 ? book!.photos[0] : ''}
-            />
-        ))}
+      {data.map((book) => (
+        <DrawerCard
+          key={book!._id}
+          title={book!.title}
+          author={book!.author}
+          photo={book!.photos.length > 0 ? book!.photos[0] : ""}
+        />
+      ))}
     </CustomTabPanel>
   );
 }
