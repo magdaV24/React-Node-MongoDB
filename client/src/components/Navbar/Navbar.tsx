@@ -52,9 +52,11 @@ export default function Navbar({ id }: Props) {
   }
 
   const user = useGetUser(id);
+
   const token = appContext.token;
+  const setAuth = appContext.setIsAuthenticated
   const setToken = appContext.setToken;
-  const { logout } = useToken(setToken);
+  const { logout } = useToken(setToken, setAuth);
 
   // User menu
 
@@ -92,6 +94,13 @@ export default function Navbar({ id }: Props) {
   const { data: wantToRead } = useQueryWithToken(urlTwo, queryTwo);
   const { data: read } = useQueryWithToken(urlThree, queryThree);
 
+// Logout
+
+const handleLogout=()=>{
+  logout(token)
+  appContext.setIsAuthenticated(false)
+}
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{backgroundColor: 'background.paper'}}>
@@ -115,7 +124,7 @@ export default function Navbar({ id }: Props) {
                 setOpenMenu={setOpenMenu}
                 setOpenBookForm={setOpenBookForm}
                 anchorEl={anchorEl}
-                logout={()=>logout(token)}
+                logout={handleLogout}
               />
             </>
           ) : (

@@ -1,14 +1,20 @@
 import { jwtDecode } from "jwt-decode";
 import { Token } from "../types/Token";
 
-export function useToken(setToken: (token: string)=>void,  reloadWindow = () => window.location.reload()) {
+export function useToken(
+  setToken: (token: string) => void,
+  setAuth: (token: boolean) => void,
+  reloadWindow = () => window.location.reload()
+) {
   const saveToken = (token: string) => {
     const decodedToken = jwtDecode(token) as Token;
 
     if (decodedToken!.rememberMe) {
       localStorage.setItem("Token", JSON.stringify(token));
+      localStorage.setItem("Auth", JSON.stringify(true));
     } else {
       sessionStorage.setItem("Token", JSON.stringify(token));
+      localStorage.setItem("Auth", JSON.stringify(true));
     }
   };
 
@@ -32,9 +38,11 @@ export function useToken(setToken: (token: string)=>void,  reloadWindow = () => 
     const decodedToken = jwtDecode(token) as Token;
     setToken("");
     if (decodedToken?.rememberMe) {
-    localStorage.removeItem("Token");
+      localStorage.removeItem("Token");
+      localStorage.removeItem("Auth");
     } else {
       sessionStorage.removeItem("Token");
+      localStorage.removeItem("Auth");
     }
     reloadWindow();
   };
@@ -45,20 +53,31 @@ export function useToken(setToken: (token: string)=>void,  reloadWindow = () => 
 
     if (localStorageToken) {
       const token = JSON.parse(localStorageToken);
-      setToken(token)
+      setToken(token);
+      setAuth(true)
+      localStorage.setItem("Auth", JSON.stringify(true));
     } else if (sessionStorageToken) {
       const token = JSON.parse(sessionStorageToken);
-      setToken(token)
+      localStorage.setItem("Auth", JSON.stringify(true));
+      setAuth(true)
+      setToken(token);
     }
   };
 
   const getUserId = (token: string) => {
     if (!token) return null;
     const decodedToken = jwtDecode(token) as Token;
-    return decodedToken!.id;
+    if (!decodedToken) return null;
+    const userId = decodedToken.id;
+    return userId;
   };
 
-
-  return { saveToken, getUserId, checkToken, setTheToken, logout, reloadWindow };
+  return {
+    saveToken,
+    getUserId,
+    checkToken,
+    setTheToken,
+    logout,
+    reloadWindow,
+  };
 }
-

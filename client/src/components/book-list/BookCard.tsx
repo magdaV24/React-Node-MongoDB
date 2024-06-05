@@ -21,7 +21,8 @@ export default function BookCard({ book }: Props) {
   const appContext = useAppContext();
   const token = appContext.token;
   const setToken = appContext.setToken;
-  const { getUserId } = useToken(setToken);
+  const setAuth = appContext.setIsAuthenticated;
+  const { getUserId } = useToken(setToken, setAuth);
   const userId = getUserId(token);
 
   const currentUser = useGetUser(userId);
@@ -39,7 +40,7 @@ export default function BookCard({ book }: Props) {
   return (
     <Box
       className="book-card-wrapper"
-      sx={{ backgroundColor: "secondary.main" }}
+      sx={{ backgroundColor: "secondary.light" }}
     >
       <CardMedia title={`book-thumbnail-${book?._id}`}>
         <AdvancedImage

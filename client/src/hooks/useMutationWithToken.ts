@@ -17,8 +17,11 @@ const useDataMutation = (url: string, queryToInvalidate?: string) => {
         appContext.setError(error as string);
         appContext.setOpenErrorAlert(true);
       },
-    }
+    },
   );
+  queryToInvalidate &&
+    queryToInvalidate.length > 0 &&
+    queryClient.invalidateQueries(queryToInvalidate);
   const loading = mutation.isLoading;
   return { mutation, loading };
 };
@@ -36,7 +39,7 @@ export default function useMutationWithToken(
       return res;
     } catch (error) {
       appContext.setError(`${error}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     }
   };
   return { postData, loading };

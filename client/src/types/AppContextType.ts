@@ -1,6 +1,8 @@
 import { Theme } from "@emotion/react";
 
 export type AppContextType = {
+   isAuthenticated: boolean; 
+   setIsAuthenticated:(input: boolean)=>void;
    bookNumber: number;
    increment: ()=>void;
    token: string;

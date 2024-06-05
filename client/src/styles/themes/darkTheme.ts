@@ -4,14 +4,14 @@ export const DarkTheme: ThemeOptions = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#AAA1A0',
+      main: '#FFB94B',
     },
     secondary: {
-      main: '#8D8960',
+      main: '#85A7B0',
     },
     background: {
-      default: '#4F3750',
-      paper: '#635067',
+      default: '#2C1100',
+      paper: '#373E40',
     },
     error: {
       main: '#cb4848',
@@ -22,8 +22,7 @@ export const DarkTheme: ThemeOptions = {
       contrastText: '#ffebee',
     },
     info: {
-      main: '#40c4ff',
-      contrastText: '#ffebee',
+      main: '#13445a',
     },
     success: {
       main: '#2e7d32',

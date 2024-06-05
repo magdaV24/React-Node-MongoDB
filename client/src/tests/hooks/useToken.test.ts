@@ -10,6 +10,7 @@ vi.mock("jwt-decode", () => ({
 
 describe("testing the useToken custom hook", () => {
   const mockSetToken = vi.fn();
+  const mockSetAuth = vi.fn();
 
   const localStorageMock = (() => {
     let store: { [key: string]: string } = {};
@@ -42,7 +43,7 @@ describe("testing the useToken custom hook", () => {
 
   describe("saveToken", () => {
     it("saves token to localStorage if rememberMe is true", () => {
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       act(() => {
         result.current.saveToken(token);
@@ -55,7 +56,7 @@ describe("testing the useToken custom hook", () => {
     });
 
     it("saves token to sessionStorage if rememberMe is false", () => {
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       act(() => {
         result.current.saveToken(token);
@@ -74,7 +75,7 @@ describe("testing the useToken custom hook", () => {
         ...decodedToken,
         exp: Math.floor(Date.now() / 1000) - 60,
       });
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       act(() => {
         result.current.checkToken(token);
@@ -85,7 +86,7 @@ describe("testing the useToken custom hook", () => {
     });
 
     it("should change nothing if the token is stil valid", () => {
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       act(() => {
         result.current.checkToken(token);
@@ -99,14 +100,15 @@ describe("testing the useToken custom hook", () => {
   describe("logout", () => {
     it("should logout and reload the window", () => {
       const mockReload = vi.fn();
-      const { result } = renderHook(() => useToken(mockSetToken, mockReload));
+      const { result } = renderHook(() => useToken(mockSetToken, mockReload, mockSetAuth));
 
       act(() => {
         result.current.logout(token);
       });
-
+      
       expect(mockSetToken).toHaveBeenCalledWith("");
       expect(window.localStorage.removeItem).toHaveBeenCalledWith("Token");
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith("Auth");
       expect(mockReload).toHaveBeenCalled();
     });
   });
@@ -115,7 +117,7 @@ describe("testing the useToken custom hook", () => {
     it("sets token from localStorage if available", () => {
       window.localStorage.setItem("Token", JSON.stringify(token));
 
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       act(() => {
         result.current.setTheToken();
@@ -127,7 +129,7 @@ describe("testing the useToken custom hook", () => {
     it("sets token from sessionStorage if available", () => {
       window.sessionStorage.setItem("Token", JSON.stringify(token));
 
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       act(() => {
         result.current.setTheToken();
@@ -138,8 +140,8 @@ describe("testing the useToken custom hook", () => {
   });
 
   describe("getUserId", () => {
-    it("shoul return the user id from the decoded token", () => {
-      const { result } = renderHook(() => useToken(mockSetToken));
+    it("should return the user id from the decoded token", () => {
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       const userId = result.current.getUserId(token);
 
@@ -147,7 +149,7 @@ describe("testing the useToken custom hook", () => {
     });
 
     it("should return null if no token is provided", () => {
-      const { result } = renderHook(() => useToken(mockSetToken));
+      const { result } = renderHook(() => useToken(mockSetToken, mockSetAuth));
 
       const userId = result.current.getUserId("");
 

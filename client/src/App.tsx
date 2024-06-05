@@ -30,7 +30,8 @@ function App() {
   const appContext = useAppContext();
   const token = appContext.token;
   const setToken = appContext.setToken;
-  const { checkToken, setTheToken, getUserId } = useToken(setToken);
+  const setAuth = appContext.setIsAuthenticated
+  const { checkToken, setTheToken, getUserId } = useToken(setToken, setAuth);
 
   const [currentUserId, setCurrentUserId] = useState<string | null>("");
 

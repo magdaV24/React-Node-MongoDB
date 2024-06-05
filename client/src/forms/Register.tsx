@@ -56,9 +56,13 @@ export default function Register() {
         avatar: id,
       };
       await postData(input);
+      appContext.setSuccess("The registration was a success!")
+      appContext.setOpenSuccessAlert(true);
+      appContext.setIsAuthenticated(true)
       reset();
     } catch (error) {
-      console.log(`Error: ${error}`);
+      appContext.setError(`Error: ${error}`);
+      appContext.setOpenErrorAlert(true)
     }
   };
 
@@ -75,15 +79,11 @@ export default function Register() {
     } else if (errors.avatar) {
       appContext.setOpenErrorAlert(true);
       appContext.setError("Avatar error: " + errors.avatar.message);
-    } else if (appContext.success !== "") {
-      appContext.setSuccess(appContext.success);
-      appContext.setOpenSuccessAlert(true);
-    } else if (appContext.error !== "") {
+    }  else if (appContext.error !== "") {
       appContext.setError(appContext.error);
       appContext.setOpenErrorAlert(true);
     } else {
       appContext.clearErrorMessage();
-      appContext.clearSuccessMessage();
     }
   }, [
     appContext,

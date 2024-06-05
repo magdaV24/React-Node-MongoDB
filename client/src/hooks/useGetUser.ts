@@ -4,8 +4,10 @@ import { FETCH_USER } from "../utils/urls";
 import useQueryWithToken from "./useQueryWithToken";
 
 export default function useGetUser(id: string | null) {
-  const queryKey = useMemo(() => id ? `userQuery/${id}` : null, [id]);
-  const url = useMemo(() => id ? `${FETCH_USER}/${id}` : null, [id]);
-  const user = useQueryWithToken(url, queryKey)?.data as User;
-  return user;
+  const queryKey = useMemo(() => (id ? `userQuery/${id}` : ''), [id]);
+  const url = useMemo(() => (id ? `${FETCH_USER}/${id}` : ''), [id]);
+
+  const { data } = useQueryWithToken(url, queryKey);
+
+  return data as User | null;
 }

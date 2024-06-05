@@ -4,14 +4,14 @@ export const LightTheme: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#176d5a',
+      main: '#a04e2d',
     },
     secondary: {
-      main: '#FEDE00',
+      main: '#536f75',
     },
     background: {
-      default: '#C8DF52',
-      paper: '#b2b7b1',
+      default: '#F6EEE0',
+      paper: '#E4B7A0',
     },
     error: {
       main: '#8a1717',

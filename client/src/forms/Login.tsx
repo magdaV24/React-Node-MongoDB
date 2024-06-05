@@ -39,7 +39,8 @@ export default function Login() {
 
   const { postData, loading } = useMutationHook(LOGIN);
   const setToken = appContext.setToken;
-  const { saveToken } = useToken(setToken);
+  const setAuth = appContext.setIsAuthenticated;
+  const { saveToken } = useToken(setToken, setAuth);
 
   const handleLogin = async () => {
     try {
@@ -49,6 +50,7 @@ export default function Login() {
       });
       appContext.setSuccess("Successful login!");
       appContext.setOpenSuccessAlert(true);
+      setAuth(true);
       reset();
     } catch (error) {
       throw new Error(`Error: ${error}`);

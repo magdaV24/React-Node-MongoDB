@@ -8,8 +8,8 @@ const useDataMutation = (url: string, queryToInvalidate?: string) => {
   const queryClient = new QueryClient();
   const mutation = useMutation(
     async (input: unknown) => {
-     const response =  await postData(url, input);
-     return response?.data;
+      const response = await postData(url, input);
+      return response?.data;
     },
     {
       onError: (error) => {
@@ -19,21 +19,25 @@ const useDataMutation = (url: string, queryToInvalidate?: string) => {
     }
   );
 
-  (queryToInvalidate && queryToInvalidate.length>0) && queryClient.invalidateQueries(queryToInvalidate) 
+  queryToInvalidate &&
+    queryToInvalidate.length > 0 &&
+    queryClient.invalidateQueries(queryToInvalidate);
   const loading = mutation.isLoading;
   return { mutation, loading };
 };
 
-export default function useMutationHook(url: string, 
-  queryToInvalidate?: string) {
+export default function useMutationHook(
+  url: string,
+  queryToInvalidate?: string
+) {
   const { mutation, loading } = useDataMutation(url, queryToInvalidate);
 
   const postData = async (input: unknown) => {
     try {
-     const res = await mutation.mutateAsync(input);
-     return res;
+      const res = await mutation.mutateAsync(input);
+      return res;
     } catch (error) {
-      console.log(`Error: ${error}`)
+      console.log(`Error: ${error}`);
     }
   };
   return { postData, loading };

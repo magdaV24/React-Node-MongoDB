@@ -63,12 +63,18 @@ export const AppContextProvider = ({ children }: AppContextProviderType) => {
     setBookNumber(prev=> prev++)
   }
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
   useEffect(() => {
     localStorage.setItem("Theme", JSON.stringify(theme));
-  }, [theme]);
+    localStorage.setItem("Auth", JSON.stringify(isAuthenticated))
+  }, [theme, isAuthenticated]);
+
   return (
     <AppContext.Provider
       value={{
+        isAuthenticated,
+        setIsAuthenticated,
         bookNumber,
         increment,
         token,
