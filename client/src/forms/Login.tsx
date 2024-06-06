@@ -59,13 +59,10 @@ export default function Login() {
 
   useEffect(() => {
     if (errors.username) {
-      appContext.setError(`Email error: ${errors.username.message}`);
+      appContext.setError(`Username error: ${errors.username.message}`);
       appContext.setOpenErrorAlert(true);
     } else if (errors.password) {
-      appContext.setError(`Error: ${errors.password.message}`);
-      appContext.setOpenErrorAlert(true);
-    } else if (appContext.error !== "") {
-      appContext.setError(appContext.error);
+      appContext.setError(`Password error: ${errors.password.message}`);
       appContext.setOpenErrorAlert(true);
     } else {
       appContext.clearErrorMessage();
@@ -86,6 +83,7 @@ export default function Login() {
         name="username"
         defaultValue=""
         control={control}
+        rules={{ required: "Username required!" }}
         render={({ field }) => (
           <TextField
             id="username-standard-basic-login"
@@ -99,6 +97,7 @@ export default function Login() {
       <Controller
         name="password"
         control={control}
+        rules={{ required: "Password required!" }}
         defaultValue=""
         render={({ field }) => (
           <TextField

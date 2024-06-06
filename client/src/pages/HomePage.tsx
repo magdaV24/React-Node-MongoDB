@@ -17,7 +17,7 @@ export default function HomePage() {
   const appContext = useAppContext();
   const index = appContext.bookNumber;
   const queryKey = `bookQuery-${index}`;
-  const { data } = useQueryHook(FETCH_BOOKS, queryKey);
+  const { data } = useQueryHook(FETCH_BOOKS, queryKey, true);
 
   return (
     <Container className="page-wrapper">
