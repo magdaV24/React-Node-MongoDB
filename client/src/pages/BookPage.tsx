@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+// Helmet
+import { Helmet } from "react-helmet";
+
 // MUI imports
 import { Container, Button, Box } from "@mui/material";
 
@@ -42,7 +45,7 @@ export default function BookPage({ id }: Props) {
     .replace(/[",]/g, " "); // Cleaning the string that contains the book's title from the page's URL
 
   const queryKey = `bookQuery/${id}`;
-  const { data: book } = useQueryHook(`${FETCH_BOOK}/${title}`, queryKey);
+  const { data: book } = useQueryHook(`${FETCH_BOOK}/${title}`, queryKey, true);
   const appContext = useAppContext();
 
   const [open, setOpen] = useState(false);
@@ -77,6 +80,14 @@ export default function BookPage({ id }: Props) {
     <Container className="page-wrapper">
       {(book as Book) && (
         <>
+        {/* the tab will now be customized to have the book's title and author in it */}
+          <Helmet>
+            <title>
+              {book.title
+                ? `${book.title} by ${book.author} | NovelNotes`
+                : "NovelNotes"}
+            </title>
+          </Helmet>
           <Box className="book-wrapper" title={`book-page-${book.id}`}>
             <FixedCard user={user} book={book} handleSetOpen={handleSetOpen} />
             <Box className="book-info">
@@ -87,7 +98,7 @@ export default function BookPage({ id }: Props) {
               {user && (
                 <AddReview
                   userId={id}
-                  bookId={book.Id}
+                  bookId={book._id}
                   open={open}
                   close={onClose}
                 />

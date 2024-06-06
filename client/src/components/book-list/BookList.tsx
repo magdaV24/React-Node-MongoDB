@@ -11,7 +11,6 @@ export default function BookList({books = []}: Props) {
     const length = books.length;
  return (
     <Box className="books-wrapper">
-        
           {length > 0 ? <>
             {books.map((book: Book, index: number) => (
             <BookCard book={book} key={`${book?._id}-${index}`} />

@@ -1,10 +1,16 @@
+// React imports
+import { useState, useEffect, SetStateAction } from "react";
+
+// Cloudinary imports
 import { AdvancedImage } from "@cloudinary/react";
+import { fill } from "@cloudinary/url-gen/actions/resize";
+
+// MUI imports
 import {
   Typography,
   Box,
   Card,
   CardContent,
-  Avatar,
   Divider,
   Rating,
   Button,
@@ -13,23 +19,35 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import { useState, useEffect, SetStateAction } from "react";
-import useGetUser from "../hooks/useGetUser";
-import { Review } from "../types/Review";
-import { useAppContext } from "../hooks/useAppContext";
-import EditReview from "../forms/EditReview";
-import AddComment from "../forms/AddComment";
-import { cloudinaryFnc } from "../utils/cloudinaryFnc";
 import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
 import EditSharpIcon from "@mui/icons-material/EditSharp";
-import "../styles/components/reviewCard.css";
-import useQueryHook from "../hooks/useQueryHook";
-import { DELETE_REVIEW, FETCH_COMMENTS } from "../utils/urls";
-import CommentsList from "./CommentsList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+//Custom Hooks
+import useGetUser from "../hooks/useGetUser";
+import useQueryHook from "../hooks/useQueryHook";
 import useMutationWithToken from "../hooks/useMutationWithToken";
+
+// Types
+import { Review } from "../types/Review";
+
+// Context Management
+import { useAppContext } from "../hooks/useAppContext";
+
+// Forms
+import EditReview from "../forms/EditReview";
+import AddComment from "../forms/AddComment";
+
+// Utils
+import { cloudinaryFnc } from "../utils/cloudinaryFnc";
+import { DELETE_REVIEW, FETCH_COMMENTS } from "../utils/urls";
+
+// Custom Components
+import CommentsList from "./CommentsList";
 import Like from "./Like";
+
+//Styles
+import "../styles/components/reviewCard.css";
 
 interface Props {
   review: Review;
@@ -92,15 +110,19 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
 
   const [reply, setReply] = useState(false);
 
-  const handleShowCommentForm=()=>{
-    setReply(prev=>!prev);
+  const handleShowCommentForm = () => {
+    setReply((prev) => !prev);
     setCancel((prev) => !prev);
-  }
+  };
 
   // Fetching comments;
 
   const queryName = `commentsList`;
-  const { data } = useQueryHook(`${FETCH_COMMENTS}/${review._id}`, queryName);
+  const { data } = useQueryHook(
+    `${FETCH_COMMENTS}/${review._id}`,
+    queryName,
+    true
+  );
 
   // User menu
 
@@ -128,56 +150,61 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
         <Box>
           <Box className="review-card-header">
             <Box className="review-card-header-one">
-              <Avatar alt="Avatar">
+              <Box className="card-avatar">
                 <AdvancedImage
-                  cldImg={cld
-                    .image(review?.avatar)
-                    .resize(fill().width(50).height(50))}
+                  cldImg={cld.image(review?.avatar).resize(fill().width(60))}
                 />
-              </Avatar>
-              <Typography
-                sx={{ fontSize: 16, mt: 0.5 }}
-                color="text.secondary"
-                gutterBottom
-              >
-                {review?.username}'s review:
-              </Typography>
+              </Box>
+              <Box className="card-header-box">
+                <Typography
+                  sx={{ fontSize: 16, mt: 0.5 }}
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  {review?.username}'s review:
+                </Typography>
+
+                <Typography
+                  color="text.secondary"
+                  className="comment-card-date"
+                >
+                  {formattedDate}
+                </Typography>
+              </Box>
             </Box>
 
-            {(currentUser?._id === review.userId) && <Box className="review-card-header-two">
-              <Button onClick={handleOpenMenu}>
-                <MoreVertIcon />
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleCloseMenu}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-              >
-                <MenuItem onClick={handleDelete}>
-                  {loading ? (
-                    <CircularProgress />
-                  ) : (
-                    <DeleteOutlineSharpIcon color="error" />
-                  )}
-                </MenuItem>
-                <MenuItem onClick={() => setOpenEdit((prev) => !prev)}>
-                  <EditSharpIcon color="info" />
-                </MenuItem>
-              </Menu>
-            </Box>}
+            {currentUser?._id === review.userId && (
+              <Box className="review-card-header-two">
+                <Button onClick={handleOpenMenu}>
+                  <MoreVertIcon />
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleCloseMenu}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <MenuItem onClick={handleDelete}>
+                    {loading ? (
+                      <CircularProgress />
+                    ) : (
+                      <DeleteOutlineSharpIcon color="error" />
+                    )}
+                  </MenuItem>
+                  <MenuItem onClick={() => setOpenEdit((prev) => !prev)}>
+                    <EditSharpIcon color="info" />
+                  </MenuItem>
+                </Menu>
+              </Box>
+            )}
           </Box>
-
-          <Typography className="review-card-date" color="text.secondary">
-            {formattedDate}
-          </Typography>
         </Box>
         <Divider className="divider" />
         {openEdit ? (
@@ -223,7 +250,11 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
               <Box className="review-card-buttons-wrapper">
                 <Box className="review-card-buttons-col-one">
                   {currentUser && (
-                    <Button size="large" onClick={handleShowCommentForm} variant="outlined">
+                    <Button
+                      size="large"
+                      onClick={handleShowCommentForm}
+                      variant="outlined"
+                    >
                       {btn}
                     </Button>
                   )}
@@ -243,9 +274,11 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
             </CardActions>
             {reply && (
               <AddComment
-                  parentId={review?._id}
-                  userId={currentUser?._id}
-                  bookId={bookId} close={handleShowCommentForm}/>
+                parentId={review?._id}
+                userId={currentUser?._id}
+                bookId={bookId}
+                close={handleShowCommentForm}
+              />
             )}
           </>
         )}

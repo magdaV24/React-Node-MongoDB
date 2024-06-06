@@ -20,4 +20,6 @@ export const GENRES_LIST = [
   "Dystopian",
   "Contemporary Fiction",
   "Retelling",
+  "Philosophy",
+  "Religion"
 ];

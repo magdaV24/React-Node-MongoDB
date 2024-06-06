@@ -2,6 +2,7 @@ import { Box, SwipeableDrawer, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import Shelf from "./Shelf";
 import { Book } from "../types/Book";
+import '../styles/components/drawer.css'
 
 interface Drawer {
   isOpen: boolean;

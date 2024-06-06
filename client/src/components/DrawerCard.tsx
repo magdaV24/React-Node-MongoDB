@@ -1,6 +1,5 @@
 import { AdvancedImage } from "@cloudinary/react";
-import { Card, CardHeader, Avatar, CardMedia } from "@mui/material";
-import { fill } from "@cloudinary/url-gen/actions/resize";
+import { Box, Avatar, Typography } from "@mui/material";
 import { cloudinaryFnc } from "../utils/cloudinaryFnc";
 interface Props {
   title: string;
@@ -10,24 +9,22 @@ interface Props {
 export default function DrawerCard({ title, author, photo }: Props) {
   const cld = cloudinaryFnc();
   return (
-    <Card sx={{ width: 250, height: 350, p: 1 }}>
-      <CardHeader
-        avatar={<Avatar aria-label="avatar">R</Avatar>}
-        title={title}
-        subheader={author}
-      />
-      <CardMedia
-        sx={{
-          height: 300,
-          display: "flex",
-          alignContent: "center",
-          justifyContent: "center",
-        }}
-      >
+    <Box className="drawer-card" sx={{ backgroundColor: "primary.dark" }}>
+      <Box className="drawer-card-header-wrapper">
+        <Avatar aria-label="avatar" className="avatar">
+          {title[0]}
+        </Avatar>
+        <Box className="drawer-card-header">
+          <Typography>{title}</Typography>
+          <Typography>{author}</Typography>
+        </Box>
+      </Box>
+      <Box className="drawer-card-media-wrapper">
         <AdvancedImage
-          cldImg={cld.image(photo).resize(fill().width(150).height(230))}
+          cldImg={cld.image(photo)}
+          className="drawer-card-media"
         />
-      </CardMedia>
-    </Card>
+      </Box>
+    </Box>
   );
 }

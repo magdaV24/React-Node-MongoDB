@@ -1,8 +1,10 @@
-import { AdvancedImage } from "@cloudinary/react";
+// React imports
+import { SetStateAction, useState } from "react";
+
+// MUI imports
 import {
   Card,
   CardContent,
-  Avatar,
   Typography,
   Divider,
   CardActions,
@@ -12,22 +14,34 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { cloudinaryFnc } from "../utils/cloudinaryFnc";
+import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
+import EditSharpIcon from "@mui/icons-material/EditSharp";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+// Cloudinary imports
+import { AdvancedImage } from "@cloudinary/react";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import { SetStateAction, useState } from "react";
 import AddComment from "../forms/AddComment";
 import { Comment } from "../types/Comment";
 import useGetUser from "../hooks/useGetUser";
 import useQueryHook from "../hooks/useQueryHook";
+
+// Utils
 import { DELETE_COMMENT, FETCH_COMMENTS } from "../utils/urls";
+import { cloudinaryFnc } from "../utils/cloudinaryFnc";
+
+// Custom components
 import CommentsList from "./CommentsList";
-import "../styles/components/commentCard.css";
 import Like from "./Like";
+
+// Custom hooks
 import useMutationWithToken from "../hooks/useMutationWithToken";
+
+// Forms
 import EditComment from "../forms/EditComment";
-import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
-import EditSharpIcon from "@mui/icons-material/EditSharp";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+// Styles
+import "../styles/components/commentCard.css";
 
 interface Props {
   comment: Comment;
@@ -87,7 +101,11 @@ export default function CommentCard({ comment, userId }: Props) {
 
   const queryName = `commentsList/${comment._id}`;
 
-  const { data } = useQueryHook(`${FETCH_COMMENTS}/${comment._id}`, queryName);
+  const { data } = useQueryHook(
+    `${FETCH_COMMENTS}/${comment._id}`,
+    queryName,
+    true
+  );
 
   const handleShowChildren = () => {
     setShowChildren((prev) => !prev);
@@ -104,24 +122,31 @@ export default function CommentCard({ comment, userId }: Props) {
         p: 0,
       }}
     >
-      <Card sx={{ width: "99%", padding: 0.5 }}>
+      <Card sx={{ width: "99%", padding: 1 }}>
         <Box>
           <Box className="comment-card-header">
             <Box className="comment-card-header-user">
-              <Avatar alt="Avatar">
+              <Box className="card-avatar">
                 <AdvancedImage
-                  cldImg={cld
-                    .image(comment?.avatar)
-                    .resize(fill().width(50).height(50))}
+                  cldImg={cld.image(comment?.avatar).resize(fill().width(60))}
                 />
-              </Avatar>
-              <Typography
-                sx={{ fontSize: 16, mt: 0.5 }}
-                color="text.secondary"
-                gutterBottom
-              >
-                {comment?.username}'s comment:
-              </Typography>
+              </Box>
+              <Box className="card-header-box">
+                <Typography
+                  sx={{ fontSize: 16, mt: 0.5 }}
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  {comment?.username}'s comment:
+                </Typography>
+
+                <Typography
+                  color="text.secondary"
+                  className="comment-card-date"
+                >
+                  {formatDate}
+                </Typography>
+              </Box>
             </Box>
 
             <Box className="review-card-header-two">
@@ -154,10 +179,6 @@ export default function CommentCard({ comment, userId }: Props) {
               </Menu>
             </Box>
           </Box>
-
-          <Typography color="text.secondary" className="comment-card-date">
-            {formatDate}
-          </Typography>
         </Box>
         <Divider className="divider" />
         {isEditing ? (

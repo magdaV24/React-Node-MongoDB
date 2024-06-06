@@ -1,5 +1,7 @@
+// MUI imports
 import InfoSharpIcon from '@mui/icons-material/InfoSharp';
 import { Tooltip, IconButton } from '@mui/material';
+
 export default function PasswordPattern() {
     const title = (
         <div style={{ fontSize: '12px' }}>

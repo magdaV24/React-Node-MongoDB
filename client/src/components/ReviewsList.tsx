@@ -22,6 +22,7 @@ export default function ReviewList({ bookId, userId }: Props) {
   const { data: allReviews } = useQueryHook(
     `${FETCH_REVIEWS}/${bookId}`,
     queryKeyOne,
+    true,
     [queriesToInvalidate[1], queriesToInvalidate[2]]
   );
 
@@ -30,11 +31,13 @@ export default function ReviewList({ bookId, userId }: Props) {
   const { data: reviewsByFinished } = useQueryHook(
     `${SORT_FINISHED}/${bookId}/${finished}`,
     queryKeyTwo,
+    finished !== '',
     [queriesToInvalidate[0], queriesToInvalidate[2]]
   );
   const { data: reviewsByStars } = useQueryHook(
     `${SORT_STARS}/${bookId}/${stars}`,
     queryKeyThree,
+    stars !== '',
     [queriesToInvalidate[0], queriesToInvalidate[1]]
   );
 

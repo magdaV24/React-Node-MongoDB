@@ -28,7 +28,7 @@ export const addReview = async (req: any, res: any) => {
     );
     const update_grade = await book.updateOne(
       { _id: id },
-      { $push: { grade: Number(stars) } }
+      { $push: { grade: stars } }
     );
     if (!update || !update_grade) {
       return res.status(401).json("Something went wrong!");
@@ -86,7 +86,7 @@ export const sortStars = async (req: any, res: any) => {
   try {
     const reviews = await book.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
+        $match: { _id: id },
       },
       {
         $project: {
@@ -140,7 +140,7 @@ export const sortFinished = async (req: any, res: any) => {
   try {
     const reviews = await book.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(id) },
+        $match: { _id: id },
       },
       {
         $project: {

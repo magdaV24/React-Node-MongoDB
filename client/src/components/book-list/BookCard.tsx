@@ -82,6 +82,8 @@ export default function BookCard({ book }: Props) {
             bookId={book?._id}
             close={() => setOpenDelete(false)}
             photos={book?.photos}
+            title={book?.title}
+            author={book?.author}
           />
         </div>
       </Modal>

@@ -1,0 +1,6 @@
+.review-form-wrapper{
+    padding: 1rem;
+    height: 55vh;
+    width: 35vw;
+    overflow: scroll;
+}

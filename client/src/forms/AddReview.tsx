@@ -1,3 +1,10 @@
+// React imports
+import { useEffect } from "react";
+
+// React hook form imports
+import { Controller, useForm } from "react-hook-form";
+
+// MUI imports
 import {
   Typography,
   TextField,
@@ -9,13 +16,18 @@ import {
   Radio,
   RadioGroup,
   Checkbox,
-  Card,
+  Box,
 } from "@mui/material";
-import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+
+// Custom hooks
 import { useAppContext } from "../hooks/useAppContext";
 import useMutationWithToken from "../hooks/useMutationWithToken";
+
+// Utils
 import { ADD_REVIEW } from "../utils/urls";
+
+// Styles
+import '../styles/forms/addReview.css'
 
 interface Props {
   userId: string | null;
@@ -49,6 +61,9 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
       await postData(data).then((res: string) => {
         appContext.setSuccess(res);
         appContext.setOpenSuccessAlert(true);
+      }).catch((err)=>{
+        appContext.setError(err)
+        appContext.setOpenErrorAlert(true)
       });
     } catch (error) {
       appContext.setOpenErrorAlert(true);
@@ -75,7 +90,7 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
       aria-describedby="modal-modal-description"
       className="modal"
     >
-      <Card className="form-wrapper" title='Review Form'>
+      <Box className="form-wrapper review-form-wrapper" sx={{backgroundColor: 'background.paper'}} title='Review Form'>
         <Typography variant="h6">
           Review this book!
         </Typography>
@@ -156,7 +171,7 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
             SUBMIT REVIEW
           </Button>
         )}
-      </Card>
+      </Box>
     </Modal>
   );
 }

@@ -1,0 +1,7 @@
+.add-book-wrapper{
+    display: flex;
+    height: 95vh;
+    width: 40vw;
+    overflow-y: scroll;
+    border-radius: 1rem;
+}

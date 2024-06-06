@@ -56,3 +56,19 @@
     border-radius: 0.2rem;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
+
+.card-header-box{
+    display: flex;
+    flex-direction: column;
+}
+
+.card-avatar{
+    width: 3vw;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}

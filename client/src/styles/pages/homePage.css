@@ -9,6 +9,13 @@
   height: fit-content;
 }
 
+.books-wrapper{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 2rem;
+  row-gap: 2rem;
+}
+
 @media screen and (max-width: 1200px) {
   .books-wrapper {
     grid-template-columns: repeat(4, 1fr);

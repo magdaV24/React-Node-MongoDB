@@ -1,7 +1,11 @@
 .comment-card-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+}
+
+.comment-card-header-user{
+  display: flex;
   gap: 1rem;
 }
 

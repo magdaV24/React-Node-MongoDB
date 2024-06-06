@@ -1,4 +1,10 @@
+// React imports
+import { useEffect } from "react";
+
+// React hook form imports
 import { Controller, useForm } from "react-hook-form";
+
+// MUI imports
 import {
   TextField,
   Button,
@@ -11,19 +17,28 @@ import {
   Select,
   CircularProgress,
   Box,
-  Card,
   Typography,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+// Context management
 import { useAppContext } from "../hooks/useAppContext";
+
+// Custom hooks
 import useCloudinary from "../hooks/useCloudinary";
 import useMutationHook from "../hooks/useMutationHook";
+
+// Utils
 import { FOLDER_NAME, PRESET } from "../utils/cloudinary";
 import { GENRES_LIST } from "../utils/genres";
-import { ADD_BOOK } from "../utils/urls";
-import { useEffect } from "react";
 import { LANGUAGES } from "../utils/languages";
+import { ADD_BOOK } from "../utils/urls";
+
+// Custom components
 import { VisuallyHiddenInput } from "../utils/VisuallyHiddenInput";
+
+// Styles
+import '../styles/forms/addBook.css'
 
 export default function AddBook() {
   const {
@@ -32,6 +47,7 @@ export default function AddBook() {
     setValue,
     formState: { errors },
     control,
+    reset
   } = useForm({
     defaultValues: {
       photos: [] as File[],
@@ -66,8 +82,10 @@ export default function AddBook() {
       const input = { ...getValues() };
       await postData(input);
       appContext.increment();
+      reset();
     } catch (error) {
       appContext.setError(`Error: ${error}`);
+      appContext.setOpenErrorAlert(true)
     }
   };
 
@@ -106,7 +124,7 @@ export default function AddBook() {
     errors.title,
   ]);
   return (
-    <Card className="form-wrapper">
+    <Box className="form-wrapper add-book-wrapper" sx={{backgroundColor: 'background.paper'}}>
       <Box className="form-header" title="Add Book Form">
         <Typography component='div' variant="h4">New Book</Typography>
       </Box>
@@ -274,10 +292,10 @@ export default function AddBook() {
           <CircularProgress />
         </Button>
       ) : (
-        <Button type="submit" onClick={handleSubmit(submitBook)}>
+        <Button type="submit" onClick={handleSubmit(submitBook)} variant="outlined">
           ADD BOOK
         </Button>
       )}
-    </Card>
+    </Box>
   );
 }
