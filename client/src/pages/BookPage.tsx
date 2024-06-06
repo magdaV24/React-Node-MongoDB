@@ -95,7 +95,9 @@ export default function BookPage({ id }: Props) {
                 <BookDescription description={book.description} />
                 <BookTable book={book} genres={genres} />
               </Box>
-              {user && (
+              
+            <Box className="book-page-reviews-wrapper">
+            {user && (
                 <AddReview
                   userId={id}
                   bookId={book._id}
@@ -112,6 +114,7 @@ export default function BookPage({ id }: Props) {
                 {showReviews ? "Hide Reviews" : "Show Reviews"}
               </Button>
               {showReviews && <ReviewList bookId={book._id} userId={id} />}
+            </Box>
             </Box>
           </Box>
         </>

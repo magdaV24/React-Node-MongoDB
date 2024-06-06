@@ -7,16 +7,19 @@ export default function useQueryHook(
   url: string,
   queryKey: string,
   enabled: boolean,
-  queriesToInvalidate?: string[],
+  queriesToInvalidate?: string[]
 ) {
   const fetchData = useFetchData();
   const appContext = useAppContext();
   const queryClient = useQueryClient();
-  const { data, error, isLoading } = useQuery(queryKey, async () => {
-    const result = await fetchData(url);
-    return result;
-  },
-{enabled: enabled});
+  const { data, error, isLoading } = useQuery(
+    queryKey,
+    async () => {
+      const result = await fetchData(url);
+      return result;
+    },
+    { enabled: enabled }
+  );
 
   queriesToInvalidate &&
     queriesToInvalidate.length > 0 &&
@@ -33,5 +36,5 @@ export default function useQueryHook(
     }
   }, []);
 
-  return { data};
+  return { data };
 }

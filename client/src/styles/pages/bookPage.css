@@ -111,10 +111,20 @@
 
 .show-reviews-button{
     width: 15rem;
-    margin-left: 14rem;
+    margin-left: 20rem;
 }
 
 .book-description::first-letter {
     font-size: 2rem; 
     font-family: "Sevillana", cursive;
+}
+
+.book-page-reviews-wrapper{
+  display: flex;
+  flex-direction: column;
+  width: 65vw;
+  min-height: 10vh;
+  height: fit-content;
+  gap: 3rem;
+  padding: 3rem;
 }

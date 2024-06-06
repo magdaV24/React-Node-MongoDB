@@ -78,7 +78,7 @@ export const fetchReviews = async (req: any, res: any) => {
 
 export const sortStars = async (req: any, res: any) => {
   const id = req.params.id;
-  const stars = req.params.stars;
+  const stars = parseInt(req.params.stars, 10);
 
   const min: number = Number(stars);
   const max: number = Number(stars) + 0.99;
@@ -86,7 +86,7 @@ export const sortStars = async (req: any, res: any) => {
   try {
     const reviews = await book.aggregate([
       {
-        $match: { _id: id },
+        $match: { _id: new mongoose.Types.ObjectId(id) },
       },
       {
         $project: {
@@ -140,7 +140,7 @@ export const sortFinished = async (req: any, res: any) => {
   try {
     const reviews = await book.aggregate([
       {
-        $match: { _id: id },
+        $match: { _id: new mongoose.Types.ObjectId(id) },
       },
       {
         $project: {

@@ -13,7 +13,7 @@ export default function SuccessAlert() {
   return (
     <Modal className="modal" open={open} onClose={handleClose}>
       <Box sx={{ backgroundColor: "success.dark" }} className="alert-wrapper">
-        <Typography variant="h5">It went smoothly!</Typography>
+        <Typography variant="h5">Action completed successfully!</Typography>
         <Divider className="divider" />
         <Typography>{success}</Typography>
         <Divider className="divider" />
