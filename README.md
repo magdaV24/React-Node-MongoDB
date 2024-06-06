@@ -14,6 +14,11 @@ Drawing inspiration from popular websites like Goodreads and Storygraph, I have 
 - The server side is developed using NodeJS;
 - The data is saved in a MongoDB database;
 
+
+## Functionality
+
+In order to make this app as interesting and useful as possible, it includes various functionalities such as context management, photo uploading, writing reviews and replies to them, liking the reviews/comments, searching through the book collection, sorting the reviews or giving the books a reading status.
+
 ### Frontend
 This project's client side is constructed with React, incorporating various features to enhance the overall user experience.
 
@@ -30,6 +35,30 @@ This project's client side is constructed with React, incorporating various feat
 #### Context management
 
 In order to facilitate the state sharing across the application's components and set global state, such as the user's token or the theme, I decided to incorporate state management in my application. React Context was my choice of tool for this part of the app's functionality. 
+
+#### The Application
+
+##### Forms
+
+![Image Alt Text](/client/public/project-photos/delete-form.png)
+![Image Alt Text](/client/public/project-photos/review-edit.png)
+
+
+##### The Home Page
+![Home Page](/client/public/project-photos/home-page.png)
+
+##### The Book Page
+
+![Book Page](/client/public/project-photos/book-page.png)
+
+##### The Search Bar
+
+![Search Bar](/client/public/project-photos/search-bar.png)
+
+##### Success and Error messages
+
+![Success](/client/public/project-photos/success-message.png)
+![Error](/client/public/project-photos/error-message.png)
 
 ### Backend
 The server side of the app is developed using Node and MongoDB, with other dependencies in order to add more functionality to the server.
@@ -81,8 +110,4 @@ The collection that tracks the users' interaction with the reviews and the comme
 * **user_id:** the identifier of the user that gave a like;
 * **book_id:** the identifier of the book, used for deleting purposes;
 * **object_id:** the identifier of the object the user is interacting with; 
-
-## Functionality
-
-In order to make this app as interesting and useful as possible, it includes various functionalities such as context management, photo uploading, writing reviews and replies to them, liking the reviews/comments, searching through the book collection, sorting the reviews or giving the books a reading status.
 
