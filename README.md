@@ -24,6 +24,7 @@ This project's client side is constructed with React, incorporating various feat
 * **Cloudinary:** Integrated as a cloud-based media management and delivery service, enabling users to upload one or multiple pictures.
 * **React Query:** The app utilizes this library to manage and fetch data seamlessly, providing a responsive and dynamic user experience.
 * **Axios:**  for the management of HTTP requests to the server.
+* **React Helmet:**  for editing the application' tab.
 * **Vitest:** Paired with React Testing Library and jsdom, Vitest was my dependency choice for testing the hooks and the components.
 
 #### Context management
