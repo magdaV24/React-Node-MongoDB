@@ -85,13 +85,7 @@ export default function Register() {
     } else {
       appContext.clearErrorMessage();
     }
-  }, [
-    appContext,
-    errors.avatar,
-    errors.email,
-    errors.password,
-    errors.username,
-  ]);
+  }, [appContext, errors.avatar, errors.email, errors.password, errors.username]);
   return (
     <Card className="form-wrapper">
       <Box className="form-header"  title='Register Form'>
@@ -123,7 +117,10 @@ export default function Register() {
         name="username"
         control={control}
         defaultValue=""
-        rules={{ required: "Username required!" }}
+        rules={{ required: "Username required!",  minLength: {
+          value: 6,
+          message: "Username must be at least 6 characters long"
+        } }}
         render={({ field }) => (
           <TextField
             id="username-standard-basic"
@@ -146,6 +143,10 @@ export default function Register() {
               message:
                 "Password must contain at least one uppercase letter, one number, and one special character (! . @ # $ % ^ & *).",
             },
+            minLength: {
+              value: 8,
+              message: "Password must be at least 8 characters long"
+            }
           }}
           render={({ field }) => (
             <TextField

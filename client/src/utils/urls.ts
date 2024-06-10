@@ -1,37 +1,37 @@
-const port = 8080;
-const host = `http://localhost:${port}`
+const SERVER_PORT = 8080;
+const BASE_URL = `http://localhost:${SERVER_PORT}`
 
-export const REGISTER = `${host}/register`;
-export const LOGIN = `${host}/login`;
-export const FETCH_USER = `${host}/fetchUser`;
-export const ADD_READING_STATUS = `${host}/addReadingStatus`
-export const FIND_READING_STATUS = `${host}/findReadingStatus`
-export const CHANGE_READING_STATUS = `${host}/changeReadingStatus`
-export const FETCH_DRAWER_BOOKS = `${host}/fetchDrawerBooks`
+export const REGISTER = `${BASE_URL}/register`;
+export const LOGIN = `${BASE_URL}/login`;
+export const FETCH_USER = `${BASE_URL}/fetchUser`;
+export const ADD_READING_STATUS = `${BASE_URL}/addReadingStatus`
+export const FIND_READING_STATUS = `${BASE_URL}/findReadingStatus`
+export const CHANGE_READING_STATUS = `${BASE_URL}/changeReadingStatus`
+export const FETCH_DRAWER_BOOKS = `${BASE_URL}/fetchDrawerBooks`
 
-export const ADD_BOOK = `${host}/addBook`;
-export const FETCH_BOOKS = `${host}/fetchBooks`;
-export const FETCH_BOOK = `${host}/fetchBook`;
-export const ADD_PHOTO = `${host}/addPhoto`;
-export const DELETE_PHOTO = `${host}/deletePhoto`;
-export const EDIT_FIELDS = `${host}/editFields`;
-export const DELETE_BOOK = `${host}/deleteBook`;
+export const ADD_BOOK = `${BASE_URL}/addBook`;
+export const FETCH_BOOKS = `${BASE_URL}/fetchBooks`;
+export const FETCH_BOOK = `${BASE_URL}/fetchBook`;
+export const ADD_PHOTO = `${BASE_URL}/addPhoto`;
+export const DELETE_PHOTO = `${BASE_URL}/deletePhoto`;
+export const EDIT_FIELDS = `${BASE_URL}/editFields`;
+export const DELETE_BOOK = `${BASE_URL}/deleteBook`;
 
-export const ADD_REVIEW = `${host}/addReview`
-export const FETCH_REVIEWS = `${host}/fetchReviews`
-export const SORT_FINISHED = `${host}/sortFinished`
-export const SORT_STARS = `${host}/sortStars`
-export const DELETE_REVIEW = `${host}/deleteReview`;
-export const EDIT_REVIEW = `${host}/editReview`;
+export const ADD_REVIEW = `${BASE_URL}/addReview`
+export const FETCH_REVIEWS = `${BASE_URL}/fetchReviews`
+export const SORT_FINISHED = `${BASE_URL}/sortFinished`
+export const SORT_STARS = `${BASE_URL}/sortStars`
+export const DELETE_REVIEW = `${BASE_URL}/deleteReview`;
+export const EDIT_REVIEW = `${BASE_URL}/editReview`;
 
 
-export const ADD_COMMENT = `${host}/addComment`;
-export const EDIT_COMMENT = `${host}/editComment`;
-export const FETCH_COMMENTS = `${host}/fetchComments`;
-export const DELETE_COMMENT = `${host}/deleteComment`;
+export const ADD_COMMENT = `${BASE_URL}/addComment`;
+export const EDIT_COMMENT = `${BASE_URL}/editComment`;
+export const FETCH_COMMENTS = `${BASE_URL}/fetchComments`;
+export const DELETE_COMMENT = `${BASE_URL}/deleteComment`;
 
-export const SEARCH = `${host}/search`;
+export const SEARCH = `${BASE_URL}/search`;
 
-export const LIKE_OBJECT = `${host}/like`;
-export const CHECK_IF_LIKED = `${host}/checkIfLiked`;
-export const COUNT_LIKES = `${host}/countLikes`;
+export const LIKE_OBJECT = `${BASE_URL}/like`;
+export const CHECK_IF_LIKED = `${BASE_URL}/checkIfLiked`;
+export const COUNT_LIKES = `${BASE_URL}/countLikes`;

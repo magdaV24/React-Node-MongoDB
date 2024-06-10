@@ -7,7 +7,7 @@ export default function usePostData(){
             return response;
         } catch (error) {
             const errorMessage = (error as AxiosError).response?.data;
-            console.log(errorMessage);
+            throw new Error(`${errorMessage}`);
         }
     }
     return postData;

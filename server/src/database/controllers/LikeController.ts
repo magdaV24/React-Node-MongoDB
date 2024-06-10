@@ -1,4 +1,4 @@
-import likes from "../models/like";
+import likes from "../models/LikeModel";
 
 export const likeObject = async (req: any, res: any) => {
   const { objectId, bookId, userId } = req.body;

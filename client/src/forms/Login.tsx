@@ -27,6 +27,8 @@ import { LOGIN } from "../utils/urls";
 import { useToken } from "../hooks/useToken";
 import useMutationHook from "../hooks/useMutationHook";
 
+// import bcrypt from 'bcryptjs'
+
 export default function Login() {
   const appContext = useAppContext();
   const {
@@ -44,6 +46,8 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
+      // const password = getValues("password");
+      // const hashedPassword = (await bcrypt.hash(password, 12)).toString();
       const input = { ...getValues() };
       await postData(input).then((res) => {
         saveToken(res);

@@ -1,9 +1,7 @@
-import mongoose from "mongoose";
 import cloudinary from "../../cloudinary/cloudinaryConfig";
-import book from "../models/book";
-import comment from "../models/comment";
-import likes from "../models/like";
-import user from "../models/user";
+import book from "../models/BookModel";
+import comment from "../models/CommentModel";
+import likes from "../models/LikeModel";
 
 export const addBook = async (req: any, res: any) => {
   const {

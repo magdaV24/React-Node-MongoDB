@@ -1,5 +1,5 @@
-import comments from "../models/comment";
-import user from "../models/user";
+import comments from "../models/CommentModel";
+import User from "../models/UserModel";
 
 //Add a comment;
 
@@ -34,7 +34,7 @@ export const fetchComments = async (req: any, res: any) => {
     const commentList = await Promise.all(
       result.map(async (comment: any) =>{
         const userId = comment.userId;
-        const writer = await user.findOne({_id: userId}).lean();
+        const writer = await User.findOne({_id: userId}).lean();
         if(!writer){
           return { ...comment.toObject(), avatar: null, username: '[deleted]'};
         }

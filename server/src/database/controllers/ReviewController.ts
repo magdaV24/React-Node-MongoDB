@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import book from "../models/book";
-import user from "../models/user";
-import comment from "../models/comment";
+import book from "../models/BookModel";
+import comment from "../models/CommentModel";
+import User from "../models/UserModel";
 
 // Adding a new review to the database
 
@@ -53,7 +53,7 @@ export const fetchReviews = async (req: any, res: any) => {
     const reviews = await Promise.all(
       parent.reviews.map(async (review: any) => {
         const userId = review.userId;
-        const writer = await user.findOne({ _id: userId }).lean();
+        const writer = await User.findOne({ _id: userId }).lean();
         if (!writer) {
           return { ...review.toObject(), avatar: null, username: "[deleted]" };
         }
@@ -113,7 +113,7 @@ export const sortStars = async (req: any, res: any) => {
     const result = await Promise.all(
       reviews[0].reviews.map(async (review: any) => {
         const userId = review.userId;
-        const writer = await user.findOne({ _id: userId }).lean();
+        const writer = await User.findOne({ _id: userId }).lean();
         if (!writer) {
           return { ...review.review, avatar: null, username: "[deleted]" };
         }
@@ -162,7 +162,7 @@ export const sortFinished = async (req: any, res: any) => {
     const result = await Promise.all(
       reviews[0].reviews.map(async (review: any) => {
         const userId = review.userId;
-        const writer = await user.findOne({ _id: userId }).lean();
+        const writer = await User.findOne({ _id: userId }).lean();
         if (!writer) {
           return { ...review.review, avatar: null, username: "[deleted]" };
         }
@@ -181,8 +181,6 @@ export const sortFinished = async (req: any, res: any) => {
 };
 
 // Editing a review
-
-
 
 export const editReview = async (req: any, res: any) => {
     const { id, content, stars, finished, bookId, oldStars } = req.body;
