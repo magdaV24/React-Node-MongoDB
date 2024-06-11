@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 import { findUser, loginUser, registerUser } from "../../services/userService";
 import logger from "../../config/logger";
-import Book from "../models/BookModel";
+import {Book} from "../models/BookModel";
 
 /* 
 POST method. It adds a new user to the database
@@ -12,16 +12,19 @@ It takes the user input: username, email, password, avatar
 If the requirements of no repeat username/email, it returns the auth token and authenticates the user on the frontend
 */
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    // Deconstructing the input from the client side
+    /*
+    
+    */
     const { email, username, password, avatar } = req.body;
 
-    // Using a custom service to register the user and get the authentication token;
     const token = await registerUser(username, email, password, avatar);
     return res.status(201).json(token);
   } catch (error) {
-    // In case of an error, the image sent to Cloudinary is deleted
     if (req.body && req.body.avatar) {
       await cloudinary.v2.uploader.destroy(req.body.avatar);
     }
@@ -36,7 +39,7 @@ Request: the username, password and if the user wishes to be logged in longer
 Response: An authentication token.
 */
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<Response> => {
   try {
     // Deconstructing the input from the client side
     const { username, password, rememberMe } = req.body;
@@ -71,7 +74,10 @@ Request: the user id.
 Response: all the information that corresponds the looked for user.
 */
 
-export const fetchUser = async (req: Request, res: Response) => {
+export const fetchUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const id = req.params.id;
     const user = await findUser(id);
@@ -92,7 +98,10 @@ POST method. Adds a book's ID to one of the three possible shelves: Want to read
 Request: the user ID, the book ID, the status/desired shelf
 Response: the name shelf name if the adding of the book was successful
 */
-export const addReadingStatus = async (req: Request, res: Response) => {
+export const addReadingStatus = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { userId, bookId, status } = req.body;
 
   try {
@@ -130,7 +139,10 @@ POST method. It takes the book off of the current shelf and adds it to another.
 Request: the user ID, the book ID, the status/desired shelf
 Response: the name shelf name if the adding of the book was successful 
 */
-export const changeReadingStatus = async (req: any, res: any) => {
+export const changeReadingStatus = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { userId, bookId, status } = req.body;
 
   const user = await findUser(userId);
@@ -145,7 +157,7 @@ export const changeReadingStatus = async (req: any, res: any) => {
   const shelfTransitions: Record<Status, Status[]> = {
     "Currently reading": ["wantToRead", "read"],
     "Want to read": ["currentlyReading", "read"],
-    Read: ["wantToRead", "currentlyReading"],
+    "Read": ["wantToRead", "currentlyReading"],
   };
 
   try {
@@ -182,7 +194,10 @@ Request: the user ID and the book ID
 Response: the name of the shelf the book is on or "None" if it's not added to any.
 */
 
-export const findReadingStatus = async (req: any, res: any) => {
+export const findReadingStatus = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const userId = req.params.userId;
   const bookId = req.params.bookId;
   const user = await findUser(userId);
@@ -210,7 +225,10 @@ Request: the user ID and the name of the shelf
 Response: The books on the desired shelf.
 */
 
-export const fetchByReadingStatus = async (req: any, res: any) => {
+export const fetchByReadingStatus = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const userId = req.params.userId;
   const field = req.params.field;
   try {
@@ -230,7 +248,9 @@ export const fetchByReadingStatus = async (req: any, res: any) => {
     );
     return res.status(200).json(result);
   } catch (error) {
-    logger.error(`Error fetching books by reading status for user ID: ${userId}: ${error}`);
-    return res.status(500).json({ error: `Internal server error: ${error}` });
+    logger.error(
+      `Error fetching books by reading status for user ID: ${userId}: ${error}`
+    );
+    return res.status(500).json(`Internal server error: ${error}`);
   }
 };

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAppContext } from "./useAppContext";
 import useFetchDataWithToken from "./useFetchDataWithToken";
 
-export default function useQueryWithToken(url: string | null, queryKey: string) {
+export default function useQueryWithToken(url: string | null, queryKey: string, enabled?: boolean) {
   const fetchData = useFetchDataWithToken();
   const appContext = useAppContext();
   const { data, error, isLoading } = useQuery(queryKey, async () => {
@@ -11,7 +11,7 @@ export default function useQueryWithToken(url: string | null, queryKey: string) 
     const result = await fetchData(url);
     return result;
   },{
-    enabled: appContext.isAuthenticated
+    enabled: enabled
   }
 );
   useEffect(() => {

@@ -1,7 +1,6 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import helmet from "helmet";
 import { mongooseConfig } from "./database/mongooseConfig";
 import userRouter from "./routes/userRouter";
 import bookRouter from "./routes/bookRouter";
@@ -9,16 +8,15 @@ import reviewsRouter from "./routes/reviewsRouter";
 import commentsRouter from "./routes/commentsRouter";
 import likesRouter from "./routes/likesRouter";
 import searchRouter from "./routes/searchRouter";
+import { helmetConfig } from "./config/helmetConfig";
 
-const main = async () => {
-  dotenv.config();
+dotenv.config();
 
-  const PORT = process.env.PORT;
-  const ORIGIN = process.env.ORIGIN;
+const PORT = process.env.PORT || 3000;
+const ORIGIN = process.env.ORIGIN || "http://localhost:8080";
 
-  const app = express();
-  app.use(helmet());
-
+const configMiddleware=(app: any)=>{
+  app.use(helmetConfig);
   app.use(
     cors({
       origin: function (origin, callback) {
@@ -35,35 +33,34 @@ const main = async () => {
       maxAge: 3600,
     })
   );
-
   app.use(express.json());
+}
 
-  //Connecting to MongoDB
-
-  await mongooseConfig();
-
-  // User management
+const configRoutes=(app: any)=>{
 
   app.use(userRouter);
-
-  // Book management
-
   app.use(bookRouter);
-  // Reviews management
-
   app.use(reviewsRouter);
-
-  // Comment Management
   app.use(commentsRouter);
-
-  // Search functionality
   app.use(searchRouter);
-
-  // Likes Management
   app.use(likesRouter);
 
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+}
+const main = async () => {
+
+  const app = express();
+
+  configMiddleware(app);
+  configRoutes(app);
+
+  try {
+    await mongooseConfig();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to the database", error);
+    process.exit(1); 
+  }
 };
 main();

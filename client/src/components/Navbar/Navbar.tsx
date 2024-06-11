@@ -50,8 +50,9 @@ export default function Navbar({ id }: Props) {
   function showLogin() {
     setOpenLogin(true);
   }
+  const enabled = appContext.isAuthenticated
 
-  const user = useGetUser(id);
+  const user = useGetUser(id, enabled);
 
   const token = appContext.token;
   const setAuth = appContext.setIsAuthenticated
@@ -90,9 +91,9 @@ export default function Navbar({ id }: Props) {
   const urlOne = `${FETCH_DRAWER_BOOKS}/${userId}/currentlyReading`;
   const urlTwo = `${FETCH_DRAWER_BOOKS}/${userId}/wantToRead`;
   const urlThree = `${FETCH_DRAWER_BOOKS}/${userId}/read`;
-  const { data: currentlyReading } = useQueryWithToken(urlOne, queryOne);
-  const { data: wantToRead } = useQueryWithToken(urlTwo, queryTwo);
-  const { data: read } = useQueryWithToken(urlThree, queryThree);
+  const { data: currentlyReading } = useQueryWithToken(urlOne, queryOne, !!userId);
+  const { data: wantToRead } = useQueryWithToken(urlTwo, queryTwo, !!userId);
+  const { data: read } = useQueryWithToken(urlThree, queryThree, !!userId);
 
 // Logout
 

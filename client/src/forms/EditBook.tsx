@@ -35,7 +35,7 @@ import { fill } from "@cloudinary/url-gen/actions/resize";
 
 // Utils
 import { GENRES_LIST } from "../utils/genres";
-import { ADD_PHOTO, DELETE_PHOTO, EDIT_FIELDS } from "../utils/urls";
+import { ADD_PHOTO, DELETE_PHOTO, EDIT_BOOK } from "../utils/urls";
 import { VisuallyHiddenInput } from "../utils/VisuallyHiddenInput";
 
 // Types
@@ -82,7 +82,7 @@ export default function EditBook({ book }: Props) {
   // Setting the necessary mutations; only a logged in admin can have access to the editing form, so a token is necessary
   const { postData: addPhoto } = useMutationWithToken(ADD_PHOTO);
   const { postData: deletePhoto } = useMutationWithToken(DELETE_PHOTO);
-  const { postData: editFields } = useMutationWithToken(EDIT_FIELDS);
+  const { postData: editFields } = useMutationWithToken(EDIT_BOOK);
 
   // The edit function 
   const submitEdit = async () => {

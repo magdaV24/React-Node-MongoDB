@@ -9,6 +9,11 @@
             "date": 1718019275623,
             "name": "logs\\error-2024-06-10.log",
             "hash": "d557b46e243d2a0eb76cf4280a2260fe10c42a80aaacbd08a541a8f24efdc2b6"
+        },
+        {
+            "date": 1718084086197,
+            "name": "logs\\error-2024-06-11.log",
+            "hash": "8c8e0d7d20607ed9d086e3280d25e56ad5c4d9990d8cbed313dd0199bedd6854"
         }
     ],
     "hashType": "sha256"

@@ -50,7 +50,7 @@ export default function Shelf({ value, data, index }: Props) {
           key={book!._id}
           title={book!.title}
           author={book!.author}
-          photo={book!.photos.length > 0 ? book!.photos[0] : ""}
+          photo={(book!.photos && book!.photos.length > 0) ? book!.photos[0] : ""}
         />
       ))}
     </CustomTabPanel>

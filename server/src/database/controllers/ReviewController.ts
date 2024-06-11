@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import book from "../models/BookModel";
+import {Book} from "../models/BookModel";
 import comment from "../models/CommentModel";
 import User from "../models/UserModel";
 
@@ -16,17 +16,17 @@ export const addReview = async (req: any, res: any) => {
     spoilers: spoilers,
   };
   try {
-    const check = await book.findOne({ _id: id, "reviews.userId": userId });
+    const check = await Book.findOne({ _id: id, "reviews.userId": userId });
 
     if (check) {
       return res.status(401).json("You had already given a review!");
     }
 
-    const update = await book.updateOne(
+    const update = await Book.updateOne(
       { _id: id },
       { $push: { reviews: newReview } }
     );
-    const update_grade = await book.updateOne(
+    const update_grade = await Book.updateOne(
       { _id: id },
       { $push: { grade: stars } }
     );
@@ -39,15 +39,15 @@ export const addReview = async (req: any, res: any) => {
   }
 };
 
-// Fetching all the reviews a book has
+// Fetching all the reviews a Book has
 
 export const fetchReviews = async (req: any, res: any) => {
   const id = req.params.id;
 
   try {
-    const parent = await book.findOne({ _id: id });
+    const parent = await Book.findOne({ _id: id });
     if (!parent) {
-      return res.status(404).json("Cannot find this book!");
+      return res.status(404).json("Cannot find this Book!");
     }
 
     const reviews = await Promise.all(
@@ -84,7 +84,7 @@ export const sortStars = async (req: any, res: any) => {
   const max: number = Number(stars) + 0.99;
 
   try {
-    const reviews = await book.aggregate([
+    const reviews = await Book.aggregate([
       {
         $match: { _id: new mongoose.Types.ObjectId(id) },
       },
@@ -122,7 +122,6 @@ export const sortStars = async (req: any, res: any) => {
           avatar: writer.avatar,
           username: writer.username,
         };
-        return review;
       })
     );
     return res.json(result);
@@ -138,7 +137,7 @@ export const sortFinished = async (req: any, res: any) => {
   const finished = req.params.finished;
 
   try {
-    const reviews = await book.aggregate([
+    const reviews = await Book.aggregate([
       {
         $match: { _id: new mongoose.Types.ObjectId(id) },
       },
@@ -186,7 +185,7 @@ export const editReview = async (req: any, res: any) => {
     const { id, content, stars, finished, bookId, oldStars } = req.body;
   
     try {
-      const edit = await book.updateOne(
+      const edit = await Book.updateOne(
         { _id: bookId, "reviews._id": id },
         {
           $set: {
@@ -196,11 +195,11 @@ export const editReview = async (req: any, res: any) => {
           },
         }
       );
-      const edit2 = await book.updateOne(
+      const edit2 = await Book.updateOne(
         { _id: bookId },
         { $pull: { grade: oldStars } }
       );
-      const edit3 = await book.updateOne(
+      const edit3 = await Book.updateOne(
         { _id: bookId },
         { $push: { grade: stars } }
       );
@@ -222,11 +221,11 @@ export const deleteReview = async (req: any, res: any) => {
     const { stars, id, reviewId } = req.body;
   
     try {
-      await book.updateOne(
+      await Book.updateOne(
         { _id: id },
         { $pull: { reviews: { _id: reviewId } } }
       );
-      await book.updateOne({ _id: id }, { $pull: { grade: stars } });
+      await Book.updateOne({ _id: id }, { $pull: { grade: stars } });
       await comment.deleteMany({ parentId: reviewId });
       return res.status(200).json("Review deleted successfully");
     } catch (error) {

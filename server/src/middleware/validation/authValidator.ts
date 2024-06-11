@@ -1,6 +1,7 @@
 import { body, param } from "express-validator";
 
-const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*]).{8,}$/;
+const passwordRegex =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.])[A-Za-z\d!.@#$%^&*]{8,}$/;
 
 export const registrationValidationRules = [
   body("email")

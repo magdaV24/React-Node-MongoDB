@@ -14,7 +14,7 @@ export const FETCH_BOOKS = `${BASE_URL}/fetchBooks`;
 export const FETCH_BOOK = `${BASE_URL}/fetchBook`;
 export const ADD_PHOTO = `${BASE_URL}/addPhoto`;
 export const DELETE_PHOTO = `${BASE_URL}/deletePhoto`;
-export const EDIT_FIELDS = `${BASE_URL}/editFields`;
+export const EDIT_BOOK = `${BASE_URL}/editBook`;
 export const DELETE_BOOK = `${BASE_URL}/deleteBook`;
 
 export const ADD_REVIEW = `${BASE_URL}/addReview`

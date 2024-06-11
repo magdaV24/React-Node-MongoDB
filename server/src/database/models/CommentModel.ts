@@ -1,8 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const commentSchema = new mongoose.Schema();
-
-commentSchema.add({
+interface Comment extends Document {
+  parentId: string;
+  bookId: string;
+  userId: string;
+  date: string;
+  content: string;
+}
+const commentSchema: Schema<Comment> = new mongoose.Schema({
   parentId: {
     type: String,
     required: true,
@@ -25,6 +30,6 @@ commentSchema.add({
   },
 });
 
-const Comment = mongoose.model("Comments", commentSchema);
+const Comment = mongoose.model<Comment>("Comments", commentSchema);
 
 export default Comment;

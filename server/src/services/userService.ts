@@ -11,6 +11,13 @@ export const registerUser = async (
   avatar: string
 ) => {
   try {
+    /*
+    First, it checks if any user was registered with either the email or the username provided by the client;
+    If there is another user with either of these specific credentials, the photo submitted to Cloudinary is deleted from the 
+    project folder and an error is thrown.
+    If the credentials are new, the password is hashed and a new user entry is created.
+    The user is also logged in, with a value of rememberMe of false.
+    */
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
 
     if (existingUser) {
