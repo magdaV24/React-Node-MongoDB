@@ -1,3 +1,2 @@
-server/src/tests/firstTest.test.ts
-server/src/tests/userTests/login.test.ts
-server/src/tests/userTests/register.test.ts
+server/src/tests
+server/logs
