@@ -1,47 +1,41 @@
-import { ThemeOptions, createTheme } from '@mui/material/styles';
+import { ThemeOptions } from '@mui/material/styles';
 
 export const LightTheme: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#a04e2d',
+      main: '#482e21',
+      dark: '#392117',
+      light: '#9c8272',
     },
     secondary: {
-      main: '#536f75',
+      main: '#307c68',
+      dark: '#21503f',
+      light: '#8bcdc0',
     },
     background: {
-      default: '#F6EEE0',
-      paper: '#E4B7A0',
+      paper: '#f0e8ea',
+      default: '#d5c7cb',
     },
     error: {
-      main: '#8a1717',
+      main: '#c5223c',
+      light: '#e14a5b',
+      dark: '#a90e2a',
     },
     warning: {
-      main: '#bf360c',
+      main: '#de581a',
+      dark: '#a93f0e',
+      light: '#eb7340',
     },
     info: {
-      main: '#0f3f64',
+      main: '#428cb6',
+      dark: '#315c7f',
+      light: '#5eb9dc',
     },
     success: {
-      main: '#1b5e20',
+      main: '#379161',
+      dark: '#295f41',
+      light: '#61be8d',
     },
   },
 };
-
-export const CustomLightTheme = createTheme({
-  ...LightTheme,
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          '&.likeButton': {
-            color: "#AD1829",
-            '&:hover': {
-              color: '#CD0808',
-            },
-          }
-        }
-      }
-    }
-  }
-})

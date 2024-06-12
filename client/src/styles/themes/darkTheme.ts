@@ -1,51 +1,36 @@
-import { ThemeOptions, createTheme } from '@mui/material/styles';
+import { ThemeOptions } from '@mui/material/styles';
 
 export const DarkTheme: ThemeOptions = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#FFB94B',
+      main: '#cba58f',
+      dark: '#bd8769',
+      light: '#ffe7d3',
     },
     secondary: {
-      main: '#85A7B0',
-    },
-    background: {
-      default: '#2C1100',
-      paper: '#373E40',
+      main: '#cadaa3',
+      dark: '#b5cb80',
+      light: '#dfe8c7',
     },
     error: {
-      main: '#cb4848',
-      contrastText: '#ffebee',
-    },
-    warning: {
-      main: '#f39f32',
-      contrastText: '#ffebee',
-    },
-    info: {
-      main: '#13445a',
+      main: '#a73d3f',
+      dark: '#803139',
+      light: '#ce6870',
     },
     success: {
-      main: '#2e7d32',
-      contrastText: '#ffebee',
+      main: '#a5c065',
+      dark: '#73933a',
+      light: '#a5c065',
     },
-    divider: '#2f201a',
+    info: {
+      main: '#63be88',
+      dark: '#40a368',
+      light: '#7fca9c',
+    },
+    background: {
+      default: '#2d2723',
+      paper: '#4f4844',
+    },
   },
 };
-
-export const CustomDarkTheme = createTheme({
-  ...DarkTheme,
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          '&.likeButton': {
-            color: "#AD1829",
-            '&:hover': {
-              color: '#CD0808',
-            },
-          }
-        }
-      }
-    }
-  }
-})

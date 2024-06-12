@@ -65,6 +65,7 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
         appContext.setError(err)
         appContext.setOpenErrorAlert(true)
       });
+      console.log( typeof getValues("finished"), getValues("finished"))
     } catch (error) {
       appContext.setOpenErrorAlert(true);
       appContext.setError(`Error while trying to submit your review: ${error}`);
@@ -104,7 +105,7 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
         <Controller
           name="finished"
           control={control}
-          defaultValue="finished"
+          defaultValue={false}
           render={({ field }) => (
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"
@@ -112,12 +113,12 @@ export default function AddReview({ userId, bookId, open, close }: Props) {
               onChange={(event) => field.onChange(event.target.value)}
             >
               <FormControlLabel
-                value="Finished"
+                value={true}
                 control={<Radio />}
                 label="Finished"
               />
               <FormControlLabel
-                value="DNF"
+                value={false}
                 control={<Radio />}
                 label="Did Not Finish"
               />

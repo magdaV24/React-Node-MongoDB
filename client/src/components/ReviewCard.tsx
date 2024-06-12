@@ -79,6 +79,7 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
   } else {
     btn = "Reply";
   }
+
   //Deleting a review
   const { postData, loading } = useMutationWithToken(DELETE_REVIEW);
   const handleDelete = async (e: unknown) => {
@@ -137,10 +138,10 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
   };
 
   useEffect(() => {
-    if (review?.finished === "Finished") {
+    if (review?.finished) {
       setHasFinished("Finished");
     }
-    if (review?.finished === "DNF") {
+    if (!review?.finished) {
       setHasFinished("(Did not finish)");
     }
   }, [appContext, review?.finished]);

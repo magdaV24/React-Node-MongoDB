@@ -9,7 +9,7 @@ export default function BookTable({ book, genres }: Props) {
     <Box className="book-table">
         <Box
           sx={{
-            backgroundColor: "secondary.dark",
+            backgroundColor: "primary.dark",
           }}
           className='book-table-row'
         >
@@ -18,17 +18,17 @@ export default function BookTable({ book, genres }: Props) {
             {book!.published}
           </Box>
         </Box>
-        <Box sx={{ backgroundColor: "secondary.light" }} className='book-table-row'>
+        <Box sx={{ backgroundColor: "primary.main" }} className='book-table-row'>
           <Box className="book-table-row-name">Pages:</Box>
           <Box className="book-table-row-value">
             {book!.pages}
           </Box>
         </Box>
-        <Box sx={{ backgroundColor: "secondary.dark" }} title="Genres List" className='book-table-row'>
+        <Box sx={{ backgroundColor: "primary.dark" }} title="Genres List" className='book-table-row'>
           <Box className="book-table-row-name">Genres:</Box>
           <Box className="book-table-row-value">{genres}</Box>
         </Box>
-        <Box sx={{ backgroundColor: "secondary.light" }} className='book-table-row'>
+        <Box sx={{ backgroundColor: "primary.main" }} className='book-table-row'>
           <Box className="book-table-row-name">Language:</Box>
           <Box className="book-table-row-value">
             {book!.language}

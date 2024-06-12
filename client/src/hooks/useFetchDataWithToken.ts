@@ -1,6 +1,10 @@
 import axios, { AxiosError } from "axios";
 import { useAppContext } from "./useAppContext";
-
+/**
+ * Uses axios to perform a GET request to the server. 
+ * It returns a function, fetchData, that takes the URL and sends the request it to tbe backend.
+ * It's used in creating queries when the user is authenticated.
+ */
 export default function useFetchData () {
     const appContext = useAppContext();
     const fetchData = async (url: string) => {

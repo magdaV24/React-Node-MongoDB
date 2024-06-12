@@ -10,7 +10,7 @@ const style = {
   height: "20vh",
   display: "flex",
   gap: "2vw",
-  bgcolor: "secondary.light",
+  bgcolor: "secondary.dark",
   boxShadow: 24,
   p: 1,
   borderRadius: "2px",

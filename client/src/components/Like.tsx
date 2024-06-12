@@ -17,16 +17,16 @@ interface Props {
 
 export default function Like({ objectId, userId, bookId }: Props) {
   const currentUser = useGetUser(userId);
+  const appContext = useAppContext();
   const queryName = `likeQuery/${objectId}`;
   const url = `${COUNT_LIKES}/${objectId}`;
-  const { data: count } = useQueryHook(url, queryName);
+  const { data: count } = useQueryHook(url, queryName, true);
 
   const queryNameTwo = `likedObject/${userId}/${objectId}`;
   const urlTwo = `${CHECK_IF_LIKED}/${userId}/${objectId}`;
   const { data: liked } = useQueryWithToken(urlTwo, queryNameTwo);
 
   const { postData, loading } = useMutationWithToken(LIKE_OBJECT, queryName);
-  const appContext = useAppContext();
   const onSubmit = async () => {
     try {
       const input = {

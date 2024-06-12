@@ -40,7 +40,7 @@ export default function BookCard({ book }: Props) {
   return (
     <Box
       className="book-card-wrapper"
-      sx={{ backgroundColor: "secondary.light" }}
+      sx={{ backgroundColor: "primary.main" }}
     >
       <CardMedia title={`book-thumbnail-${book?._id}`} >
         <AdvancedImage

@@ -2,6 +2,10 @@ import { useMutation } from "react-query";
 import { useState } from "react";
 import usePostData from "./usePostData";
 import { CLOUDINARY } from "../utils/cloudinary";
+/**
+ * Designed to make the uploading to Cloudinary simpler. The submitToCloudinary function returns the public_id of the uploaded photo.
+ * It catches the error, in case the uploading fails.
+ */
 
 const useCloudinaryMutation = () => {
   const postData = usePostData();
@@ -20,7 +24,7 @@ export default function useCloudinary() {
       setId(publicId);
       return publicId;
     } catch (error) {
-      console.log(`Error on useCloudinary: ${error}`)
+      throw new Error(`Error on useCloudinary: ${error}`)
     }
   };
   return submitToCloudinary;

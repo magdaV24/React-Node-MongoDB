@@ -12,13 +12,14 @@ export default function AppName() {
         aria-label="menu"
         className="app-title-icon"
         href="/"
+        sx={{color: 'primary.main'}}
       >
         <AutoStoriesSharpIcon />
       </IconButton>
       <Typography
         variant="h6"
-        component="div"
         className="app-name"
+        sx={{color: 'primary.main'}}
       >
         NovelNotes
       </Typography>

@@ -34,7 +34,7 @@ export default function useQueryHook(
     if (error) {
       appContext.setError(`Error while fetching data: ${error}`);
     }
-  }, []);
+  }, [appContext, error, isLoading]);
 
   return { data };
 }

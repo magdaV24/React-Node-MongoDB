@@ -4,7 +4,7 @@ export type Review = {
     content: string,
     date: string,
     stars: number,
-    finished: string,
+    finished: boolean,
     likes: number,
     username: string,
     avatar: string,

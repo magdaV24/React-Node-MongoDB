@@ -30,7 +30,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: theme.palette.background.default,
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
@@ -41,6 +41,7 @@ const Search = styled('div')(({ theme }) => ({
     marginLeft: theme.spacing(3),
     width: 'auto',
   },
+  border: `1px solid ${theme.palette.primary.main}`
 }));
 
 interface Props {
@@ -71,13 +72,16 @@ export default function SearchBar({
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Search>
         <SearchIconWrapper>
-          <SearchSharpIcon />
+          <SearchSharpIcon sx={{
+            color: 'primary.dark',}}/>
         </SearchIconWrapper>
         <StyledInputBase
           type="text"
           placeholder="Search…"
           value={searchInput}
           onChange={handleSearchInput}
+          sx={{
+            color: 'primary.dark',}}
         />
       </Search>
       <Box sx={{ backgroundColor: 'background.paper' }}>

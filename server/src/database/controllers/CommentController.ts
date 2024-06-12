@@ -11,10 +11,9 @@ import logger from "../../config/logger";
 
 
 export const addComment = async (req: Request, res: Response): Promise<Response> => {
-  const { parentId, userId, bookId, content, date } = req.body; // deconstructing the client's input 
+  const { parentId, userId, bookId, content, date } = req.body;
 
   try {
-    // adding the comment to the database
     await Comment.insertMany([
       {
         parentId: parentId,

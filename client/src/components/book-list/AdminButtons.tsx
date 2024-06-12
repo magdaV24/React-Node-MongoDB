@@ -1,6 +1,5 @@
 // MUI imports
 import { Box, Button } from "@mui/material";
-import { useAppContext } from "../../hooks/useAppContext";
 
 interface Props {
   openEditForm: () => void;
@@ -8,16 +7,14 @@ interface Props {
 }
 
 export default function AdminButtons({ openEditForm, openDeleteForm }: Props) {
-  const appContext = useAppContext();
-  const theme = appContext.currentTheme;
   return (
     <Box className="book-card-buttons">
       <Button
         title="Edit Button"
-        variant="outlined"
-        color={theme.palette.mode === "dark" ? "info" : "primary"}
+        variant="contained"
         className="book-card-button"
         onClick={openEditForm}
+        sx={{color: 'primary.light', border: '1px solid primary.light'}}
       >
         Edit
       </Button>

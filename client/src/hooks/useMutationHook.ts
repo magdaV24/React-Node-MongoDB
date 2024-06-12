@@ -1,7 +1,9 @@
 import { QueryClient, useMutation } from "react-query";
 import { useAppContext } from "./useAppContext";
 import usePostData from "./usePostData";
-
+/**
+ * 
+ */
 const useDataMutation = (url: string, queryToInvalidate?: string) => {
   const postData = usePostData();
   const appContext = useAppContext();
