@@ -208,35 +208,34 @@ This project's client side is constructed with React, incorporating various feat
 * **React Query:** The app utilizes this library to manage and fetch data seamlessly, providing a responsive and dynamic user experience.
 * **Axios:**  for the management of HTTP requests to the server.
 * **React Helmet:**  for editing the application' tab.
+* **React Error Baundary:**  wraps the aplications inside an error baundary that displays the error message when one happens.
 * **Vitest:** Paired with React Testing Library and jsdom, Vitest was my dependency choice for testing the hooks and the components.
 
 #### Context management
 
-In order to facilitate the state sharing across the application's components and set global state, such as the user's token or the theme, I decided to incorporate state management in my application. React Context was my choice of tool for this part of the app's functionality. 
+In order to facilitate the state sharing across the application's components and set global state, I decided to incorporate state management in my application. React Context was my choice of tool for this part of the app's functionality. The AppContext Provider handles error messages, success messages, the authentication token, the theming of the application.
 
-#### The Application
+#### Custom hooks
 
-##### Forms
+In order to execute operations such as data fetching, mutations, context management or authentications, I have written a set of custom hooks, each being responsible for handling specific logic. The hooks that handle data fetching/poting, employ the use of axios.
 
-![Image Alt Text](/client/public/project-photos/delete-form.png)
-![Image Alt Text](/client/public/project-photos/review-edit.png)
+* **useCloudinary:** a hook designed to simplify uploading files to Cloudinary. It returns a function that will post the photo to Cloudinary and returns the public_id, which will be saved in the database.
+* **usePostData:** sends POST requests with Axios and handles responses. It is used when the user is not authenticated.
+* **usePostDataWithToken:** the same as uePostData, only for authnticated user.
+* **useFetchData:** handles GET requests. It is used when no user is authenticated.
+* **useFetchDataWithToken:** handles GET requests. It is used when a user is authenticated.
+* **useMutationHook:** the hook employs the help of React Query to create a data mutations, for when no user is authenticated.
+* **useMutationWithToken:** the same as useMutationHook, but for when the user is logged in.
+* **useQueryHook:** a hook for handling GET requests, for when the client is not authenticated.
+* **useMutationWithToken:** the same as useQueryHook, but for when the user is authorized.
+* **useGetUser:** it retrieves user data based on a given user ID.
+* **useSearch:** responsible for the search functionality of the application.
+* **useToken:** it handles the auth token, providing methods for checking the expiration date of token, loging out of the app, etc.
 
+#### Theming 
 
-##### The Home Page
-![Home Page](/client/public/project-photos/home-page.png)
-
-##### The Book Page
-
-![Book Page](/client/public/project-photos/book-page.png)
-
-##### The Search Bar
-
-![Search Bar](/client/public/project-photos/search-bar.png)
-
-##### Success and Error messages
-
-![Success](/client/public/project-photos/success-message.png)
-![Error](/client/public/project-photos/error-message.png) 
+![light-theme](/client/public/photos/book-page-light.png)
+![dark-theme](/client/public/photos/book-page-dark.png)
 
 ## Database
 
