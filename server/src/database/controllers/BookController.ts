@@ -88,7 +88,8 @@ export const fetchBook = async (
   const title = req.params.title;
 
   try {
-    /* It checks if the title is corresponding to an existing book in the database
+    /* 
+    It checks if the title is corresponding to an existing book in the database
     If it  doesn't, it sends a Not Found error.
     It if does, it sends the book to the frontend, to be displayed.
     */
@@ -304,6 +305,7 @@ export const deleteBook = async (
       return res.status(401).json("Could not find this book!");
     }
 
+    // Removing not only the book, but the comments and likes associated with it.
     await Book.deleteMany({ _id: id });
     await comment.deleteMany({ bookId: id });
     await likes.deleteMany({ bookId: id });

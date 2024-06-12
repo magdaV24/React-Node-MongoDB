@@ -16,9 +16,9 @@ export const addReview = async (req: any, res: any) => {
     spoilers: spoilers,
   };
   try {
-    const check = await Book.findOne({ _id: id, "reviews.userId": userId });
+    const book = await Book.findOne({ _id: id, "reviews.userId": userId });
 
-    if (check) {
+    if (book) {
       return res.status(401).json("You had already given a review!");
     }
 
