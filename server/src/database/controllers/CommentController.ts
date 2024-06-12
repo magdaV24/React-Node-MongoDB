@@ -44,9 +44,9 @@ export const fetchComments = async (req: Request, res: Response): Promise<Respon
   const parentId = req.params.id;
 
   try {
-    const parent = await Comment.find({ parentId: parentId });
+    const comments = await Comment.find({ parentId: parentId });
     const commentList = await Promise.all(
-      parent.map(async (comment: any) =>{
+      comments.map(async (comment: any) =>{
         const userId = comment.userId;
         const writer = await User.findOne({_id: userId}).lean();
         if(!writer){

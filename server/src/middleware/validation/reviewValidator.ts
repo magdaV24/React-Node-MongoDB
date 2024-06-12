@@ -58,3 +58,53 @@ export const sortFinishedValidationRules = [
     .isBoolean()
     .withMessage("The finished status value must be a boolean."),
 ];
+
+export const editReviewValidationRules = [
+  body("id")
+    .notEmpty()
+    .withMessage("Review ID is required")
+    .isString()
+    .withMessage("Review ID must be a string"),
+  body("bookId")
+    .notEmpty()
+    .withMessage("Book ID is required")
+    .isString()
+    .withMessage("Book ID must be a string"),
+  body("content")
+    .notEmpty()
+    .withMessage("Content is required")
+    .isString()
+    .withMessage("Content must be a string"),
+  body("stars")
+    .notEmpty()
+    .withMessage("The stars value is required.")
+    .isFloat()
+    .withMessage("The stars value must be a float."),
+  body("finished")
+    .notEmpty()
+    .withMessage("The finished status value is required.")
+    .isBoolean()
+    .withMessage("The finished status value must be a boolean."),
+  body("oldStars")
+    .notEmpty()
+    .withMessage("The old stars value is required.")
+    .isFloat()
+    .withMessage("The old stars value must be a float."),
+];
+export const deleteReviewValidationRules = [
+  body("id")
+    .notEmpty()
+    .withMessage("Book ID is required")
+    .isString()
+    .withMessage("Book ID must be a string"),
+  body("reviewId")
+    .notEmpty()
+    .withMessage("Review ID is required")
+    .isString()
+    .withMessage("Review ID must be a string"),
+  body("stars")
+    .notEmpty()
+    .withMessage("The stars value is required.")
+    .isFloat()
+    .withMessage("The stars value must be a float."),
+];
