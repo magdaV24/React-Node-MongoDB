@@ -1,11 +1,30 @@
 import express from "express";
-import { likeObject, checkIfLiked, countLikes } from "../database/controllers/LikeController";
+import {
+  likeObject,
+  checkIfLiked,
+  countLikes,
+} from "../database/controllers/LikeController";
 import { validate } from "../middleware/validate";
+import {
+  checkIfLikedValidationRules,
+  countLikesValidationRules,
+  likeObjectValidationRules,
+} from "../middleware/validation/likeValidation";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/like",validate, likeObject); //gives a like to an object (review/comment)
-router.get("/checkIfLiked/:userId/:objectId",validate, checkIfLiked); // checks if the user liked an object and returns a boolean;
-router.get("/countLikes/:objectId",validate, countLikes); // return the umber of likes of a certain object;
+router.post("/like", likeObjectValidationRules, validate, likeObject);
+router.get(
+  "/checkIfLiked/:userId/:objectId",
+  checkIfLikedValidationRules,
+  validate,
+  checkIfLiked
+);
+router.get(
+  "/countLikes/:objectId",
+  countLikesValidationRules,
+  validate,
+  countLikes
+);
 
-export default router
+export default router;

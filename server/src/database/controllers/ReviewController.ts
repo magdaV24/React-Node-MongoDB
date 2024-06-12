@@ -367,7 +367,7 @@ export const deleteReview = async (
       (
         await children
       ).map(async (comment) => {
-        await Like.deleteMany({ parentId: comment.id });
+        await Like.deleteMany({ objectId: comment.id });
       })
     );
     await Comment.deleteMany({ parentId: reviewId });
