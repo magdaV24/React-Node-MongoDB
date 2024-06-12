@@ -19,46 +19,6 @@ Drawing inspiration from popular websites like Goodreads and Storygraph, I have 
 
 In order to make this app as interesting and useful as possible, it includes various functionalities such as context management, photo uploading, writing reviews and replies to them, liking the reviews/comments, searching through the book collection, sorting the reviews or giving the books a reading status.
 
-### Frontend
-This project's client side is constructed with React, incorporating various features to enhance the overall user experience.
-
-#### Features
-
-* **MaterialUI:** 
-* **React Hook Form:** for handling form submission.
-* **Cloudinary:** Integrated as a cloud-based media management and delivery service, enabling users to upload one or multiple pictures.
-* **React Query:** The app utilizes this library to manage and fetch data seamlessly, providing a responsive and dynamic user experience.
-* **Axios:**  for the management of HTTP requests to the server.
-* **React Helmet:**  for editing the application' tab.
-* **Vitest:** Paired with React Testing Library and jsdom, Vitest was my dependency choice for testing the hooks and the components.
-
-#### Context management
-
-In order to facilitate the state sharing across the application's components and set global state, such as the user's token or the theme, I decided to incorporate state management in my application. React Context was my choice of tool for this part of the app's functionality. 
-
-#### The Application
-
-##### Forms
-
-![Image Alt Text](/client/public/project-photos/delete-form.png)
-![Image Alt Text](/client/public/project-photos/review-edit.png)
-
-
-##### The Home Page
-![Home Page](/client/public/project-photos/home-page.png)
-
-##### The Book Page
-
-![Book Page](/client/public/project-photos/book-page.png)
-
-##### The Search Bar
-
-![Search Bar](/client/public/project-photos/search-bar.png)
-
-##### Success and Error messages
-
-![Success](/client/public/project-photos/success-message.png)
-![Error](/client/public/project-photos/error-message.png)
 
 ## Backend
 The server side of the app is developed using Node, alongside Express for handling routes and middleware. It also employs Mongoose, in order to integrate MongoDB and execute database operations.
@@ -66,7 +26,7 @@ The server side of the app is developed using Node, alongside Express for handli
 ### Middleware
 
 * **Helmet:** for security.
-* **CORS:** for allowing requests from pecific origins.
+* **CORS:** for allowing requests from specific origins.
 * **Express JSON parser:** for parsing JSON request bodies.
 
 #### Routes
@@ -179,7 +139,7 @@ export const register = async (
   }
 };
 ```
-uses a service for regestring the user and sending the auth token to the frontend.
+uses a service for registering the user and sending the auth token to the frontend.
 
 ```ts
 export const registerUser = async (
@@ -231,11 +191,52 @@ export const registerUser = async (
 };
 ```
 
-#### Other dpendencies
+#### Other dependencies
 
 * **Dotenv:** Loads environment variables from a .env file, facilitating configuration management.
 * **Bcrypt:**  A widely-used open-source library for securely hashing passwords.
-* **Winston:** A dependency used to create a logger for various messages during the execution of the server.  
+* **Winston:** A dependency used to create a logger for various messages during the execution of the server. 
+
+### Frontend
+This project's client side is constructed with React, incorporating various features to enhance the overall user experience.
+
+#### Features
+
+* **MaterialUI:** 
+* **React Hook Form:** for handling form submission.
+* **Cloudinary:** Integrated as a cloud-based media management and delivery service, enabling users to upload one or multiple pictures.
+* **React Query:** The app utilizes this library to manage and fetch data seamlessly, providing a responsive and dynamic user experience.
+* **Axios:**  for the management of HTTP requests to the server.
+* **React Helmet:**  for editing the application' tab.
+* **Vitest:** Paired with React Testing Library and jsdom, Vitest was my dependency choice for testing the hooks and the components.
+
+#### Context management
+
+In order to facilitate the state sharing across the application's components and set global state, such as the user's token or the theme, I decided to incorporate state management in my application. React Context was my choice of tool for this part of the app's functionality. 
+
+#### The Application
+
+##### Forms
+
+![Image Alt Text](/client/public/project-photos/delete-form.png)
+![Image Alt Text](/client/public/project-photos/review-edit.png)
+
+
+##### The Home Page
+![Home Page](/client/public/project-photos/home-page.png)
+
+##### The Book Page
+
+![Book Page](/client/public/project-photos/book-page.png)
+
+##### The Search Bar
+
+![Search Bar](/client/public/project-photos/search-bar.png)
+
+##### Success and Error messages
+
+![Success](/client/public/project-photos/success-message.png)
+![Error](/client/public/project-photos/error-message.png) 
 
 ## Database
 
