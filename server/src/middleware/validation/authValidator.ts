@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
 
 const passwordRegex =
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.])[A-Za-z\d!.@#$%^&*]{8,}$/;
+  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.])[A-Za-z\d!.@#$%^&*]{8,}$/;
 
 export const registrationValidationRules = [
   body("email")
@@ -19,6 +19,8 @@ export const registrationValidationRules = [
     .isString()
     .withMessage("Username must be a string"),
   body("password")
+    .notEmpty()
+    .withMessage("Password is required.")
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long")
     .matches(passwordRegex)

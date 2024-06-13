@@ -18,12 +18,13 @@ export const register = async (
 ): Promise<Response> => {
   try {
     /*
-    
+    It uses the registerUser service in order to add a new use to the database. The function returns the authToken for
+    with a rememberMe value of false. If any error occurs, the photo saved in the Cloudinary folder will be deleted.
     */
     const { email, username, password, avatar } = req.body;
 
     const token = await registerUser(username, email, password, avatar);
-    return res.status(201).json(token);
+    return res.status(200).json(token);
   } catch (error) {
     if (req.body && req.body.avatar) {
       await cloudinary.v2.uploader.destroy(req.body.avatar);

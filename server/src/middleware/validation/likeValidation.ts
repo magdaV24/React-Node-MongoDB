@@ -20,15 +20,17 @@ export const likeObjectValidationRules = [
 
 export const countLikesValidationRules = [
   param("objectId")
+    .notEmpty()
     .withMessage("Object ID is required.")
     .isString()
-    .withMessage("Object ID must be a string"),
+    .withMessage("Object ID must be a string."),
 ];
 
 export const checkIfLikedValidationRules = [
   ...countLikesValidationRules,
   param("userId")
+    .notEmpty()
     .withMessage("User ID is required.")
     .isString()
-    .withMessage("User ID must be a string"),
+    .withMessage("User ID must be a string."),
 ];
