@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DeleteOutlineSharpIcon from '@mui/icons-material/DeleteOutlineSharp';
+import DeleteOutlineSharpIcon from "@mui/icons-material/DeleteOutlineSharp";
 
 // Context management
 import { useAppContext } from "../hooks/useAppContext";
@@ -74,7 +74,7 @@ export default function EditBook({ book }: Props) {
   const appContext = useAppContext();
 
   // Setting the loading state
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // Using the custom hook to import the images to Cloudinary and returning their public_ids
   const submitToCloudinary = useCloudinary();
@@ -84,10 +84,10 @@ export default function EditBook({ book }: Props) {
   const { postData: deletePhoto } = useMutationWithToken(DELETE_PHOTO);
   const { postData: editFields } = useMutationWithToken(EDIT_BOOK);
 
-  // The edit function 
+  // The edit function
   const submitEdit = async () => {
     try {
-      setLoading(true) // Setting the loading state to true
+      setLoading(true); // Setting the loading state to true
 
       // Going through each file and uploading it to Cloudinary
       await Promise.all(
@@ -97,7 +97,7 @@ export default function EditBook({ book }: Props) {
           formData.append("upload_preset", PRESET);
           formData.append("folder", FOLDER_NAME);
           const id = await submitToCloudinary(formData);
-          const photoInput = {id: book?._id, photo: id}
+          const photoInput = { id: book?._id, photo: id };
           await addPhoto(photoInput);
         })
       );
@@ -111,9 +111,9 @@ export default function EditBook({ book }: Props) {
         language: getValues("language"),
         genres: getValues("genres"),
         published: getValues("published"),
-      }
+      };
       await editFields(input);
-      setLoading(false) // Setting the loading state to false
+      setLoading(false); // Setting the loading state to false
     } catch (error) {
       appContext.setError(`Error: ${error}`);
     }
@@ -122,35 +122,45 @@ export default function EditBook({ book }: Props) {
   useEffect(() => {
     if (errors.title) {
       appContext.setError(`Title error: ${errors.title.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else if (errors.author) {
       appContext.setError(`Error: ${errors.author.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else if (errors.published) {
       appContext.setError(`Published error: ${errors.published.message}`);
-      appContext.setOpenErrorAlert(true)
-    } else if (errors.pages){
+      appContext.setOpenErrorAlert(true);
+    } else if (errors.pages) {
       appContext.setError(`Pages error: ${errors.pages.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else if (errors.genres) {
       appContext.setError(`Genres error: ${errors.genres.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else if (errors.language) {
       appContext.setError(`Language error: ${errors.language.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else if (errors.description) {
       appContext.setError(`Description error: ${errors.description.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else if (errors.newPhotos) {
       appContext.setError(`Photos error: ${errors.newPhotos.message}`);
-      appContext.setOpenErrorAlert(true)
+      appContext.setOpenErrorAlert(true);
     } else {
       appContext.clearErrorMessage();
     }
-
-  }, [appContext, errors.author, errors.description, errors.genres, errors.language, errors.newPhotos, errors.pages, errors.published, errors.title]);
+  }, [
+    appContext,
+    errors.author,
+    errors.description,
+    errors.genres,
+    errors.language,
+    errors.newPhotos,
+    errors.pages,
+    errors.published,
+    errors.title,
+  ]);
   return (
-    <Box sx={{backgroundColor: 'background.paper'}}
+    <Box
+      sx={{ backgroundColor: "background.paper" }}
       className="form-wrapper edit-form"
       title="Edit Form"
     >
@@ -256,8 +266,10 @@ export default function EditBook({ book }: Props) {
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {LANGUAGES.map((language)=>(
-                <MenuItem value={language} key={Math.random()}>{language}</MenuItem>
+              {LANGUAGES.map((language) => (
+                <MenuItem value={language} key={Math.random()}>
+                  {language}
+                </MenuItem>
               ))}
             </Select>
           )}
@@ -322,7 +334,15 @@ export default function EditBook({ book }: Props) {
               <AdvancedImage
                 cldImg={cld.image(photo).resize(fill().width(100).height(150))}
               />
-              <Button variant='outlined' color="warning"  className="delete-photo-btn" sx={{width: '0.5rem'}} onClick={()=>deletePhoto({id: book._id, photo: photo})}><DeleteOutlineSharpIcon color='warning'/></Button>
+              <Button
+                variant="outlined"
+                color="warning"
+                className="delete-photo-btn"
+                sx={{ width: "0.5rem" }}
+                onClick={() => deletePhoto({ id: book._id, photo: photo })}
+              >
+                <DeleteOutlineSharpIcon color="warning" />
+              </Button>
             </Box>
           ))}
       </Box>
@@ -331,7 +351,12 @@ export default function EditBook({ book }: Props) {
           <CircularProgress />
         </Button>
       ) : (
-        <Button type="submit" onClick={handleSubmit(submitEdit)} variant="outlined" color="info">
+        <Button
+          type="submit"
+          onClick={handleSubmit(submitEdit)}
+          variant="outlined"
+          color="info"
+        >
           SUBMIT EDIT
         </Button>
       )}
