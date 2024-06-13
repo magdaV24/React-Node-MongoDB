@@ -1,5 +1,4 @@
 import {
-  Card,
   CardContent,
   Divider,
   CardActions,
@@ -18,7 +17,7 @@ import { EDIT_COMMENT } from "../utils/urls";
 interface Props {
   comment: Comment;
   cancel: () => void;
-  userId: string | null;
+  userId: string | undefined;
 }
 
 export default function EditComment({ comment, cancel }: Props) {

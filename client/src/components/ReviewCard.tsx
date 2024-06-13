@@ -176,7 +176,7 @@ export default function ReviewCard({ review, bookId, userId }: Props) {
 
             {currentUser?._id === review.userId && (
               <Box className="review-card-header-two">
-                <Button onClick={handleOpenMenu}>
+                <Button onClick={handleOpenMenu as unknown as React.MouseEventHandler<HTMLButtonElement>}>
                   <MoreVertIcon />
                 </Button>
                 <Menu

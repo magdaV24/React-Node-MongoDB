@@ -43,7 +43,7 @@ export const registerUser = async (
       read: [],
     };
 
-    await User.insertMany([newUser]);
+    await User.insertMany(newUser);
     const authToken = await loginUser(newUser.username, false);
     return authToken;
   } catch (error) {

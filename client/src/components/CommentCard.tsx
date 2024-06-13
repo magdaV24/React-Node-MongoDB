@@ -45,11 +45,11 @@ import "../styles/components/commentCard.css";
 
 interface Props {
   comment: Comment;
-  userId: string | null;
+  userId: string | undefined;
 }
 
 export default function CommentCard({ comment, userId }: Props) {
-  const currentUser = useGetUser(userId);
+  const currentUser = useGetUser(userId!);
   const formatDate = comment?.date.substring(0, 10);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -150,7 +150,7 @@ export default function CommentCard({ comment, userId }: Props) {
             </Box>
 
             <Box className="review-card-header-two">
-              <Button onClick={handleOpenMenu}>
+              <Button onClick={handleOpenMenu as unknown as React.MouseEventHandler<HTMLButtonElement>}>
                 <MoreVertIcon />
               </Button>
               <Menu

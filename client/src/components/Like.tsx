@@ -11,12 +11,12 @@ import '../styles/components/likeButton.css'
 
 interface Props {
   objectId: string;
-  userId: string | null;
+  userId: string | undefined;
   bookId: string;
 }
 
 export default function Like({ objectId, userId, bookId }: Props) {
-  const currentUser = useGetUser(userId);
+  const currentUser = useGetUser(userId!);
   const appContext = useAppContext();
   const queryName = `likeQuery/${objectId}`;
   const url = `${COUNT_LIKES}/${objectId}`;
