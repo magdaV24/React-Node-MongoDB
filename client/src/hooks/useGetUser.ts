@@ -8,6 +8,5 @@ export default function useGetUser(id: string | null, enabled?: boolean) {
   const url = useMemo(() => (id ? `${FETCH_USER}/${id}` : ''), [id]);
 
   const { data } = useQueryWithToken(url, queryKey, enabled);
-
   return data as User | null;
 }

@@ -41,20 +41,18 @@ export const loginValidationRules = [
     .notEmpty()
     .withMessage("Username is required.")
     .isString()
-    .withMessage("Username must be a string"),
+    .withMessage("Username must be a string."),
   body("password")
     .notEmpty()
     .withMessage("Password is required.")
     .isString()
-    .withMessage("Password must be a string"),
+    .withMessage("Password must be a string."),
 ];
 
 export const fetchUserValidationRules = [
   param("id")
-    .notEmpty()
-    .withMessage("User ID missing")
     .isString()
-    .withMessage("User ID must be a string"),
+    .withMessage("User ID must be a string."),
 ];
 
 export const readingStatusValidationRules = [

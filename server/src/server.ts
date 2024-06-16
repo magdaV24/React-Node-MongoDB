@@ -37,15 +37,14 @@ const configMiddleware=(app: any)=>{
 }
 
 const configRoutes=(app: any)=>{
-
   app.use(userRouter);
   app.use(bookRouter);
   app.use(reviewsRouter);
   app.use(commentsRouter);
   app.use(searchRouter);
   app.use(likesRouter);
-
 }
+
 const main = async () => {
 
   const app = express();
