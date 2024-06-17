@@ -191,6 +191,76 @@ export const registerUser = async (
 };
 ```
 
+#### Testing
+
+In order to test the controllers, I have chosen Vitest and Supertest. Keeping in mind that Supertest creates a real connection to the database, I have chosen to use it only for the vaidation process, while the actual GET/POST methods I have tested only with the help of Vitest, by creating mocks. 
+
+Example of a test case for a validation rule:
+
+```ts
+
+describe("/POST register", async () => {
+  /**
+   * Testing if using an invalid register input returns an error message;
+   */
+  const app = express();
+  const router = express.Router();
+  app.use(express.json());
+  const registerRoute = router.post(
+    "/register",
+    registrationValidationRules,
+    validate,
+    register
+  );
+  app.use(registerRoute);
+
+  await mongooseConfig();
+  it("should return 400 if password is weak", async () => {
+    const response = await request(app)
+      .post("/register")
+      .send(invalidRequestPasswordWeak);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          msg: "Password must contain at least one uppercase letter, one number, and one special character (! . @ # $ % ^ & *).",
+        }),
+      ])
+    );
+  });
+});
+
+```
+
+Example of a test for a POST method:
+
+```ts
+
+ it("should register a new user successfully", async () => {
+    const token = "mockToken";
+    const mockNewUser = {
+      ...req.body,
+      role: "Admin",
+      currentlyReading: [],
+      wantToRead: [],
+      read: [],
+    };
+    // Creating mocks for the database operations:
+    vi.spyOn(User, "findOne").mockResolvedValue(null);
+    vi.spyOn(User, "insertMany" as never).mockResolvedValue(mockNewUser);
+
+    // Mocking the registerUser service
+    vi.mocked(registerUser).mockResolvedValue(token);
+
+    // Calling the register controller
+    await register(req as Request, res as Response);
+
+    expect(mockStatus).toHaveBeenCalledWith(200);
+    expect(mockJson).toHaveBeenCalledWith(token);
+  });
+
+```
+
 #### Other dependencies
 
 * **Dotenv:** Loads environment variables from a .env file, facilitating configuration management.
