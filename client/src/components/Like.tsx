@@ -8,6 +8,7 @@ import useMutationWithToken from "../hooks/useMutationWithToken";
 import { useAppContext } from "../hooks/useAppContext";
 import useQueryWithToken from "../hooks/useQueryWithToken";
 import '../styles/components/likeButton.css'
+import React, { useEffect } from "react";
 
 interface Props {
   objectId: string;
@@ -27,6 +28,10 @@ export default function Like({ objectId, userId, bookId }: Props) {
   const { data: liked } = useQueryWithToken(urlTwo, queryNameTwo);
 
   const { postData, loading } = useMutationWithToken(LIKE_OBJECT, queryName);
+
+  const [likesCount, setLikesCount] = React.useState<number>(0);
+  const [isLiked, setIsLiked] = React.useState<boolean>(false);
+
   const onSubmit = async () => {
     try {
       const input = {
@@ -34,31 +39,48 @@ export default function Like({ objectId, userId, bookId }: Props) {
         userId: userId,
         bookId: bookId,
       };
-      await postData(input);
+      await postData(input).then(() => {
+        if(isLiked) {
+          setLikesCount(prev => prev - 1);
+          setIsLiked(prev => !prev);
+        } else{
+          setLikesCount(prev => prev + 1);
+          setIsLiked(prev => !prev);
+        }
+      });
     } catch (error) {
       appContext.setOpenErrorAlert(true);
       appContext.setError(`Error while trying to submit your like: ${error}`);
     }
   };
+
+  useEffect(() => {
+    if (count) {
+      setLikesCount(count);
+    }
+    if (liked) {
+      setIsLiked(liked);
+    }
+  },[liked, count]);
   return (
     <>
-      <Box className='like-button'
-      >
-        {loading ? (
-          <Box>
-            <CircularProgress />
-          </Box>
+        <Box className='like-button'>
+            {loading ? (
+                <Box>
+                    <CircularProgress />
+                </Box>
         ) : (
           <>
-            {currentUser && liked ? (
+            {currentUser && isLiked ? (
               <Button
                 size="large"
                 className="likeButton"
                 onClick={onSubmit}
                 sx={{ gap: 1 }}
+                disabled={loading}
               >
                 <FavoriteSharpIcon />
-                <Typography>{count}</Typography>
+                <Typography>{likesCount}</Typography>
               </Button>
             ) : (
               <Button
@@ -68,7 +90,7 @@ export default function Like({ objectId, userId, bookId }: Props) {
                 sx={{ gap: 1 }}
               >
                 <FavoriteBorderSharpIcon className="likeButton" />
-                <Typography>{count}</Typography>
+                <Typography>{likesCount}</Typography>
               </Button>
             )}
           </>
